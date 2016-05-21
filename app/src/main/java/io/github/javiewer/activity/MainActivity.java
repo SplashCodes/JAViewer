@@ -21,7 +21,9 @@ import java.util.Map;
 
 import io.github.javiewer.R;
 import io.github.javiewer.fragment.HomeFragment;
-import io.github.javiewer.fragment.RecyclerFragment;
+import io.github.javiewer.fragment.MovieFragment;
+import io.github.javiewer.fragment.PopularFragment;
+import io.github.javiewer.fragment.ReleasedFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -55,8 +57,14 @@ public class MainActivity extends AppCompatActivity
 
     public void initFragments() {
         this.fragments = new HashMap<>();
-        RecyclerFragment fragment = new HomeFragment();
+        Fragment fragment = new HomeFragment();
         this.fragments.put(R.id.nav_home, fragment);
+
+        fragment = new PopularFragment();
+        this.fragments.put(R.id.nav_popular, fragment);
+
+        fragment = new ReleasedFragment();
+        this.fragments.put(R.id.nav_released, fragment);
 
         this.fragmentManager = getSupportFragmentManager();
         this.setFragment(R.id.nav_home);

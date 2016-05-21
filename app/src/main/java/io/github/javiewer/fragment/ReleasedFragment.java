@@ -8,7 +8,7 @@ import retrofit2.Retrofit;
 /**
  * Author: MagicDroidX
  */
-public class HomeFragment extends MovieFragment {
+public class ReleasedFragment extends MovieFragment {
     @Override
     public Call<ResponseBody> getCall(int page) {
         Retrofit retrofit = new Retrofit.Builder()
@@ -17,6 +17,6 @@ public class HomeFragment extends MovieFragment {
 
         Network network = retrofit.create(Network.class);
 
-        return network.getHomePage(page);
+        return network.getReleased(page);
     }
 }
