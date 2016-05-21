@@ -30,4 +30,7 @@ public interface Network {
 
     @GET("/cn/movie/{hash}")
     Call<ResponseBody> getMovieDetail(@Path("hash") String movieHash);
+
+    @GET("/cn/{query}/currentPage/{page}")
+    Call<ResponseBody> query(@Path("query") String query, @Path("page") int page);
 }
