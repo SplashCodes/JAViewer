@@ -6,4 +6,6 @@
 .DS_Store
 /build
 /captures
+/gradle/wrapper
+/.idea
 /JAViewer.iml
