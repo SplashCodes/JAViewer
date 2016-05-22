@@ -22,6 +22,8 @@ import android.widget.Toast;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -133,7 +135,10 @@ public class MainActivity extends AppCompatActivity
                 Intent intent = new Intent(MainActivity.this, QueryActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("title", "搜索结果：" + query);
-                bundle.putString("query", "search/" + query);
+                try {
+                    bundle.putString("query", "search/" + URLEncoder.encode(query, "UTF-8"));
+                } catch (UnsupportedEncodingException ignored) {
+                }
                 intent.putExtras(bundle);
 
                 MainActivity.this.startActivity(intent);
