@@ -1,7 +1,7 @@
 package io.github.javiewer.network.wrapper;
 
 /**
- * Author: MagicDroidX
+ * Project: JAViewer
  */
 public class MovieWrapper {
 

@@ -86,7 +86,13 @@ public class MainActivity extends AppCompatActivity
         Fragment fragment = fragments.get(id);
         Fragment old = this.currentFragment;
 
+        if (old == fragment) {
+            return;
+        }
+
         FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+        transaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 
         if (old != null) {
             transaction.hide(old);

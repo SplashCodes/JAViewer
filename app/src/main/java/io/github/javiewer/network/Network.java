@@ -6,7 +6,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Path;
 
 /**
- * Author: MagicDroidX
+ * Project: JAViewer
  */
 public interface Network {
 

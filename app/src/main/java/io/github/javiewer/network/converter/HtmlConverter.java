@@ -11,11 +11,11 @@ import java.util.List;
 import io.github.javiewer.network.wrapper.MovieWrapper;
 
 /**
- * Author: MagicDroidX
+ * Project: JAViewer
  */
-public class HomePageConverter {
+public class HtmlConverter {
 
-    public static List<MovieWrapper> convert(String html) {
+    public static List<MovieWrapper> parseMovies(String html) {
         Document document = Jsoup.parse(html);
 
         Elements items = document.getElementsByClass("item");

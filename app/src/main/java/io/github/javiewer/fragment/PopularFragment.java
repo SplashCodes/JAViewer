@@ -6,7 +6,7 @@ import retrofit2.Call;
 import retrofit2.Retrofit;
 
 /**
- * Author: MagicDroidX
+ * Project: JAViewer
  */
 public class PopularFragment extends MovieFragment {
     @Override

@@ -21,7 +21,7 @@ import io.github.javiewer.R;
 import io.github.javiewer.network.wrapper.MovieWrapper;
 
 /**
- * Author: MagicDroidX
+ * Project: JAViewer
  */
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
 
