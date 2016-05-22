@@ -12,18 +12,19 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.github.javiewer.R;
-import io.github.javiewer.network.wrapper.MovieWrapper;
+import io.github.javiewer.network.wrapper.ActressWrapper;
 
 /**
  * Project: JAViewer
  */
-public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
+public class ActressAdapter extends RecyclerView.Adapter<ActressAdapter.ViewHolder> {
 
     private static DisplayImageOptions options = new DisplayImageOptions.Builder()
             .resetViewBeforeLoading()
@@ -35,56 +36,51 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
             .displayer(new FadeInBitmapDisplayer(500)) // default
             .build();
 
-    private List<MovieWrapper> movies;
+    private List<ActressWrapper> actresses;
 
-    public MovieAdapter(List<MovieWrapper> movies) {
-        this.movies = movies;
+    public ActressAdapter(List<ActressWrapper> actresses) {
+        this.actresses = actresses;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_movie, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_actress, parent, false);
 
         return new ViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        MovieWrapper movie = movies.get(position);
+       holder.mImage.setMinimumHeight( holder.mImage.getWidth());
+        ActressWrapper actress = actresses.get(position);
 
-        holder.parse(movie);
+        holder.parse(actress);
 
-        ImageLoader.getInstance().displayImage(movie.imageUrl, holder.mImageCover, options);
+        /*ImageLoader.getInstance().loadImage(actress.imageUrl, options, new SimpleImageLoadingListener() {
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                holder.mImage.setImageBitmap(loadedImage);
+            }
+        });*/
 
-        holder.mImageHot.setVisibility(movie.hot ? View.VISIBLE : View.INVISIBLE);
+        ImageLoader.getInstance().displayImage(actress.imageUrl, holder.mImage, options);
     }
 
     @Override
     public int getItemCount() {
-        return movies == null ? 0 : movies.size();
+        return actresses == null ? 0 : actresses.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.movie_title)
-        public TextView mTextTitle;
+        @Bind(R.id.actress_name)
+        public TextView mTextName;
 
-        @Bind(R.id.movie_code)
-        public TextView mTextCode;
+        @Bind(R.id.actress_img)
+        public ImageView mImage;
 
-        @Bind(R.id.movie_time)
-        public TextView mTextTime;
-
-        @Bind(R.id.movie_cover)
-        public ImageView mImageCover;
-
-        @Bind(R.id.movie_hot)
-        public ImageView mImageHot;
-
-        public void parse(MovieWrapper movie) {
-            mTextCode.setText(movie.code);
-            mTextTitle.setText(movie.title);
-            mTextTime.setText(movie.time);
+        public void parse(ActressWrapper actress) {
+            mTextName.setText(actress.name);
         }
 
         public ViewHolder(View view) {

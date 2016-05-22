@@ -19,8 +19,8 @@ public interface Network {
     @GET("/cn/popular/currentPage/{page}")
     Call<ResponseBody> getPopular(@Path("page") int page);
 
-    @GET("/cn/actresses")
-    Call<ResponseBody> getActresses();
+    @GET("/cn/actresses/currentPage/{page}")
+    Call<ResponseBody> getActresses(@Path("page") int page);
 
     @GET("/cn/genren")
     Call<ResponseBody> getGenren();

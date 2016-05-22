@@ -9,17 +9,20 @@ public class MovieWrapper {
 
     public String code;
 
-    public String image;
+    public String imageUrl;
 
     public String time;
 
     public boolean hot;
 
-    public MovieWrapper(String title, String code, String time, String image, boolean hot) {
+    public String detailUrl;
+
+    public MovieWrapper(String title, String code, String time, String imageUrl, String detailUrl, boolean hot) {
         this.title = title;
         this.time = time;
         this.code = code;
-        this.image = image;
+        this.imageUrl = imageUrl;
+        this.detailUrl = detailUrl;
         this.hot = hot;
     }
 }

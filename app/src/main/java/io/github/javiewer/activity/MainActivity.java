@@ -30,6 +30,7 @@ import java.util.Map;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.github.javiewer.R;
+import io.github.javiewer.fragment.ActressesFragment;
 import io.github.javiewer.fragment.HomeFragment;
 import io.github.javiewer.fragment.MovieFragment;
 import io.github.javiewer.fragment.PopularFragment;
@@ -79,6 +80,9 @@ public class MainActivity extends AppCompatActivity
 
         fragment = new ReleasedFragment();
         this.fragments.put(R.id.nav_released, fragment);
+
+        fragment = new ActressesFragment();
+        this.fragments.put(R.id.nav_actresses, fragment);
 
         this.fragmentManager = getSupportFragmentManager();
         this.setFragment(R.id.nav_home);

@@ -6,29 +6,33 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.javiewer.adapter.ActressAdapter;
 import io.github.javiewer.adapter.MovieAdapter;
+import io.github.javiewer.network.Network;
 import io.github.javiewer.network.converter.HtmlConverter;
+import io.github.javiewer.network.wrapper.ActressWrapper;
 import io.github.javiewer.network.wrapper.MovieWrapper;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
-public abstract class MovieFragment extends RecyclerFragment<MovieAdapter.ViewHolder, LinearLayoutManager> {
+public class ActressesFragment extends RecyclerFragment<ActressAdapter.ViewHolder, StaggeredGridLayoutManager> {
 
-
-    public List<MovieWrapper> movies = new ArrayList<>();
+    public List<ActressWrapper> actresses = new ArrayList<>();
 
     public SwipeRefreshLayout.OnRefreshListener mRefreshListener;
 
     public EndlessOnScrollListener mScrollListener;
 
-    public MovieFragment() {
+    public ActressesFragment() {
         // Required empty public constructor
     }
 
@@ -36,8 +40,8 @@ public abstract class MovieFragment extends RecyclerFragment<MovieAdapter.ViewHo
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        this.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        this.setAdapter(new MovieAdapter(movies));
+        this.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));
+        this.setAdapter(new ActressAdapter(actresses));
 
         mRecyclerView.addOnScrollListener(mScrollListener = new EndlessOnScrollListener(getLayoutManager()) {
             @Override
@@ -49,12 +53,12 @@ public abstract class MovieFragment extends RecyclerFragment<MovieAdapter.ViewHo
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (loadingTime == latestLoadingTime && (!mRefreshLayout.isRefreshing() || refresh)) {
                             try {
-                                List<MovieWrapper> wrappers = HtmlConverter.parseMovies(response.body().string());
+                                List<ActressWrapper> wrappers = HtmlConverter.parseActresses(response.body().string());
 
                                 if (refresh) {
-                                    movies.clear();
+                                    actresses.clear();
                                 }
-                                movies.addAll(wrappers);
+                                actresses.addAll(wrappers);
                                 getAdapter().notifyDataSetChanged();
 
                                 currentPage++;
@@ -94,11 +98,19 @@ public abstract class MovieFragment extends RecyclerFragment<MovieAdapter.ViewHo
         });
     }
 
-    public abstract Call<ResponseBody> getCall(int page);
+    public Call<ResponseBody> getCall(int page) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://avmo.pw")
+                .build();
+
+        Network network = retrofit.create(Network.class);
+
+        return network.getActresses(page);
+    }
 
     public static abstract class EndlessOnScrollListener extends RecyclerView.OnScrollListener {
 
-        public LinearLayoutManager mLayoutManager;
+        public StaggeredGridLayoutManager mLayoutManager;
 
         public boolean loading = false;
 
@@ -107,7 +119,7 @@ public abstract class MovieFragment extends RecyclerFragment<MovieAdapter.ViewHo
 
         public long latestLoadingTime;
 
-        public EndlessOnScrollListener(LinearLayoutManager mLayoutManager) {
+        public EndlessOnScrollListener(StaggeredGridLayoutManager mLayoutManager) {
             this.mLayoutManager = mLayoutManager;
         }
 
@@ -127,9 +139,9 @@ public abstract class MovieFragment extends RecyclerFragment<MovieAdapter.ViewHo
 
             int visibleItemCount = recyclerView.getChildCount();
             int totalItemCount = mLayoutManager.getItemCount();
-            int firstVisibleItem = mLayoutManager.findFirstVisibleItemPosition();
+            int[] firstVisibleItems = mLayoutManager.findFirstVisibleItemPositions(null);
 
-            if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + loadThreshold)) {
+            if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItems[0] + loadThreshold)) {
                 onLoad(latestLoadingTime = System.currentTimeMillis(), false);
                 loading = true;
             }

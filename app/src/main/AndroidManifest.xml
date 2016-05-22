@@ -13,6 +13,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".activity.MainActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -22,7 +23,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.QueryActivity" />
+        <activity
+            android:name=".activity.QueryActivity"
+            android:configChanges="orientation|screenSize" />
 
     </application>
 
