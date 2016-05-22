@@ -3,6 +3,7 @@ package io.github.javiewer.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import io.github.javiewer.activity.MainActivity;
 import io.github.javiewer.network.Network;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -26,7 +27,7 @@ public class QueryFragment extends MovieFragment {
     @Override
     public Call<ResponseBody> getCall(int page) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://avmo.pw")
+                .baseUrl(MainActivity.SOURCE_URL)
                 .build();
 
         Network network = retrofit.create(Network.class);

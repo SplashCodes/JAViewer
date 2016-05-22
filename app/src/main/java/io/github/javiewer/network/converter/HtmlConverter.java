@@ -1,5 +1,7 @@
 package io.github.javiewer.network.converter;
 
+import android.util.Log;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -23,8 +25,15 @@ public class HtmlConverter {
 
         List<MovieWrapper> movies = new ArrayList<>();
 
+        Log.i("items", String.valueOf(items.size()));
+
         for (Element item : items) {
             Element box = item.getElementsByClass("movie-box").first();
+
+            if (box == null) {
+                continue;
+            }
+
             Element frame = box.getElementsByClass("photo-frame").first();
             Element info = box.getElementsByClass("photo-info").first();
 

@@ -39,6 +39,7 @@ import io.github.javiewer.fragment.ReleasedFragment;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private static MainActivity instance;
     private Map<Integer, Fragment> fragments;
     private FragmentManager fragmentManager;
 
@@ -47,9 +48,14 @@ public class MainActivity extends AppCompatActivity
     @Bind(R.id.nav_view)
     public NavigationView mNavigationView;
 
+    public static final String SOURCE_URL = "https://avmo.pw";
+    public static final String LANGUAGE_NODE = "/cn";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        instance = this;
+
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
@@ -173,5 +179,10 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public static MainActivity getInstance() {
+
+        return instance;
     }
 }

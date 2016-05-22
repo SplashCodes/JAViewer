@@ -4,20 +4,17 @@ package io.github.javiewer.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.javiewer.activity.MainActivity;
 import io.github.javiewer.adapter.ActressAdapter;
-import io.github.javiewer.adapter.MovieAdapter;
 import io.github.javiewer.network.Network;
 import io.github.javiewer.network.converter.HtmlConverter;
 import io.github.javiewer.network.wrapper.ActressWrapper;
-import io.github.javiewer.network.wrapper.MovieWrapper;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -100,7 +97,7 @@ public class ActressesFragment extends RecyclerFragment<ActressAdapter.ViewHolde
 
     public Call<ResponseBody> getCall(int page) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://avmo.pw")
+                .baseUrl(MainActivity.SOURCE_URL)
                 .build();
 
         Network network = retrofit.create(Network.class);

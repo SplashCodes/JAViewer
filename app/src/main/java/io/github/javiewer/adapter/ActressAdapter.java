@@ -1,6 +1,9 @@
 package io.github.javiewer.adapter;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,11 +17,16 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.github.javiewer.R;
+import io.github.javiewer.activity.MainActivity;
+import io.github.javiewer.activity.QueryActivity;
 import io.github.javiewer.network.wrapper.ActressWrapper;
 
 /**
@@ -51,17 +59,28 @@ public class ActressAdapter extends RecyclerView.Adapter<ActressAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-       holder.mImage.setMinimumHeight( holder.mImage.getWidth());
-        ActressWrapper actress = actresses.get(position);
+
+        holder.mImage.setMinimumHeight(holder.mImage.getWidth());
+        final ActressWrapper actress = actresses.get(position);
 
         holder.parse(actress);
 
-        /*ImageLoader.getInstance().loadImage(actress.imageUrl, options, new SimpleImageLoadingListener() {
+        holder.mCard.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                holder.mImage.setImageBitmap(loadedImage);
+            public void onClick(View v) {
+                if (actress.queryUrl != null) {
+                    Intent intent = new Intent(MainActivity.getInstance(), QueryActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("title", actress.name + " 的作品");
+                    bundle.putString("query", actress.queryUrl);
+
+                    intent.putExtras(bundle);
+
+                    MainActivity.getInstance().startActivity(intent);
+                }
             }
-        });*/
+        });
+
 
         ImageLoader.getInstance().displayImage(actress.imageUrl, holder.mImage, options);
     }
@@ -78,6 +97,9 @@ public class ActressAdapter extends RecyclerView.Adapter<ActressAdapter.ViewHold
 
         @Bind(R.id.actress_img)
         public ImageView mImage;
+
+        @Bind(R.id.card_actress)
+        public CardView mCard;
 
         public void parse(ActressWrapper actress) {
             mTextName.setText(actress.name);

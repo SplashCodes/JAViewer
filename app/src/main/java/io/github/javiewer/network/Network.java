@@ -1,5 +1,6 @@
 package io.github.javiewer.network;
 
+import io.github.javiewer.activity.MainActivity;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -10,27 +11,27 @@ import retrofit2.http.Path;
  */
 public interface Network {
 
-    @GET("/cn/currentPage/{page}")
+    @GET(MainActivity.LANGUAGE_NODE + "/currentPage/{page}")
     Call<ResponseBody> getHomePage(@Path("page") int page);
 
-    @GET("/cn/released/currentPage/{page}")
+    @GET(MainActivity.LANGUAGE_NODE + "/released/currentPage/{page}")
     Call<ResponseBody> getReleased(@Path("page") int page);
 
-    @GET("/cn/popular/currentPage/{page}")
+    @GET(MainActivity.LANGUAGE_NODE + "/popular/currentPage/{page}")
     Call<ResponseBody> getPopular(@Path("page") int page);
 
-    @GET("/cn/actresses/currentPage/{page}")
+    @GET(MainActivity.LANGUAGE_NODE + "/actresses/currentPage/{page}")
     Call<ResponseBody> getActresses(@Path("page") int page);
 
-    @GET("/cn/genren")
+    @GET(MainActivity.LANGUAGE_NODE + "/genren")
     Call<ResponseBody> getGenren();
 
-    @GET("/cn/search/{keyword}")
+    @GET(MainActivity.LANGUAGE_NODE + "/search/{keyword}")
     Call<ResponseBody> getSearchResult(@Path("keyword") String keyword);
 
-    @GET("/cn/movie/{hash}")
+    @GET(MainActivity.LANGUAGE_NODE + "/movie/{hash}")
     Call<ResponseBody> getMovieDetail(@Path("hash") String movieHash);
 
-    @GET("/cn/{query}/currentPage/{page}")
+    @GET(MainActivity.LANGUAGE_NODE + "/{query}/currentPage/{page}")
     Call<ResponseBody> query(@Path(value = "query", encoded = true) String query, @Path("page") int page);
 }

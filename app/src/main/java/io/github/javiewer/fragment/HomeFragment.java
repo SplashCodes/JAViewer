@@ -1,5 +1,6 @@
 package io.github.javiewer.fragment;
 
+import io.github.javiewer.activity.MainActivity;
 import io.github.javiewer.network.Network;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -12,7 +13,7 @@ public class HomeFragment extends MovieFragment {
     @Override
     public Call<ResponseBody> getCall(int page) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://avmo.pw")
+                .baseUrl(MainActivity.SOURCE_URL)
                 .build();
 
         Network network = retrofit.create(Network.class);

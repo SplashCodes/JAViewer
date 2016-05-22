@@ -71,6 +71,7 @@ public abstract class MovieFragment extends RecyclerFragment<MovieAdapter.ViewHo
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
                         loading = false;
                         mRefreshLayout.setRefreshing(false);
+                        t.printStackTrace();
                     }
                 });
             }
