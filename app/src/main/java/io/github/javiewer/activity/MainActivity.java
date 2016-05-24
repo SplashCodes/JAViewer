@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -12,7 +13,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.MenuCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -22,11 +22,12 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -38,14 +39,12 @@ import butterknife.ButterKnife;
 import io.github.javiewer.R;
 import io.github.javiewer.fragment.ActressesFragment;
 import io.github.javiewer.fragment.HomeFragment;
-import io.github.javiewer.fragment.MovieFragment;
 import io.github.javiewer.fragment.PopularFragment;
 import io.github.javiewer.fragment.ReleasedFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static MainActivity instance;
     private Map<Integer, Fragment> fragments;
     private FragmentManager fragmentManager;
 
@@ -55,12 +54,20 @@ public class MainActivity extends AppCompatActivity
     public NavigationView mNavigationView;
 
     public static final String SOURCE_URL = "https://avmo.pw";
-    public static final String LANGUAGE_NODE = "/cn";
+    public static final String LANGUAGE_NODE = "/ja";
+    public static DisplayImageOptions displayImageOptions = new DisplayImageOptions.Builder()
+            .resetViewBeforeLoading()
+            .cacheInMemory()
+            .cacheOnDisc()
+            .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2) // default
+            .bitmapConfig(Bitmap.Config.ARGB_8888) // default
+            .delayBeforeLoading(1000)
+            .displayer(new FadeInBitmapDisplayer(500)) // default
+            .build();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        instance = this;
 
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
@@ -77,10 +84,6 @@ public class MainActivity extends AppCompatActivity
         mNavigationView.setNavigationItemSelectedListener(this);
         mNavigationView.getMenu().getItem(0).setChecked(true);
 
-        initFragments();
-
-        ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
-
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             AlertDialog dialog = new AlertDialog.Builder(this)
                     .setCancelable(false)
@@ -95,6 +98,10 @@ public class MainActivity extends AppCompatActivity
                     .create();
             dialog.show();
         }
+
+        initFragments();
+
+        ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
     }
 
     public void initFragments() {
@@ -200,10 +207,5 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    public static MainActivity getInstance() {
-
-        return instance;
     }
 }

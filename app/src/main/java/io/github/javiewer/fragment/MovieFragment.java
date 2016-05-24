@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +36,7 @@ public abstract class MovieFragment extends RecyclerFragment<MovieAdapter.ViewHo
         super.onActivityCreated(savedInstanceState);
 
         this.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        this.setAdapter(new MovieAdapter(movies));
+        this.setAdapter(new MovieAdapter(movies, this.getActivity()));
 
         mRecyclerView.addOnScrollListener(mScrollListener = new EndlessOnScrollListener(getLayoutManager()) {
             @Override

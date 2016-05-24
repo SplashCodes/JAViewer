@@ -1,7 +1,5 @@
 package io.github.javiewer.network.converter;
 
-import android.util.Log;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -11,7 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.javiewer.network.wrapper.ActressWrapper;
+import io.github.javiewer.network.wrapper.MovieDetailWrapper;
 import io.github.javiewer.network.wrapper.MovieWrapper;
+import io.github.javiewer.network.wrapper.ScreenshotWrapper;
 
 /**
  * Project: JAViewer
@@ -24,8 +24,6 @@ public class HtmlConverter {
         Elements items = document.getElementsByClass("item");
 
         List<MovieWrapper> movies = new ArrayList<>();
-
-        Log.i("items", String.valueOf(items.size()));
 
         for (Element item : items) {
             Element box = item.getElementsByClass("movie-box").first();
@@ -78,5 +76,20 @@ public class HtmlConverter {
         }
 
         return actresses;
+    }
+
+    public static MovieDetailWrapper parseMoviesDetail(String html) {
+        Document document = Jsoup.parse(html);
+
+        MovieDetailWrapper movie = new MovieDetailWrapper();
+
+        movie.title = document.getElementsByTag("h3").first().text();
+        movie.coverUrl = document.getElementsByClass("bigImage").first().attr("href");
+
+        for (Element element : document.getElementsByClass("sample-box")) {
+            movie.screenshots.add(new ScreenshotWrapper(element.getElementsByTag("img").first().attr("src"), element.attr("href")));
+        }
+
+        return movie;
     }
 }

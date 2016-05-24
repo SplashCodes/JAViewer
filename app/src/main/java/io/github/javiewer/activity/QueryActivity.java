@@ -10,8 +10,6 @@ import io.github.javiewer.fragment.QueryFragment;
 
 public class QueryActivity extends AppCompatActivity {
 
-    public String query;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,10 +17,9 @@ public class QueryActivity extends AppCompatActivity {
 
         Bundle bundle = this.getIntent().getExtras();
 
-        this.getSupportActionBar().setTitle(bundle.getString("title"));
-        this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        this.query = bundle.getString("query");
+        getSupportActionBar().setTitle(bundle.getString("title"));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setElevation(4);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 

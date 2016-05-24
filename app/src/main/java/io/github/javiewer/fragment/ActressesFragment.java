@@ -38,7 +38,7 @@ public class ActressesFragment extends RecyclerFragment<ActressAdapter.ViewHolde
         super.onActivityCreated(savedInstanceState);
 
         this.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));
-        this.setAdapter(new ActressAdapter(actresses));
+        this.setAdapter(new ActressAdapter(actresses, this.getActivity()));
 
         mRecyclerView.addOnScrollListener(mScrollListener = new EndlessOnScrollListener(getLayoutManager()) {
             @Override

@@ -1,6 +1,10 @@
 package io.github.javiewer.adapter;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +22,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.github.javiewer.R;
+import io.github.javiewer.activity.MovieActivity;
 import io.github.javiewer.network.wrapper.MovieWrapper;
 
 /**
@@ -37,8 +42,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     private List<MovieWrapper> movies;
 
-    public MovieAdapter(List<MovieWrapper> movies) {
+    private Activity mParentActivity;
+
+    public MovieAdapter(List<MovieWrapper> movies, Activity mParentActivity) {
         this.movies = movies;
+        this.mParentActivity = mParentActivity;
     }
 
     @Override
@@ -50,9 +58,22 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        MovieWrapper movie = movies.get(position);
+        final MovieWrapper movie = movies.get(position);
 
         holder.parse(movie);
+
+        holder.mCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mParentActivity, MovieActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("title", movie.title);
+                bundle.putString("detail", movie.detailUrl);
+                intent.putExtras(bundle);
+
+                mParentActivity.startActivity(intent);
+            }
+        });
 
         ImageLoader.getInstance().displayImage(movie.imageUrl, holder.mImageCover, options);
 
@@ -80,6 +101,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
         @Bind(R.id.movie_hot)
         public ImageView mImageHot;
+
+        @Bind(R.id.card_movie)
+        public CardView mCard;
 
         public void parse(MovieWrapper movie) {
             mTextCode.setText(movie.code);

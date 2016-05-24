@@ -1,5 +1,6 @@
 package io.github.javiewer.adapter;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -15,17 +16,12 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import io.github.javiewer.R;
-import io.github.javiewer.activity.MainActivity;
 import io.github.javiewer.activity.QueryActivity;
 import io.github.javiewer.network.wrapper.ActressWrapper;
 
@@ -46,8 +42,11 @@ public class ActressAdapter extends RecyclerView.Adapter<ActressAdapter.ViewHold
 
     private List<ActressWrapper> actresses;
 
-    public ActressAdapter(List<ActressWrapper> actresses) {
+    private Activity mParentActivity;
+
+    public ActressAdapter(List<ActressWrapper> actresses, Activity mParentActivity) {
         this.actresses = actresses;
+        this.mParentActivity = mParentActivity;
     }
 
     @Override
@@ -60,7 +59,6 @@ public class ActressAdapter extends RecyclerView.Adapter<ActressAdapter.ViewHold
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
 
-        holder.mImage.setMinimumHeight(holder.mImage.getWidth());
         final ActressWrapper actress = actresses.get(position);
 
         holder.parse(actress);
@@ -69,14 +67,14 @@ public class ActressAdapter extends RecyclerView.Adapter<ActressAdapter.ViewHold
             @Override
             public void onClick(View v) {
                 if (actress.queryUrl != null) {
-                    Intent intent = new Intent(MainActivity.getInstance(), QueryActivity.class);
+                    Intent intent = new Intent(mParentActivity, QueryActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putString("title", actress.name + " 的作品");
                     bundle.putString("query", actress.queryUrl);
 
                     intent.putExtras(bundle);
 
-                    MainActivity.getInstance().startActivity(intent);
+                    mParentActivity.startActivity(intent);
                 }
             }
         });

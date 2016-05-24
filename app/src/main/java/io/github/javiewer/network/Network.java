@@ -26,11 +26,8 @@ public interface Network {
     @GET(MainActivity.LANGUAGE_NODE + "/genren")
     Call<ResponseBody> getGenren();
 
-    @GET(MainActivity.LANGUAGE_NODE + "/search/{keyword}")
-    Call<ResponseBody> getSearchResult(@Path("keyword") String keyword);
-
-    @GET(MainActivity.LANGUAGE_NODE + "/movie/{hash}")
-    Call<ResponseBody> getMovieDetail(@Path("hash") String movieHash);
+    @GET(MainActivity.LANGUAGE_NODE + "/{query}")
+    Call<ResponseBody> query(@Path(value = "query", encoded = true) String query);
 
     @GET(MainActivity.LANGUAGE_NODE + "/{query}/currentPage/{page}")
     Call<ResponseBody> query(@Path(value = "query", encoded = true) String query, @Path("page") int page);
