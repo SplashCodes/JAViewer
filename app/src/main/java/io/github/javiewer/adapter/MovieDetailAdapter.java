@@ -34,11 +34,6 @@ public class MovieDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         this.mParentActivity = mParentActivity;
     }
 
-    public void onUpdate() {
-        notifyDataSetChanged();
-        mScreenshotAdapter.notifyDataSetChanged();
-    }
-
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
@@ -64,7 +59,7 @@ public class MovieDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public int getItemCount() {
-        return (screenshots == null ? 0 : 1)
+        return (screenshots == null || screenshots.isEmpty() ? 0 : 1)
                 + 0;
     }
 

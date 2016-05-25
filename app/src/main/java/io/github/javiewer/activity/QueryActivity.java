@@ -3,6 +3,7 @@ package io.github.javiewer.activity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.TypedValue;
 import android.view.MenuItem;
 
 import io.github.javiewer.R;
@@ -19,7 +20,7 @@ public class QueryActivity extends AppCompatActivity {
 
         getSupportActionBar().setTitle(bundle.getString("title"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setElevation(4);
+        getSupportActionBar().setElevation(4 * getResources().getDisplayMetrics().density);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
