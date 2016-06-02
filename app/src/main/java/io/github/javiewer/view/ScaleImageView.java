@@ -30,9 +30,9 @@ public class ScaleImageView extends ImageView {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         try {
 
-            if (getDrawable() == null) {
+            /*if (getDrawable() == null) {
                 setImageDrawable(ResourcesCompat.getDrawable(this.getResources(), R.drawable.ic_menu_actresses, null));
-            }
+            }*/
             int measuredWidth = MeasureSpec.getSize(widthMeasureSpec);
 
             setMeasuredDimension(measuredWidth, measuredWidth);

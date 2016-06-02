@@ -16,11 +16,13 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <io.github.javiewer.view.ScaleImageView
+        <io.github.javiewer.view.ActressScaleImageView
             android:id="@+id/actress_img"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:adjustViewBounds="true" />
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_default_actresses" />
 
         <TextView
             android:id="@+id/actress_name"

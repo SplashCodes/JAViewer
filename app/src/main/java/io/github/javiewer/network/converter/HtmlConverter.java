@@ -1,5 +1,7 @@
 package io.github.javiewer.network.converter;
 
+import android.util.Log;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -79,6 +81,10 @@ public class HtmlConverter {
     }
 
     public static MovieDetailWrapper parseMoviesDetail(String html) {
+        final String headerCode = "品番";
+        final String headerDate = "発売日";
+        final String headerDuration = "収録時間";
+
         Document document = Jsoup.parse(html);
 
         MovieDetailWrapper movie = new MovieDetailWrapper();
@@ -88,6 +94,27 @@ public class HtmlConverter {
 
         for (Element element : document.getElementsByClass("sample-box")) {
             movie.screenshots.add(new ScreenshotWrapper(element.getElementsByTag("img").first().attr("src"), element.attr("href")));
+        }
+
+        Element info = document.getElementsByClass("col-md-3").first();
+        for (Element p : info.getElementsByTag("p")) {
+
+            Log.i("text", p.text());
+
+            String[] s = p.text().split(":");
+
+            if (s.length > 1) {
+
+                String content = s[1].replace(" ", "");
+
+                if (s[0].contains(headerCode)) {
+                    movie.code = content;
+                } else if (s[0].contains(headerDate)) {
+                    movie.date = content;
+                } else if (s[0].contains(headerDuration)) {
+                    movie.duration = content;
+                }
+            }
         }
 
         return movie;

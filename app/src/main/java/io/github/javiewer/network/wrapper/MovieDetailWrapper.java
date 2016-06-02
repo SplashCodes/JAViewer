@@ -13,4 +13,10 @@ public class MovieDetailWrapper {
     public String coverUrl;
 
     public final List<ScreenshotWrapper> screenshots = new ArrayList<>();
+
+    public String code;
+
+    public String date;
+
+    public String duration;
 }

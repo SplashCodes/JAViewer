@@ -95,7 +95,7 @@ public class MovieActivity extends AppCompatActivity {
                     screenshots.clear();
                     screenshots.addAll(movie.screenshots);
 
-                    mAdapter.notifyDataSetChanged();
+                    mAdapter.onInit(movie);
                 } catch (IOException e) {
                     onFailure(call, e);
                 }
