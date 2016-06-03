@@ -9,8 +9,8 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="4dp"
-        android:tint="#89000000"
-        android:src="@drawable/ic_general_movie" />
+        android:src="@drawable/ic_general_movie"
+        android:tint="#89000000" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -88,7 +88,7 @@
             android:layout_height="32dp"
             android:padding="0dp"
             android:text="查看详细信息"
-            android:textColor="@color/colorAccent" />
+            android:textColor="?attr/colorAccent" />
 
         <View
             android:layout_width="match_parent"

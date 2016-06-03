@@ -22,6 +22,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.github.javiewer.R;
+import io.github.javiewer.activity.MainActivity;
 import io.github.javiewer.activity.QueryActivity;
 import io.github.javiewer.network.wrapper.ActressWrapper;
 
@@ -29,16 +30,6 @@ import io.github.javiewer.network.wrapper.ActressWrapper;
  * Project: JAViewer
  */
 public class ActressAdapter extends RecyclerView.Adapter<ActressAdapter.ViewHolder> {
-
-    private static DisplayImageOptions options = new DisplayImageOptions.Builder()
-            .resetViewBeforeLoading()
-            .cacheInMemory()
-            .cacheOnDisc()
-            .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2) // default
-            .bitmapConfig(Bitmap.Config.ARGB_8888) // default
-            .delayBeforeLoading(1000)
-            .displayer(new FadeInBitmapDisplayer(500)) // default
-            .build();
 
     private List<ActressWrapper> actresses;
 
@@ -80,7 +71,7 @@ public class ActressAdapter extends RecyclerView.Adapter<ActressAdapter.ViewHold
         });
 
 
-        ImageLoader.getInstance().displayImage(actress.imageUrl, holder.mImage, options);
+        ImageLoader.getInstance().displayImage(actress.imageUrl, holder.mImage, MainActivity.displayImageOptions);
     }
 
     @Override

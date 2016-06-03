@@ -17,14 +17,14 @@ import io.github.javiewer.R;
 /**
  * Project: JAViewer
  */
-public abstract class RecyclerFragment<VH extends RecyclerView.ViewHolder, LM extends RecyclerView.LayoutManager> extends Fragment {
+public abstract class RecyclerFragment< LM extends RecyclerView.LayoutManager> extends Fragment {
     @Bind(R.id.recycler_view)
     public RecyclerView mRecyclerView;
 
     @Bind(R.id.refresh_layout)
     public SwipeRefreshLayout mRefreshLayout;
 
-    private RecyclerView.Adapter<VH> mAdapter;
+    private RecyclerView.Adapter mAdapter;
     private LM mLayoutManager;
 
     public RecyclerFragment() {
@@ -39,11 +39,11 @@ public abstract class RecyclerFragment<VH extends RecyclerView.ViewHolder, LM ex
         return mLayoutManager;
     }
 
-    public void setAdapter(RecyclerView.Adapter<VH> mAdapter) {
+    public void setAdapter(RecyclerView.Adapter mAdapter) {
         this.mRecyclerView.setAdapter(this.mAdapter = mAdapter);
     }
 
-    public RecyclerView.Adapter<VH> getAdapter() {
+    public RecyclerView.Adapter getAdapter() {
         return mAdapter;
     }
 

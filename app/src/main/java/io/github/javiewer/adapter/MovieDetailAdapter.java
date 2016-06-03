@@ -42,7 +42,7 @@ public class MovieDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public void onInit(MovieDetailWrapper detailInfo) {
         this.detailInfo = detailInfo;
-        notifyDataSetChanged();
+        notifyItemRangeChanged(0, this.getItemCount());
     }
 
     @Override
@@ -74,7 +74,7 @@ public class MovieDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         switch (position) {
             //基本信息
             case 0: {
-                InfoViewHolder vh= (InfoViewHolder) holder;
+                InfoViewHolder vh = (InfoViewHolder) holder;
                 vh.mCodeText.setText(detailInfo.code);
                 vh.mDateText.setText(detailInfo.date);
                 vh.mDurationText.setText(detailInfo.duration);

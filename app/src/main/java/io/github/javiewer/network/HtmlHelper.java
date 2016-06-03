@@ -1,4 +1,4 @@
-package io.github.javiewer.network.converter;
+package io.github.javiewer.network;
 
 import android.util.Log;
 
@@ -18,7 +18,7 @@ import io.github.javiewer.network.wrapper.ScreenshotWrapper;
 /**
  * Project: JAViewer
  */
-public class HtmlConverter {
+public class HtmlHelper {
 
     public static List<MovieWrapper> parseMovies(String html) {
         Document document = Jsoup.parse(html);
@@ -98,8 +98,6 @@ public class HtmlConverter {
 
         Element info = document.getElementsByClass("col-md-3").first();
         for (Element p : info.getElementsByTag("p")) {
-
-            Log.i("text", p.text());
 
             String[] s = p.text().split(":");
 

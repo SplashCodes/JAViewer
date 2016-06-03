@@ -11,14 +11,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.javiewer.adapter.MovieAdapter;
-import io.github.javiewer.network.converter.HtmlConverter;
+import io.github.javiewer.network.HtmlHelper;
 import io.github.javiewer.network.wrapper.MovieWrapper;
+import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
+import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public abstract class MovieFragment extends RecyclerFragment<MovieAdapter.ViewHolder, LinearLayoutManager> {
+public abstract class MovieFragment extends RecyclerFragment<LinearLayoutManager> {
 
 
     public List<MovieWrapper> movies = new ArrayList<>();
@@ -36,7 +38,10 @@ public abstract class MovieFragment extends RecyclerFragment<MovieAdapter.ViewHo
         super.onActivityCreated(savedInstanceState);
 
         this.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        this.setAdapter(new MovieAdapter(movies, this.getActivity()));
+        this.setAdapter(new ScaleInAnimationAdapter(new MovieAdapter(movies, this.getActivity())));
+        RecyclerView.ItemAnimator animator = new SlideInUpAnimator();
+        animator.setAddDuration(300);
+        mRecyclerView.setItemAnimator(animator);
 
         mRecyclerView.addOnScrollListener(mScrollListener = new EndlessOnScrollListener(getLayoutManager()) {
             @Override
@@ -48,13 +53,20 @@ public abstract class MovieFragment extends RecyclerFragment<MovieAdapter.ViewHo
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (loadingTime == latestLoadingTime && (!mRefreshLayout.isRefreshing() || refresh)) {
                             try {
-                                List<MovieWrapper> wrappers = HtmlConverter.parseMovies(response.body().string());
+                                List<MovieWrapper> wrappers = HtmlHelper.parseMovies(response.body().string());
 
                                 if (refresh) {
                                     movies.clear();
                                 }
+
+                                int pos = movies.size();
+
+                                if (pos > 0) {
+                                    pos--;
+                                }
+
                                 movies.addAll(wrappers);
-                                getAdapter().notifyDataSetChanged();
+                                getAdapter().notifyItemChanged(pos, wrappers.size());
 
                                 currentPage++;
                             } catch (Throwable e) {

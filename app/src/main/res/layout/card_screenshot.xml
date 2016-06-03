@@ -11,13 +11,11 @@
     app:cardCornerRadius="0dp"
     app:cardElevation="0dp">
 
-    <io.github.javiewer.view.PhotoScaleImageView
+    <io.github.javiewer.view.ScaleImageView
         android:id="@+id/screenshot_image_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ic_default_photo" />
-
+        android:scaleType="centerCrop" />
 
 </android.support.v7.widget.CardView>

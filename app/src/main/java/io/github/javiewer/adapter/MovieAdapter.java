@@ -2,7 +2,6 @@ package io.github.javiewer.adapter;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -12,16 +11,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.github.javiewer.R;
+import io.github.javiewer.activity.MainActivity;
 import io.github.javiewer.activity.MovieActivity;
 import io.github.javiewer.network.wrapper.MovieWrapper;
 
@@ -29,16 +26,6 @@ import io.github.javiewer.network.wrapper.MovieWrapper;
  * Project: JAViewer
  */
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
-
-    private static DisplayImageOptions options = new DisplayImageOptions.Builder()
-            .resetViewBeforeLoading()
-            .cacheInMemory()
-            .cacheOnDisc()
-            .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2) // default
-            .bitmapConfig(Bitmap.Config.ARGB_8888) // default
-            .delayBeforeLoading(1000)
-            .displayer(new FadeInBitmapDisplayer(500)) // default
-            .build();
 
     private List<MovieWrapper> movies;
 
@@ -75,7 +62,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
             }
         });
 
-        ImageLoader.getInstance().displayImage(movie.imageUrl, holder.mImageCover, options);
+        ImageLoader.getInstance().displayImage(movie.imageUrl, holder.mImageCover, MainActivity.displayImageOptions);
 
         holder.mImageHot.setVisibility(movie.hot ? View.VISIBLE : View.INVISIBLE);
     }

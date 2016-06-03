@@ -13,15 +13,17 @@ import java.util.List;
 import io.github.javiewer.activity.MainActivity;
 import io.github.javiewer.adapter.ActressAdapter;
 import io.github.javiewer.network.Network;
-import io.github.javiewer.network.converter.HtmlConverter;
+import io.github.javiewer.network.HtmlHelper;
 import io.github.javiewer.network.wrapper.ActressWrapper;
+import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
+import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class ActressesFragment extends RecyclerFragment<ActressAdapter.ViewHolder, StaggeredGridLayoutManager> {
+public class ActressesFragment extends RecyclerFragment<StaggeredGridLayoutManager> {
 
     public List<ActressWrapper> actresses = new ArrayList<>();
 
@@ -38,7 +40,10 @@ public class ActressesFragment extends RecyclerFragment<ActressAdapter.ViewHolde
         super.onActivityCreated(savedInstanceState);
 
         this.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));
-        this.setAdapter(new ActressAdapter(actresses, this.getActivity()));
+        this.setAdapter(new ScaleInAnimationAdapter(new ActressAdapter(actresses, this.getActivity())));
+        RecyclerView.ItemAnimator animator = new SlideInUpAnimator();
+        animator.setAddDuration(300);
+        mRecyclerView.setItemAnimator(animator);
 
         mRecyclerView.addOnScrollListener(mScrollListener = new EndlessOnScrollListener(getLayoutManager()) {
             @Override
@@ -50,13 +55,20 @@ public class ActressesFragment extends RecyclerFragment<ActressAdapter.ViewHolde
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (loadingTime == latestLoadingTime && (!mRefreshLayout.isRefreshing() || refresh)) {
                             try {
-                                List<ActressWrapper> wrappers = HtmlConverter.parseActresses(response.body().string());
+                                List<ActressWrapper> wrappers = HtmlHelper.parseActresses(response.body().string());
 
                                 if (refresh) {
                                     actresses.clear();
                                 }
+
+                                int pos = actresses.size();
+
+                                if (pos > 0) {
+                                    pos--;
+                                }
+
                                 actresses.addAll(wrappers);
-                                getAdapter().notifyDataSetChanged();
+                                getAdapter().notifyItemChanged(pos, wrappers.size());
 
                                 currentPage++;
                             } catch (Throwable e) {

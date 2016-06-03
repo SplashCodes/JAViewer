@@ -1,5 +1,7 @@
 package io.github.javiewer.activity;
 
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -22,9 +24,10 @@ import butterknife.ButterKnife;
 import io.github.javiewer.R;
 import io.github.javiewer.adapter.MovieDetailAdapter;
 import io.github.javiewer.network.Network;
-import io.github.javiewer.network.converter.HtmlConverter;
+import io.github.javiewer.network.HtmlHelper;
 import io.github.javiewer.network.wrapper.MovieDetailWrapper;
 import io.github.javiewer.network.wrapper.ScreenshotWrapper;
+import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -61,6 +64,9 @@ public class MovieActivity extends AppCompatActivity {
 
         mRecyclerView.setAdapter(mAdapter = new MovieDetailAdapter(screenshots, this));
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        RecyclerView.ItemAnimator animator = new SlideInUpAnimator();
+        animator.setAddDuration(300);
+        mRecyclerView.setItemAnimator(animator);
         mRecyclerView.setNestedScrollingEnabled(false);
 
         detailUrl = bundle.getString("detail");
@@ -86,7 +92,7 @@ public class MovieActivity extends AppCompatActivity {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 MovieDetailWrapper movie;
                 try {
-                    movie = HtmlConverter.parseMoviesDetail(response.body().string());
+                    movie = HtmlHelper.parseMoviesDetail(response.body().string());
 
                     //getSupportActionBar().setTitle(movie.title);
 
