@@ -1,7 +1,9 @@
 package io.github.javiewer.adapter;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
@@ -18,6 +20,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.github.javiewer.R;
+import io.github.javiewer.activity.GalleryActivity;
 import io.github.javiewer.activity.MainActivity;
 import io.github.javiewer.network.wrapper.MovieDetailWrapper;
 import io.github.javiewer.network.wrapper.ScreenshotWrapper;
@@ -150,6 +153,24 @@ public class MovieDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             ScreenshotWrapper wrapper = screenshots.get(position);
 
             ImageLoader.getInstance().displayImage(wrapper.thumbnailUrl, holder.mImage, MainActivity.displayImageOptions);
+
+            holder.mImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(mParentActivity, GalleryActivity.class);
+                    Bundle bundle = new Bundle();
+
+                    String[] urls = new String[screenshots.size()];
+                    for (int k = 0; k < screenshots.size(); k++) {
+                        urls[k] = screenshots.get(k).imageUrl;
+                    }
+                    bundle.putStringArray("urls", urls);
+                    bundle.putInt("position", holder.getAdapterPosition());
+                    i.putExtras(bundle);
+                    mParentActivity.startActivity(i);
+
+                }
+            });
             //TODO: 加载大图
 
             if (position == 0) {
