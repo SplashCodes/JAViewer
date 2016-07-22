@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.QueryActivity"
+            android:name=".activity.MovieListActivity"
             android:configChanges="orientation|screenSize" />
         <activity
             android:name=".activity.MovieActivity"
@@ -31,9 +31,13 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.GalleryActivity"
-            android:launchMode="singleTask"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_gallery"
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.DownloadActivity"
+            android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
 

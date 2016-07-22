@@ -1,6 +1,5 @@
 package io.github.javiewer.network;
 
-import io.github.javiewer.activity.MainActivity;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -9,26 +8,29 @@ import retrofit2.http.Path;
 /**
  * Project: JAViewer
  */
-public interface Network {
+public interface AVMO {
 
-    @GET(MainActivity.LANGUAGE_NODE + "/currentPage/{page}")
+    String BASE_URL = "https://avmo.pw";
+    String LANGUAGE_NODE = "/ja";
+
+    @GET(AVMO.LANGUAGE_NODE + "/page/{page}")
     Call<ResponseBody> getHomePage(@Path("page") int page);
 
-    @GET(MainActivity.LANGUAGE_NODE + "/released/currentPage/{page}")
+    @GET(AVMO.LANGUAGE_NODE + "/released/page/{page}")
     Call<ResponseBody> getReleased(@Path("page") int page);
 
-    @GET(MainActivity.LANGUAGE_NODE + "/popular/currentPage/{page}")
+    @GET(AVMO.LANGUAGE_NODE + "/popular/page/{page}")
     Call<ResponseBody> getPopular(@Path("page") int page);
 
-    @GET(MainActivity.LANGUAGE_NODE + "/actresses/currentPage/{page}")
+    @GET(AVMO.LANGUAGE_NODE + "/actresses/page/{page}")
     Call<ResponseBody> getActresses(@Path("page") int page);
 
-    @GET(MainActivity.LANGUAGE_NODE + "/genren")
+    @GET(AVMO.LANGUAGE_NODE + "/genren")
     Call<ResponseBody> getGenren();
 
-    @GET(MainActivity.LANGUAGE_NODE + "/{query}")
+    @GET(AVMO.LANGUAGE_NODE + "/{query}")
     Call<ResponseBody> query(@Path(value = "query", encoded = true) String query);
 
-    @GET(MainActivity.LANGUAGE_NODE + "/{query}/currentPage/{page}")
+    @GET(AVMO.LANGUAGE_NODE + "/{query}/page/{page}")
     Call<ResponseBody> query(@Path(value = "query", encoded = true) String query, @Path("page") int page);
 }

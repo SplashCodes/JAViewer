@@ -3,18 +3,17 @@ package io.github.javiewer.activity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.TypedValue;
 import android.view.MenuItem;
 
 import io.github.javiewer.R;
-import io.github.javiewer.fragment.QueryFragment;
+import io.github.javiewer.fragment.MovieListFragment;
 
-public class QueryActivity extends AppCompatActivity {
+public class MovieListActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_query);
+        setContentView(R.layout.activity_movie_list);
 
         Bundle bundle = this.getIntent().getExtras();
 
@@ -24,7 +23,7 @@ public class QueryActivity extends AppCompatActivity {
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-        QueryFragment fragment = new QueryFragment();
+        MovieListFragment fragment = new MovieListFragment();
         fragment.setArguments(bundle);
         transaction.replace(R.id.content_query, fragment);
         transaction.commit();

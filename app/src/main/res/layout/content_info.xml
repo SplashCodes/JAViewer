@@ -82,12 +82,14 @@
                 android:text="这里是时长" />
         </LinearLayout>
 
+        <!--TODO-->
         <Button
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="32dp"
             android:padding="0dp"
             android:text="查看详细信息"
+            android:visibility="gone"
             android:textColor="?attr/colorAccent" />
 
         <View

@@ -20,18 +20,18 @@ import butterknife.ButterKnife;
 import io.github.javiewer.R;
 import io.github.javiewer.activity.MainActivity;
 import io.github.javiewer.activity.MovieActivity;
-import io.github.javiewer.network.wrapper.MovieWrapper;
+import io.github.javiewer.adapter.item.Movie;
 
 /**
  * Project: JAViewer
  */
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
 
-    private List<MovieWrapper> movies;
+    private List<Movie> movies;
 
     private Activity mParentActivity;
 
-    public MovieAdapter(List<MovieWrapper> movies, Activity mParentActivity) {
+    public MovieAdapter(List<Movie> movies, Activity mParentActivity) {
         this.movies = movies;
         this.mParentActivity = mParentActivity;
     }
@@ -45,7 +45,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        final MovieWrapper movie = movies.get(position);
+        final Movie movie = movies.get(position);
 
         holder.parse(movie);
 
@@ -54,17 +54,18 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
             public void onClick(View v) {
                 Intent intent = new Intent(mParentActivity, MovieActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putString("title", movie.title);
-                bundle.putString("detail", movie.detailUrl);
+                bundle.putString("title", movie.getTitle());
+                bundle.putString("detail", movie.getLink());
+                bundle.putString("code", movie.getCode());
                 intent.putExtras(bundle);
 
                 mParentActivity.startActivity(intent);
             }
         });
 
-        ImageLoader.getInstance().displayImage(movie.imageUrl, holder.mImageCover, MainActivity.displayImageOptions);
+        ImageLoader.getInstance().displayImage(movie.getCoverUrl(), holder.mImageCover, MainActivity.displayImageOptions);
 
-        holder.mImageHot.setVisibility(movie.hot ? View.VISIBLE : View.INVISIBLE);
+        holder.mImageHot.setVisibility(movie.isHot() ? View.VISIBLE : View.INVISIBLE);
     }
 
     @Override
@@ -77,11 +78,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         @Bind(R.id.movie_title)
         public TextView mTextTitle;
 
-        @Bind(R.id.movie_code)
+        @Bind(R.id.movie_size)
         public TextView mTextCode;
 
-        @Bind(R.id.movie_time)
-        public TextView mTextTime;
+        @Bind(R.id.movie_date)
+        public TextView mTextDate;
 
         @Bind(R.id.movie_cover)
         public ImageView mImageCover;
@@ -92,10 +93,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         @Bind(R.id.card_movie)
         public CardView mCard;
 
-        public void parse(MovieWrapper movie) {
-            mTextCode.setText(movie.code);
-            mTextTitle.setText(movie.title);
-            mTextTime.setText(movie.time);
+        public void parse(Movie movie) {
+            mTextCode.setText(movie.getCode());
+            mTextTitle.setText(movie.getTitle());
+            mTextDate.setText(movie.getDate());
         }
 
         public ViewHolder(View view) {

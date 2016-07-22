@@ -2,7 +2,6 @@ package io.github.javiewer.adapter;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -12,10 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 import java.util.List;
 
@@ -23,19 +19,19 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.github.javiewer.R;
 import io.github.javiewer.activity.MainActivity;
-import io.github.javiewer.activity.QueryActivity;
-import io.github.javiewer.network.wrapper.ActressWrapper;
+import io.github.javiewer.activity.MovieListActivity;
+import io.github.javiewer.adapter.item.Actress;
 
 /**
  * Project: JAViewer
  */
 public class ActressAdapter extends RecyclerView.Adapter<ActressAdapter.ViewHolder> {
 
-    private List<ActressWrapper> actresses;
+    private List<Actress> actresses;
 
     private Activity mParentActivity;
 
-    public ActressAdapter(List<ActressWrapper> actresses, Activity mParentActivity) {
+    public ActressAdapter(List<Actress> actresses, Activity mParentActivity) {
         this.actresses = actresses;
         this.mParentActivity = mParentActivity;
     }
@@ -50,18 +46,18 @@ public class ActressAdapter extends RecyclerView.Adapter<ActressAdapter.ViewHold
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
 
-        final ActressWrapper actress = actresses.get(position);
+        final Actress actress = actresses.get(position);
 
         holder.parse(actress);
 
         holder.mCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (actress.queryUrl != null) {
-                    Intent intent = new Intent(mParentActivity, QueryActivity.class);
+                if (actress.getLink() != null) {
+                    Intent intent = new Intent(mParentActivity, MovieListActivity.class);
                     Bundle bundle = new Bundle();
-                    bundle.putString("title", actress.name + " 的作品");
-                    bundle.putString("query", actress.queryUrl);
+                    bundle.putString("title", actress.getName() + " 的作品");
+                    bundle.putString("query", actress.getLink());
 
                     intent.putExtras(bundle);
 
@@ -71,7 +67,7 @@ public class ActressAdapter extends RecyclerView.Adapter<ActressAdapter.ViewHold
         });
 
 
-        ImageLoader.getInstance().displayImage(actress.imageUrl, holder.mImage, MainActivity.displayImageOptions);
+        ImageLoader.getInstance().displayImage(actress.getImageUrl(), holder.mImage, MainActivity.displayImageOptions);
     }
 
     @Override
@@ -90,8 +86,8 @@ public class ActressAdapter extends RecyclerView.Adapter<ActressAdapter.ViewHold
         @Bind(R.id.card_actress)
         public CardView mCard;
 
-        public void parse(ActressWrapper actress) {
-            mTextName.setText(actress.name);
+        public void parse(Actress actress) {
+            mTextName.setText(actress.getName());
         }
 
         public ViewHolder(View view) {

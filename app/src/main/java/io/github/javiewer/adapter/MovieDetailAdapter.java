@@ -22,28 +22,28 @@ import butterknife.ButterKnife;
 import io.github.javiewer.R;
 import io.github.javiewer.activity.GalleryActivity;
 import io.github.javiewer.activity.MainActivity;
-import io.github.javiewer.network.wrapper.MovieDetailWrapper;
-import io.github.javiewer.network.wrapper.ScreenshotWrapper;
+import io.github.javiewer.adapter.item.MovieDetail;
+import io.github.javiewer.adapter.item.Screenshot;
 
 /**
  * Project: JAViewer
  */
 public class MovieDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<ScreenshotWrapper> screenshots;
+    private List<Screenshot> screenshots;
 
     private Activity mParentActivity;
 
     private ScreenshotAdapter mScreenshotAdapter;
 
-    private MovieDetailWrapper detailInfo = null;
+    private MovieDetail detailInfo = null;
 
-    public MovieDetailAdapter(List<ScreenshotWrapper> screenshots, Activity mParentActivity) {
+    public MovieDetailAdapter(List<Screenshot> screenshots, Activity mParentActivity) {
         this.screenshots = screenshots;
         this.mParentActivity = mParentActivity;
     }
 
-    public void onInit(MovieDetailWrapper detailInfo) {
+    public void onInit(MovieDetail detailInfo) {
         this.detailInfo = detailInfo;
         notifyItemRangeChanged(0, this.getItemCount());
     }
@@ -116,7 +116,7 @@ public class MovieDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         @Bind(R.id.movie_icon_photo)
         ImageView mIcon;
 
-        public ScreenshotsViewHolder(View view, List<ScreenshotWrapper> screenshots, Activity mParentActivity) {
+        public ScreenshotsViewHolder(View view, List<Screenshot> screenshots, Activity mParentActivity) {
             super(view);
 
             ButterKnife.bind(this, view);
@@ -129,13 +129,13 @@ public class MovieDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public class ScreenshotAdapter extends RecyclerView.Adapter<ScreenshotAdapter.ViewHolder> {
 
-        private List<ScreenshotWrapper> screenshots;
+        private List<Screenshot> screenshots;
 
         private Activity mParentActivity;
 
         private ImageView mIcon;
 
-        public ScreenshotAdapter(List<ScreenshotWrapper> screenshots, Activity mParentActivity, ImageView mIcon) {
+        public ScreenshotAdapter(List<Screenshot> screenshots, Activity mParentActivity, ImageView mIcon) {
             this.screenshots = screenshots;
             this.mParentActivity = mParentActivity;
             this.mIcon = mIcon;
@@ -150,9 +150,9 @@ public class MovieDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
-            ScreenshotWrapper wrapper = screenshots.get(position);
+            Screenshot screenshot = screenshots.get(position);
 
-            ImageLoader.getInstance().displayImage(wrapper.thumbnailUrl, holder.mImage, MainActivity.displayImageOptions);
+            ImageLoader.getInstance().displayImage(screenshot.getThumbnailUrl(), holder.mImage, MainActivity.displayImageOptions);
 
             holder.mImage.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -162,7 +162,7 @@ public class MovieDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
                     String[] urls = new String[screenshots.size()];
                     for (int k = 0; k < screenshots.size(); k++) {
-                        urls[k] = screenshots.get(k).imageUrl;
+                        urls[k] = screenshots.get(k).getImageUrl();
                     }
                     bundle.putStringArray("urls", urls);
                     bundle.putInt("position", holder.getAdapterPosition());

@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.javiewer.adapter.MovieAdapter;
+import io.github.javiewer.adapter.item.Movie;
 import io.github.javiewer.network.HtmlHelper;
-import io.github.javiewer.network.wrapper.MovieWrapper;
 import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import okhttp3.ResponseBody;
@@ -23,7 +23,7 @@ import retrofit2.Response;
 public abstract class MovieFragment extends RecyclerFragment<LinearLayoutManager> {
 
 
-    public List<MovieWrapper> movies = new ArrayList<>();
+    public List<Movie> movies = new ArrayList<>();
 
     public SwipeRefreshLayout.OnRefreshListener mRefreshListener;
 
@@ -53,7 +53,7 @@ public abstract class MovieFragment extends RecyclerFragment<LinearLayoutManager
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (loadingTime == latestLoadingTime && (!mRefreshLayout.isRefreshing() || refresh)) {
                             try {
-                                List<MovieWrapper> wrappers = HtmlHelper.parseMovies(response.body().string());
+                                List<Movie> wrappers = HtmlHelper.parseMovies(response.body().string());
 
                                 if (refresh) {
                                     movies.clear();

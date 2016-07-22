@@ -1,10 +1,8 @@
 package io.github.javiewer.activity;
 
-import android.graphics.Color;
-import android.os.Build;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,10 +21,10 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.github.javiewer.R;
 import io.github.javiewer.adapter.MovieDetailAdapter;
-import io.github.javiewer.network.Network;
+import io.github.javiewer.network.AVMO;
 import io.github.javiewer.network.HtmlHelper;
-import io.github.javiewer.network.wrapper.MovieDetailWrapper;
-import io.github.javiewer.network.wrapper.ScreenshotWrapper;
+import io.github.javiewer.adapter.item.MovieDetail;
+import io.github.javiewer.adapter.item.Screenshot;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -44,9 +42,14 @@ public class MovieActivity extends AppCompatActivity {
     @Bind(R.id.movie_recycler_view)
     RecyclerView mRecyclerView;
 
+    @Bind(R.id.fab)
+    FloatingActionButton mFab;
+
+    String code;
+
     MovieDetailAdapter mAdapter;
 
-    List<ScreenshotWrapper> screenshots = new ArrayList<>();
+    List<Screenshot> screenshots = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +65,8 @@ public class MovieActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(bundle.getString("title"));
 
+        code = bundle.getString("code");
+
         mRecyclerView.setAdapter(mAdapter = new MovieDetailAdapter(screenshots, this));
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         RecyclerView.ItemAnimator animator = new SlideInUpAnimator();
@@ -71,26 +76,29 @@ public class MovieActivity extends AppCompatActivity {
 
         detailUrl = bundle.getString("detail");
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent(MovieActivity.this, DownloadActivity.class);
+                Bundle arguments = new Bundle();
+                arguments.putString("keyword", code);
+                intent.putExtras(arguments);
+                startActivity(intent);
+                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
         });
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(MainActivity.SOURCE_URL)
+                .baseUrl(AVMO.BASE_URL)
                 .build();
 
-        Network network = retrofit.create(Network.class);
+        AVMO avmo = retrofit.create(AVMO.class);
 
-        Call<ResponseBody> call = network.query(this.detailUrl);
+        Call<ResponseBody> call = avmo.query(this.detailUrl);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                MovieDetailWrapper movie;
+                MovieDetail movie;
                 try {
                     movie = HtmlHelper.parseMoviesDetail(response.body().string());
 

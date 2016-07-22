@@ -53,8 +53,6 @@ public class MainActivity extends AppCompatActivity
     @Bind(R.id.nav_view)
     public NavigationView mNavigationView;
 
-    public static final String SOURCE_URL = "https://avmo.pw";
-    public static final String LANGUAGE_NODE = "/ja";
     public static DisplayImageOptions displayImageOptions = new DisplayImageOptions.Builder()
             .resetViewBeforeLoading()
             .cacheInMemory()
@@ -170,9 +168,9 @@ public class MainActivity extends AppCompatActivity
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Intent intent = new Intent(MainActivity.this, QueryActivity.class);
+                Intent intent = new Intent(MainActivity.this, MovieListActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putString("title", "搜索结果：" + query);
+                bundle.putString("title", query + " 的搜索结果");
                 try {
                     bundle.putString("query", "search/" + URLEncoder.encode(query, "UTF-8"));
                 } catch (UnsupportedEncodingException ignored) {

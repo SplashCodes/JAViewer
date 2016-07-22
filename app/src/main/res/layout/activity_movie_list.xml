@@ -4,6 +4,6 @@
     android:id="@+id/content_query"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="io.github.javiewer.activity.QueryActivity">
+    tools:context=".activity.MovieListActivity">
 
 </RelativeLayout>
