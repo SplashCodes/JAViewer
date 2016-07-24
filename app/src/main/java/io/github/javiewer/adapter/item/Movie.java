@@ -1,6 +1,5 @@
 package io.github.javiewer.adapter.item;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.github.javiewer.network.AVMO;
@@ -16,8 +15,6 @@ public class Movie extends Linkable {
     protected String date;
     protected boolean hot;
 
-    static final Pattern pattern = Pattern.compile(AVMO.BASE_URL + AVMO.LANGUAGE_NODE + "/(.*)");
-
     public static Movie create(String title, String code, String date, String coverUrl, String detailUrl, boolean hot) {
         Movie movie = new Movie();
         movie.title = title;
@@ -25,12 +22,7 @@ public class Movie extends Linkable {
         movie.code = code;
         movie.coverUrl = coverUrl;
         movie.hot = hot;
-
-        Matcher matcher = pattern.matcher(detailUrl);
-        if (matcher.find()) {
-            movie.link = matcher.group(1);
-        }
-
+        movie.link = detailUrl;
         return movie;
     }
 

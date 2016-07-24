@@ -1,13 +1,8 @@
 package io.github.javiewer.view;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
-import android.support.v4.content.res.ResourcesCompat;
 import android.util.AttributeSet;
 import android.widget.ImageView;
-
-import io.github.javiewer.R;
 
 /**
  * Project: JAViewer

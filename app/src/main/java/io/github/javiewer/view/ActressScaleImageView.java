@@ -3,7 +3,6 @@ package io.github.javiewer.view;
 import android.content.Context;
 import android.support.v4.content.res.ResourcesCompat;
 import android.util.AttributeSet;
-import android.widget.ImageView;
 
 import io.github.javiewer.R;
 

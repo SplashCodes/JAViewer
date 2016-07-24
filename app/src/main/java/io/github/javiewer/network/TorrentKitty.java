@@ -10,13 +10,13 @@ import retrofit2.http.Url;
 /**
  * Project: JAViewer
  */
-public interface BTSO {
+public interface TorrentKitty {
 
-    String BASE_URL = "https://btso.pw";
+    String BASE_URL = "https://www.torrentkitty.tv";
 
-    @GET("/search/{keyword}/page/{page}")
+    @GET("/search/{keyword}")
     @Headers("Accept-Language: zh-CN,zh;q=0.8,en;q=0.6")
-    Call<ResponseBody> search(@Path(value = "keyword") String keyword, @Path("page") int page);
+    Call<ResponseBody> search(@Path(value = "keyword") String keyword);
 
     @GET
     @Headers("Accept-Language: zh-CN,zh;q=0.8,en;q=0.6")

@@ -6,16 +6,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import io.github.javiewer.adapter.DownloadLinkAdapter;
 import io.github.javiewer.adapter.item.DownloadLink;
-import io.github.javiewer.network.AVMO;
 import io.github.javiewer.network.BTSO;
 import io.github.javiewer.provider.DownloadLinkProvider;
 import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
@@ -51,18 +47,11 @@ public class DownloadFragment extends RecyclerFragment<LinearLayoutManager> {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-        this.provider = DownloadLinkProvider.getProvider(getArguments().getString("provider"));
-        return view;
-    }
-
-    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
         this.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        this.setAdapter(new ScaleInAnimationAdapter(new DownloadLinkAdapter(links, this.getActivity())));
+        this.setAdapter(new ScaleInAnimationAdapter(new DownloadLinkAdapter(links, this.getActivity(), this.provider)));
         RecyclerView.ItemAnimator animator = new SlideInUpAnimator();
         animator.setAddDuration(300);
         mRecyclerView.setItemAnimator(animator);
@@ -70,7 +59,13 @@ public class DownloadFragment extends RecyclerFragment<LinearLayoutManager> {
             @Override
             public void onLoad(final long loadingTime, final boolean refresh) {
                 final int page = currentPage;
-                Call<ResponseBody> call = getCall(page + 1);
+                Call<ResponseBody> call = provider.search(keyword, page + 1);
+                if (call == null) {
+                    bottom = true;
+                    loading = false;
+                    return;
+                }
+
                 call.enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

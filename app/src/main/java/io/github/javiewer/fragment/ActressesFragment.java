@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.javiewer.adapter.ActressAdapter;
+import io.github.javiewer.adapter.item.Actress;
 import io.github.javiewer.network.AVMO;
 import io.github.javiewer.network.HtmlHelper;
-import io.github.javiewer.adapter.item.Actress;
 import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import okhttp3.ResponseBody;

@@ -4,6 +4,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
+import retrofit2.http.Url;
 
 /**
  * Project: JAViewer
@@ -28,9 +29,7 @@ public interface AVMO {
     @GET(AVMO.LANGUAGE_NODE + "/genren")
     Call<ResponseBody> getGenren();
 
-    @GET(AVMO.LANGUAGE_NODE + "/{query}")
-    Call<ResponseBody> query(@Path(value = "query", encoded = true) String query);
+    @GET
+    Call<ResponseBody> get(@Url String url);
 
-    @GET(AVMO.LANGUAGE_NODE + "/{query}/page/{page}")
-    Call<ResponseBody> query(@Path(value = "query", encoded = true) String query, @Path("page") int page);
 }

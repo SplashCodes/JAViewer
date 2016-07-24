@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.javiewer.adapter.item.Actress;
-import io.github.javiewer.adapter.item.MovieDetail;
 import io.github.javiewer.adapter.item.Movie;
+import io.github.javiewer.adapter.item.MovieDetail;
 import io.github.javiewer.adapter.item.Screenshot;
 
 /**

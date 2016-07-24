@@ -21,10 +21,10 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.github.javiewer.R;
 import io.github.javiewer.adapter.MovieDetailAdapter;
-import io.github.javiewer.network.AVMO;
-import io.github.javiewer.network.HtmlHelper;
 import io.github.javiewer.adapter.item.MovieDetail;
 import io.github.javiewer.adapter.item.Screenshot;
+import io.github.javiewer.network.AVMO;
+import io.github.javiewer.network.HtmlHelper;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -94,7 +94,7 @@ public class MovieActivity extends AppCompatActivity {
 
         AVMO avmo = retrofit.create(AVMO.class);
 
-        Call<ResponseBody> call = avmo.query(this.detailUrl);
+        Call<ResponseBody> call = avmo.get(this.detailUrl);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

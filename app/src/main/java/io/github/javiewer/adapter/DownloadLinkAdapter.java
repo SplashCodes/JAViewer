@@ -1,11 +1,17 @@
 package io.github.javiewer.adapter;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -13,6 +19,12 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.github.javiewer.R;
 import io.github.javiewer.adapter.item.DownloadLink;
+import io.github.javiewer.adapter.item.MagnetLink;
+import io.github.javiewer.provider.DownloadLinkProvider;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Project: JAViewer
@@ -23,9 +35,12 @@ public class DownloadLinkAdapter extends RecyclerView.Adapter<DownloadLinkAdapte
 
     private Activity mParentActivity;
 
-    public DownloadLinkAdapter(List<DownloadLink> links, Activity mParentActivity) {
+    private DownloadLinkProvider provider;
+
+    public DownloadLinkAdapter(List<DownloadLink> links, Activity mParentActivity, DownloadLinkProvider provider) {
         this.links = links;
         this.mParentActivity = mParentActivity;
+        this.provider = provider;
     }
 
     @Override
@@ -41,19 +56,53 @@ public class DownloadLinkAdapter extends RecyclerView.Adapter<DownloadLinkAdapte
 
         holder.parse(link);
 
-        //TODO:
-        /*holder.mCard.setOnClickListener(new View.OnClickListener() {
+        holder.mCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mParentActivity, MovieActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("title", link.title);
-                bundle.putString("detail", link.detailUrl);
-                intent.putExtras(bundle);
+                final StringBuilder builder = new StringBuilder();
+                if (!link.hasMagnetLink()) {
+                    final ProgressDialog mDialog;
+                    mDialog = new ProgressDialog(mParentActivity);
+                    mDialog.setTitle("请稍后");
+                    mDialog.setMessage("正在获取磁力链接");
+                    mDialog.setIndeterminate(false);
+                    mDialog.setCancelable(false);
+                    mDialog.show();
 
-                mParentActivity.startActivity(intent);
+                    Call<ResponseBody> call = provider.get(link.getLink());
+                    call.enqueue(new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            try {
+                                MagnetLink magnetLink = provider.parseMagnetLink(response.body().string());
+                                builder.append(magnetLink.getMagnetLink());
+                            } catch (Throwable e) {
+                                onFailure(call, e);
+                            }
+
+                            mDialog.dismiss();
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                            t.printStackTrace();
+                        }
+                    });
+                } else {
+                    builder.append(link.getMagnetLink());
+                }
+
+                String str = builder.toString();
+                if (!str.isEmpty()) {
+                    ClipboardManager clip = (ClipboardManager) mParentActivity.getSystemService(Context.CLIPBOARD_SERVICE);
+                    clip.setPrimaryClip(ClipData.newPlainText("magnet-link", str));
+                    Toast.makeText(mParentActivity, "磁力链接：" + str + " 已复制到剪贴板", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(mParentActivity, "磁力链接获取失败", Toast.LENGTH_SHORT).show();
+                }
+
             }
-        });*/
+        });
     }
 
     @Override
@@ -71,6 +120,9 @@ public class DownloadLinkAdapter extends RecyclerView.Adapter<DownloadLinkAdapte
 
         @Bind(R.id.download_date)
         public TextView mTextDate;
+
+        @Bind(R.id.card_download)
+        public CardView mCard;
 
         public void parse(DownloadLink link) {
             mTextSize.setText(link.getSize());

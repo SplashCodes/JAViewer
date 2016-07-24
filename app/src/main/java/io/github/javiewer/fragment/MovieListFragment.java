@@ -31,6 +31,6 @@ public class MovieListFragment extends MovieFragment {
 
         AVMO avmo = retrofit.create(AVMO.class);
 
-        return avmo.query(this.query, page);
+        return avmo.get(this.query + "/page/" + page);
     }
 }

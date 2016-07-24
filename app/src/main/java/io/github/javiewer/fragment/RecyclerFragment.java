@@ -17,7 +17,7 @@ import io.github.javiewer.R;
 /**
  * Project: JAViewer
  */
-public abstract class RecyclerFragment< LM extends RecyclerView.LayoutManager> extends Fragment {
+public abstract class RecyclerFragment<LM extends RecyclerView.LayoutManager> extends Fragment {
     @Bind(R.id.recycler_view)
     public RecyclerView mRecyclerView;
 
