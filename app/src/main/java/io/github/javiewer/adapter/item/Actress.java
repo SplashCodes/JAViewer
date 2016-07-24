@@ -1,9 +1,5 @@
 package io.github.javiewer.adapter.item;
 
-import java.util.regex.Pattern;
-
-import io.github.javiewer.network.AVMO;
-
 /**
  * Project: JAViewer
  */

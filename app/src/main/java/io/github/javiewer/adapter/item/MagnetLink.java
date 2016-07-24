@@ -9,7 +9,9 @@ public class MagnetLink {
 
     public static MagnetLink create(String magnetLink) {
         MagnetLink magnet = new MagnetLink();
-        magnet.magnetLink = magnetLink;
+        if (magnetLink != null) {
+            magnet.magnetLink = magnetLink.substring(0, magnetLink.indexOf("&"));
+        }
         return magnet;
     }
 

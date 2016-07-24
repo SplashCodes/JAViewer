@@ -41,6 +41,7 @@ import io.github.javiewer.fragment.ActressesFragment;
 import io.github.javiewer.fragment.HomeFragment;
 import io.github.javiewer.fragment.PopularFragment;
 import io.github.javiewer.fragment.ReleasedFragment;
+import io.github.javiewer.network.AVMO;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -172,7 +173,7 @@ public class MainActivity extends AppCompatActivity
                 Bundle bundle = new Bundle();
                 bundle.putString("title", query + " 的搜索结果");
                 try {
-                    bundle.putString("query", "search/" + URLEncoder.encode(query, "UTF-8"));
+                    bundle.putString("query", AVMO.BASE_URL + AVMO.LANGUAGE_NODE + "/search/" + URLEncoder.encode(query, "UTF-8"));
                 } catch (UnsupportedEncodingException ignored) {
                 }
                 intent.putExtras(bundle);

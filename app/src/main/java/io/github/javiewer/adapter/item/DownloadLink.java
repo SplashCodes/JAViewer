@@ -7,7 +7,7 @@ public class DownloadLink extends Linkable {
     protected String title;
     protected String size;
     protected String date;
-    protected String magnetLink;
+    protected MagnetLink magnetLink;
 
     public static DownloadLink create(String title, String size, String date, String link, String magnetLink) {
         DownloadLink download = new DownloadLink();
@@ -15,7 +15,7 @@ public class DownloadLink extends Linkable {
         download.size = size;
         download.date = date;
         download.link = link;
-        download.magnetLink = magnetLink;
+        download.magnetLink = MagnetLink.create(magnetLink);
         return download;
     }
 
@@ -36,6 +36,6 @@ public class DownloadLink extends Linkable {
     }
 
     public String getMagnetLink() {
-        return magnetLink;
+        return magnetLink.getMagnetLink();
     }
 }
