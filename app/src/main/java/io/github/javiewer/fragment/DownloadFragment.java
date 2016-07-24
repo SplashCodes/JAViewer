@@ -13,7 +13,7 @@ import java.util.List;
 import io.github.javiewer.adapter.DownloadLinkAdapter;
 import io.github.javiewer.adapter.item.DownloadLink;
 import io.github.javiewer.network.BTSO;
-import io.github.javiewer.provider.DownloadLinkProvider;
+import io.github.javiewer.network.provider.DownloadLinkProvider;
 import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import okhttp3.ResponseBody;

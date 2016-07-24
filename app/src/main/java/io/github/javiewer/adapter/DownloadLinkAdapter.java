@@ -20,7 +20,7 @@ import butterknife.ButterKnife;
 import io.github.javiewer.R;
 import io.github.javiewer.adapter.item.DownloadLink;
 import io.github.javiewer.adapter.item.MagnetLink;
-import io.github.javiewer.provider.DownloadLinkProvider;
+import io.github.javiewer.network.provider.DownloadLinkProvider;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -59,7 +59,6 @@ public class DownloadLinkAdapter extends RecyclerView.Adapter<DownloadLinkAdapte
         holder.mCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final StringBuilder builder = new StringBuilder();
                 if (!link.hasMagnetLink()) {
                     final ProgressDialog mDialog;
                     mDialog = new ProgressDialog(mParentActivity);
@@ -75,7 +74,7 @@ public class DownloadLinkAdapter extends RecyclerView.Adapter<DownloadLinkAdapte
                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                             try {
                                 MagnetLink magnetLink = provider.parseMagnetLink(response.body().string());
-                                builder.append(magnetLink.getMagnetLink());
+                                onMagnetGet(magnetLink.getMagnetLink());
                             } catch (Throwable e) {
                                 onFailure(call, e);
                             }
@@ -89,20 +88,20 @@ public class DownloadLinkAdapter extends RecyclerView.Adapter<DownloadLinkAdapte
                         }
                     });
                 } else {
-                    builder.append(link.getMagnetLink());
+                    onMagnetGet(link.getMagnetLink());
                 }
-
-                String str = builder.toString();
-                if (!str.isEmpty()) {
-                    ClipboardManager clip = (ClipboardManager) mParentActivity.getSystemService(Context.CLIPBOARD_SERVICE);
-                    clip.setPrimaryClip(ClipData.newPlainText("magnet-link", str));
-                    Toast.makeText(mParentActivity, "磁力链接：" + str + " 已复制到剪贴板", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(mParentActivity, "磁力链接获取失败", Toast.LENGTH_SHORT).show();
-                }
-
             }
         });
+    }
+
+    public void onMagnetGet(String magnetLink) {
+        if (!magnetLink.isEmpty()) {
+            ClipboardManager clip = (ClipboardManager) mParentActivity.getSystemService(Context.CLIPBOARD_SERVICE);
+            clip.setPrimaryClip(ClipData.newPlainText("magnet-link", magnetLink));
+            Toast.makeText(mParentActivity, "磁力链接：" + magnetLink + " 已复制到剪贴板", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(mParentActivity, "磁力链接获取失败", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

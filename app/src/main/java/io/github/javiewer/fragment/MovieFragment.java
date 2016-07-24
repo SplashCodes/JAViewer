@@ -12,7 +12,7 @@ import java.util.List;
 
 import io.github.javiewer.adapter.MovieAdapter;
 import io.github.javiewer.adapter.item.Movie;
-import io.github.javiewer.network.HtmlHelper;
+import io.github.javiewer.network.provider.AVMOProvider;
 import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import okhttp3.ResponseBody;
@@ -53,7 +53,7 @@ public abstract class MovieFragment extends RecyclerFragment<LinearLayoutManager
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (loadingTime == latestLoadingTime && (!mRefreshLayout.isRefreshing() || refresh)) {
                             try {
-                                List<Movie> wrappers = HtmlHelper.parseMovies(response.body().string());
+                                List<Movie> wrappers = AVMOProvider.parseMovies(response.body().string());
 
                                 if (refresh) {
                                     movies.clear();

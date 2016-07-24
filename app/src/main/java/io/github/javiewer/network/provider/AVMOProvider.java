@@ -1,4 +1,4 @@
-package io.github.javiewer.network;
+package io.github.javiewer.network.provider;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -16,7 +16,7 @@ import io.github.javiewer.adapter.item.Screenshot;
 /**
  * Project: JAViewer
  */
-public class HtmlHelper {
+public class AVMOProvider {
 
     public static List<Movie> parseMovies(String html) {
         Document document = Jsoup.parse(html);

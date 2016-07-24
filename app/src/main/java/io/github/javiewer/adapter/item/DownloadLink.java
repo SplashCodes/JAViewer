@@ -32,7 +32,7 @@ public class DownloadLink extends Linkable {
     }
 
     public boolean hasMagnetLink() {
-        return magnetLink != null;
+        return magnetLink.getMagnetLink() != null;
     }
 
     public String getMagnetLink() {

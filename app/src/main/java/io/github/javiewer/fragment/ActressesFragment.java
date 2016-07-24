@@ -13,7 +13,7 @@ import java.util.List;
 import io.github.javiewer.adapter.ActressAdapter;
 import io.github.javiewer.adapter.item.Actress;
 import io.github.javiewer.network.AVMO;
-import io.github.javiewer.network.HtmlHelper;
+import io.github.javiewer.network.provider.AVMOProvider;
 import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import okhttp3.ResponseBody;
@@ -54,7 +54,7 @@ public class ActressesFragment extends RecyclerFragment<StaggeredGridLayoutManag
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (loadingTime == latestLoadingTime && (!mRefreshLayout.isRefreshing() || refresh)) {
                             try {
-                                List<Actress> wrappers = HtmlHelper.parseActresses(response.body().string());
+                                List<Actress> wrappers = AVMOProvider.parseActresses(response.body().string());
 
                                 if (refresh) {
                                     actresses.clear();

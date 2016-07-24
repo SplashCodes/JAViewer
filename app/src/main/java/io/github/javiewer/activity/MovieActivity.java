@@ -24,7 +24,7 @@ import io.github.javiewer.adapter.MovieDetailAdapter;
 import io.github.javiewer.adapter.item.MovieDetail;
 import io.github.javiewer.adapter.item.Screenshot;
 import io.github.javiewer.network.AVMO;
-import io.github.javiewer.network.HtmlHelper;
+import io.github.javiewer.network.provider.AVMOProvider;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -100,7 +100,7 @@ public class MovieActivity extends AppCompatActivity {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 MovieDetail movie;
                 try {
-                    movie = HtmlHelper.parseMoviesDetail(response.body().string());
+                    movie = AVMOProvider.parseMoviesDetail(response.body().string());
 
                     //getSupportActionBar().setTitle(movie.title);
 

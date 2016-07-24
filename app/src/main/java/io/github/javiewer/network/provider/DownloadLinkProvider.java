@@ -1,4 +1,4 @@
-package io.github.javiewer.provider;
+package io.github.javiewer.network.provider;
 
 import java.util.List;
 
