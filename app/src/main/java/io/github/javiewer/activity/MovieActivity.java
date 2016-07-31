@@ -117,7 +117,7 @@ public class MovieActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-
+                t.printStackTrace();
             }
         });
     }

@@ -5,7 +5,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -38,9 +40,11 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.github.javiewer.R;
 import io.github.javiewer.fragment.ActressesFragment;
+import io.github.javiewer.fragment.GenreFragment;
 import io.github.javiewer.fragment.HomeFragment;
 import io.github.javiewer.fragment.PopularFragment;
 import io.github.javiewer.fragment.ReleasedFragment;
+import io.github.javiewer.fragment.ToolbarNoElevationFragment;
 import io.github.javiewer.network.AVMO;
 
 public class MainActivity extends AppCompatActivity
@@ -53,6 +57,9 @@ public class MainActivity extends AppCompatActivity
 
     @Bind(R.id.nav_view)
     public NavigationView mNavigationView;
+
+    @Bind(R.id.app_bar)
+    public AppBarLayout mAppBarLayout;
 
     public static DisplayImageOptions displayImageOptions = new DisplayImageOptions.Builder()
             .resetViewBeforeLoading()
@@ -86,8 +93,7 @@ public class MainActivity extends AppCompatActivity
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             AlertDialog dialog = new AlertDialog.Builder(this)
                     .setCancelable(false)
-                    .setTitle("权限请求")
-                    .setMessage("即将请求储存空间权限，授权将可开启图片缓存功能，减少重复流量消耗")
+                    .setMessage("即将请求储存空间权限，用于图片缓存功能，减少重复流量消耗")
                     .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -117,6 +123,9 @@ public class MainActivity extends AppCompatActivity
         fragment = new ActressesFragment();
         this.fragments.put(R.id.nav_actresses, fragment);
 
+        fragment = new GenreFragment();
+        this.fragments.put(R.id.nav_genre, fragment);
+
         this.fragmentManager = getSupportFragmentManager();
         this.setFragment(R.id.nav_home);
     }
@@ -131,8 +140,6 @@ public class MainActivity extends AppCompatActivity
 
         FragmentTransaction transaction = fragmentManager.beginTransaction();
 
-        transaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-
         if (old != null) {
             transaction.hide(old);
         }
@@ -146,6 +153,14 @@ public class MainActivity extends AppCompatActivity
         transaction.commit();
 
         this.currentFragment = fragment;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (fragment instanceof ToolbarNoElevationFragment) {
+                mAppBarLayout.setElevation(0);
+            } else {
+                mAppBarLayout.setElevation(4 * getResources().getDisplayMetrics().density);
+            }
+        }
 
         getSupportActionBar().setTitle(mNavigationView.getMenu().findItem(id).getTitle());
     }

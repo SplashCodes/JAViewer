@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +39,8 @@ public class MovieDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     private MovieDetail detailInfo = null;
 
+    private boolean inited = false;
+
     public MovieDetailAdapter(List<Screenshot> screenshots, Activity mParentActivity) {
         this.screenshots = screenshots;
         this.mParentActivity = mParentActivity;
@@ -45,6 +48,7 @@ public class MovieDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public void onInit(MovieDetail detailInfo) {
         this.detailInfo = detailInfo;
+        inited = true;
         notifyItemRangeChanged(0, this.getItemCount());
     }
 
@@ -53,13 +57,11 @@ public class MovieDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         switch (viewType) {
             case 0: {
                 View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.content_info, parent, false);
-
                 return new InfoViewHolder(v);
             }
 
             case 1: {
                 View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.content_screenshots, parent, false);
-
                 return new ScreenshotsViewHolder(v, screenshots, mParentActivity);
             }
         }
@@ -74,9 +76,8 @@ public class MovieDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
-        switch (position) {
-            //基本信息
-            case 0: {
+        if (holder instanceof InfoViewHolder) {
+            if (detailInfo != null) {
                 InfoViewHolder vh = (InfoViewHolder) holder;
                 vh.mCodeText.setText(detailInfo.code);
                 vh.mDateText.setText(detailInfo.date);
@@ -87,8 +88,11 @@ public class MovieDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public int getItemCount() {
+        if (!inited) {
+            return 0;
+        }
         return (detailInfo == null ? 0 : 1) + //基本信息
-                (screenshots == null || screenshots.isEmpty() ? 0 : 1); //截图
+                (screenshots == null ? 0 : 1); //截图
     }
 
     public class InfoViewHolder extends RecyclerView.ViewHolder {
@@ -116,6 +120,9 @@ public class MovieDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         @Bind(R.id.movie_icon_photo)
         ImageView mIcon;
 
+        @Bind(R.id.screenshots_text)
+        TextView mText;
+
         public ScreenshotsViewHolder(View view, List<Screenshot> screenshots, Activity mParentActivity) {
             super(view);
 
@@ -124,7 +131,37 @@ public class MovieDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             mRecyclerView.setAdapter(mScreenshotAdapter = new ScreenshotAdapter(screenshots, mParentActivity, mIcon));
             mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL));
             mRecyclerView.setNestedScrollingEnabled(false);
+
+            if (screenshots.isEmpty()) {
+                mRecyclerView.setVisibility(View.GONE);
+                mText.setVisibility(View.VISIBLE);
+            }
+
+            alignIconToView(mIcon, mText);
+
         }
+    }
+
+    private static void alignIconToView(final View icon, final View view) {
+        Log.i("aligning", icon.toString() + " to " + view.toString());
+        view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+
+                icon.setPadding(
+                        icon.getPaddingLeft(),
+                        (view.getMeasuredHeight() - icon.getMeasuredHeight()) / 2,
+                        icon.getPaddingRight(),
+                        icon.getPaddingBottom()
+                );
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                } else {
+                    view.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
+            }
+        });
     }
 
     public class ScreenshotAdapter extends RecyclerView.Adapter<ScreenshotAdapter.ViewHolder> {
@@ -143,7 +180,7 @@ public class MovieDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_screenshot, parent, false);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_screenshot, parent, false);
 
             return new ViewHolder(v);
         }
@@ -171,27 +208,9 @@ public class MovieDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
                 }
             });
-            //TODO: 加载大图
 
             if (position == 0) {
-                holder.mImage.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                    @Override
-                    public void onGlobalLayout() {
-
-                        mIcon.setPadding(
-                                mIcon.getPaddingLeft(),
-                                (holder.mImage.getMeasuredHeight() - mIcon.getMeasuredHeight()) / 2,
-                                mIcon.getPaddingRight(),
-                                mIcon.getPaddingBottom()
-                        );
-
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                            holder.mImage.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                        } else {
-                            holder.mImage.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                        }
-                    }
-                });
+                alignIconToView(mIcon, holder.mImage);
             }
         }
 

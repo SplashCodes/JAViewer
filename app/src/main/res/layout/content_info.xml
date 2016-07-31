@@ -89,8 +89,8 @@
             android:layout_height="32dp"
             android:padding="0dp"
             android:text="查看详细信息"
-            android:visibility="gone"
-            android:textColor="?attr/colorAccent" />
+            android:textColor="?attr/colorAccent"
+            android:visibility="gone" />
 
         <View
             android:layout_width="match_parent"

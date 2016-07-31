@@ -1,21 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_genre"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="2dp"
-    android:layout_marginLeft="1dp"
-    android:layout_marginRight="1dp"
+    android:layout_marginLeft="2dp"
+    android:layout_marginRight="2dp"
+    android:layout_marginTop="4dp"
     android:clickable="true"
     android:foreground="?android:attr/selectableItemBackground"
-    app:cardCornerRadius="0dp"
-    app:cardElevation="0dp">
+    app:cardCornerRadius="0dp">
 
-    <io.github.javiewer.view.ScaleImageView
-        android:id="@+id/screenshot_image_view"
+    <TextView
+        android:id="@+id/genre_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:scaleType="centerCrop" />
+        android:layout_gravity="center_horizontal|bottom"
+        android:gravity="center"
+        android:maxLines="1"
+        android:padding="8dp"
+        android:text="这里是类别"
+        android:textSize="14sp" />
 
 </android.support.v7.widget.CardView>

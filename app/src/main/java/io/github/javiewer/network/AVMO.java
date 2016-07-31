@@ -12,7 +12,7 @@ import retrofit2.http.Url;
 public interface AVMO {
 
     String BASE_URL = "https://avmo.pw";
-    String LANGUAGE_NODE = "/ja";
+    String LANGUAGE_NODE = "/cn";
 
     @GET(AVMO.LANGUAGE_NODE + "/page/{page}")
     Call<ResponseBody> getHomePage(@Path("page") int page);
@@ -26,8 +26,8 @@ public interface AVMO {
     @GET(AVMO.LANGUAGE_NODE + "/actresses/page/{page}")
     Call<ResponseBody> getActresses(@Path("page") int page);
 
-    @GET(AVMO.LANGUAGE_NODE + "/genren")
-    Call<ResponseBody> getGenren();
+    @GET(AVMO.LANGUAGE_NODE + "/genre")
+    Call<ResponseBody> getGenre();
 
     @GET
     Call<ResponseBody> get(@Url String url);

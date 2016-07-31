@@ -6,9 +6,11 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import io.github.javiewer.adapter.item.Actress;
+import io.github.javiewer.adapter.item.Genre;
 import io.github.javiewer.adapter.item.Movie;
 import io.github.javiewer.adapter.item.MovieDetail;
 import io.github.javiewer.adapter.item.Screenshot;
@@ -79,9 +81,9 @@ public class AVMOProvider {
     }
 
     public static MovieDetail parseMoviesDetail(String html) {
-        final String headerCode = "品番";
-        final String headerDate = "発売日";
-        final String headerDuration = "収録時間";
+        final String headerCode = "识别码";
+        final String headerDate = "发行时间";
+        final String headerDuration = "长度";
 
         Document document = Jsoup.parse(html);
 
@@ -114,5 +116,30 @@ public class AVMOProvider {
         }
 
         return movie;
+    }
+
+    public static LinkedHashMap<String, List<Genre>> parseGenres(String html) {
+        LinkedHashMap<String, List<Genre>> map = new LinkedHashMap<>();
+
+        Element container = Jsoup.parse(html).getElementsByClass("pt10").first();
+        List<String> keys = new ArrayList<>();
+        for (Element e : container.getElementsByTag("h4")) {
+            keys.add(e.text());
+        }
+
+        List<List<Genre>> genres = new ArrayList<>();
+        for (Element element : container.getElementsByClass("genre-box")) {
+            List<Genre> list = new ArrayList<>();
+            for (Element e : element.getElementsByTag("a")) {
+                list.add(Genre.create(e.text(), e.attr("href")));
+            }
+            genres.add(list);
+        }
+
+        for (int i = 0; i < keys.size(); i++) {
+            map.put(keys.get(i), genres.get(i));
+        }
+
+        return map;
     }
 }
