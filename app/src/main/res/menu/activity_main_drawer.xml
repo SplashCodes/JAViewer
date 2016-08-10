@@ -31,4 +31,14 @@
             android:title="类别" />
     </group>
 
+    <group
+        android:id="@+id/nav_group3"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_github"
+            android:icon="@drawable/ic_menu_github"
+            android:title="GitHub" />
+    </group>
+
+
 </menu>

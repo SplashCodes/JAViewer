@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -216,6 +217,12 @@ public class MainActivity extends AppCompatActivity
 
         if (fragment != null) {
             setFragment(id);
+        }
+
+        if (id == R.id.nav_github) {
+            Uri uri = Uri.parse("https://github.com/SplashCodes/JAViewer/releases");
+            Intent it = new Intent(Intent.ACTION_VIEW, uri);
+            startActivity(it);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
