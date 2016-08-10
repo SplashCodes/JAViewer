@@ -19,7 +19,6 @@ import io.github.javiewer.R;
 import io.github.javiewer.adapter.GenreAdapter;
 import io.github.javiewer.adapter.item.Genre;
 import io.github.javiewer.network.AVMO;
-import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -52,7 +51,7 @@ public class GenreListFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL));
-        mRecyclerView.setAdapter(this.mAdapter = new ScaleInAnimationAdapter(new GenreAdapter(genres, this.getActivity())));
+        mRecyclerView.setAdapter(this.mAdapter = new GenreAdapter(genres, this.getActivity()));
 
         RecyclerView.ItemAnimator animator = new SlideInUpAnimator();
         animator.setAddDuration(300);

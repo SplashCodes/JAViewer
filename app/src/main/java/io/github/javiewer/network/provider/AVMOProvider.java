@@ -121,7 +121,7 @@ public class AVMOProvider {
     public static LinkedHashMap<String, List<Genre>> parseGenres(String html) {
         LinkedHashMap<String, List<Genre>> map = new LinkedHashMap<>();
 
-        Element container = Jsoup.parse(html).getElementsByClass("pt10").first();
+        Element container = Jsoup.parse(html).getElementsByClass("pt-10").first();
         List<String> keys = new ArrayList<>();
         for (Element e : container.getElementsByTag("h4")) {
             keys.add(e.text());
