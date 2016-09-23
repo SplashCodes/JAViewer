@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity
             if (properties.getChangelog() != null) {
                 message += "\n\n更新日志：\n" + properties.getChangelog();
             }
-            
+
             AlertDialog dialog = new AlertDialog.Builder(this)
                     .setTitle("发现更新")
                     .setMessage(message)
