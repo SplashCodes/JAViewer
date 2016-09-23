@@ -19,7 +19,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.github.javiewer.Javiewer;
 import io.github.javiewer.R;
-import io.github.javiewer.activity.MainActivity;
 import io.github.javiewer.activity.MovieActivity;
 import io.github.javiewer.adapter.item.Movie;
 
@@ -64,7 +63,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
             }
         });
 
-        ImageLoader.getInstance().displayImage(movie.getCoverUrl(), holder.mImageCover,  Javiewer.DISPLAY_IMAGE_OPTIONS);
+        ImageLoader.getInstance().displayImage(movie.getCoverUrl(), holder.mImageCover, Javiewer.DISPLAY_IMAGE_OPTIONS);
 
         holder.mImageHot.setVisibility(movie.isHot() ? View.VISIBLE : View.INVISIBLE);
     }

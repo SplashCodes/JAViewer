@@ -19,7 +19,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.github.javiewer.Javiewer;
 import io.github.javiewer.R;
-import io.github.javiewer.activity.MainActivity;
 import io.github.javiewer.activity.MovieListActivity;
 import io.github.javiewer.adapter.item.Actress;
 

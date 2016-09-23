@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity
 
             String message = "新版本：" + properties.getLatestVersion();
             if (properties.getChangelog() != null) {
-                message += "\n\n更新日志：\n" + properties.getChangelog();
+                message += "\n\n更新日志：\n\n" + properties.getChangelog() + "\n";
             }
 
             AlertDialog dialog = new AlertDialog.Builder(this)
