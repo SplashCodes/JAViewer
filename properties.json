@@ -1,3 +1,4 @@
 {
-  "latest_version": " 1.0.1"
+  "latest_version": " 1.0.1",
+  "changelog": "1. 修复已知BUG\n2. 调整布局，更人性化\n3. 修复TorrentKitty接口"
 }

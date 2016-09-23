@@ -3,9 +3,7 @@
     android:id="@+id/card_download"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="8dp"
-    android:layout_marginRight="8dp"
-    android:layout_marginTop="8dp"
+    android:layout_margin="8dp"
     android:clickable="true"
     android:foreground="?android:attr/selectableItemBackground">
 
@@ -48,18 +46,6 @@
             android:maxLines="1"
             android:text="这里是时间"
             android:textSize="12sp" />
-
-        <ImageView
-            android:id="@+id/movie_hot"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/movie_date"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="8dp"
-            android:src="@drawable/ic_menu_popular"
-            android:tint="#ffcc0000"
-            android:visibility="invisible" />
     </RelativeLayout>
 
 </android.support.v7.widget.CardView>

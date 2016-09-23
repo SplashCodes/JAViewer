@@ -17,6 +17,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.github.javiewer.Javiewer;
 import io.github.javiewer.R;
 import io.github.javiewer.activity.MainActivity;
 import io.github.javiewer.activity.MovieListActivity;
@@ -67,7 +68,7 @@ public class ActressAdapter extends RecyclerView.Adapter<ActressAdapter.ViewHold
         });
 
 
-        ImageLoader.getInstance().displayImage(actress.getImageUrl(), holder.mImage, MainActivity.displayImageOptions);
+        ImageLoader.getInstance().displayImage(actress.getImageUrl(), holder.mImage, Javiewer.DISPLAY_IMAGE_OPTIONS);
     }
 
     @Override

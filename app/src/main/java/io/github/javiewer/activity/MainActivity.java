@@ -4,10 +4,11 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -26,12 +27,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -39,6 +38,8 @@ import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.github.javiewer.Javiewer;
+import io.github.javiewer.Properties;
 import io.github.javiewer.R;
 import io.github.javiewer.fragment.ActressesFragment;
 import io.github.javiewer.fragment.GenreFragment;
@@ -47,6 +48,10 @@ import io.github.javiewer.fragment.PopularFragment;
 import io.github.javiewer.fragment.ReleasedFragment;
 import io.github.javiewer.fragment.ToolbarNoElevationFragment;
 import io.github.javiewer.network.AVMO;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -61,16 +66,6 @@ public class MainActivity extends AppCompatActivity
 
     @Bind(R.id.app_bar)
     public AppBarLayout mAppBarLayout;
-
-    public static DisplayImageOptions displayImageOptions = new DisplayImageOptions.Builder()
-            .resetViewBeforeLoading()
-            .cacheInMemory()
-            .cacheOnDisc()
-            .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2) // default
-            .bitmapConfig(Bitmap.Config.ARGB_8888) // default
-            .delayBeforeLoading(1000)
-            .displayer(new FadeInBitmapDisplayer(500)) // default
-            .build();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +89,8 @@ public class MainActivity extends AppCompatActivity
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             AlertDialog dialog = new AlertDialog.Builder(this)
                     .setCancelable(false)
-                    .setMessage("即将请求储存空间权限，用于图片缓存功能，减少重复流量消耗")
+                    .setTitle("提示")
+                    .setMessage("你好！\n欢迎使用Javiewer！\n即将请求储存空间权限，用于图片缓存功能，减少重复流量消耗")
                     .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -108,6 +104,51 @@ public class MainActivity extends AppCompatActivity
         initFragments();
 
         ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
+
+        Request request = new Request.Builder()
+                .url("https://raw.githubusercontent.com/SplashCodes/JAViewer/master/properties.json")
+                .build();
+        Javiewer.HTTP_CLIENT.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                final Properties properties = Javiewer.parseJson(Properties.class, response.body().string());
+                if (properties != null) {
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            handleProperties(properties);
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    public void handleProperties(Properties properties) {
+        if (properties.getLatestVersion() != null && !Javiewer.VERSION.equals(properties.getLatestVersion())) {
+
+            String message = "新版本：" + properties.getLatestVersion();
+            if (properties.getChangelog() != null) {
+                message += "\n\n更新日志：\n" + properties.getChangelog();
+            }
+            
+            AlertDialog dialog = new AlertDialog.Builder(this)
+                    .setTitle("发现更新")
+                    .setMessage(message)
+                    .setNegativeButton("忽略更新", null)
+                    .setPositiveButton("更新", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/SplashCodes/JAViewer/releases")));
+                        }
+                    })
+                    .create();
+            dialog.show();
+        }
     }
 
     public void initFragments() {
@@ -220,9 +261,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         if (id == R.id.nav_github) {
-            Uri uri = Uri.parse("https://github.com/SplashCodes/JAViewer/releases");
-            Intent it = new Intent(Intent.ACTION_VIEW, uri);
-            startActivity(it);
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/SplashCodes/JAViewer/releases")));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
