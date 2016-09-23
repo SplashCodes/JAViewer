@@ -20,7 +20,6 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
 public class ActressesFragment extends RecyclerFragment<StaggeredGridLayoutManager> {
 
@@ -38,8 +37,11 @@ public class ActressesFragment extends RecyclerFragment<StaggeredGridLayoutManag
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        this.setRecyclerViewPadding(4);
+
         this.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));
         this.setAdapter(new ScaleInAnimationAdapter(new ActressAdapter(actresses, this.getActivity())));
+
         RecyclerView.ItemAnimator animator = new SlideInUpAnimator();
         animator.setAddDuration(300);
         mRecyclerView.setItemAnimator(animator);
@@ -107,13 +109,7 @@ public class ActressesFragment extends RecyclerFragment<StaggeredGridLayoutManag
     }
 
     public Call<ResponseBody> getCall(int page) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(AVMO.BASE_URL)
-                .build();
-
-        AVMO avmo = retrofit.create(AVMO.class);
-
-        return avmo.getActresses(page);
+        return AVMO.INSTANCE.getActresses(page);
     }
 
     public static abstract class EndlessOnScrollListener extends RecyclerView.OnScrollListener {

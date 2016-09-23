@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.github.javiewer.R;
+import io.github.javiewer.view.ViewUtil;
 
 /**
  * Project: JAViewer
@@ -26,6 +27,15 @@ public abstract class RecyclerFragment<LM extends RecyclerView.LayoutManager> ex
 
     private RecyclerView.Adapter mAdapter;
     private LM mLayoutManager;
+
+    protected void setRecyclerViewPadding(int dp) {
+        this.mRecyclerView.setPadding(
+                ViewUtil.dpToPx(dp),
+                ViewUtil.dpToPx(dp),
+                ViewUtil.dpToPx(dp),
+                ViewUtil.dpToPx(dp)
+        );
+    }
 
     public RecyclerFragment() {
         // Required empty public constructor

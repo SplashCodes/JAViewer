@@ -5,14 +5,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="32dp"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     android:background="#FAFAFA"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="io.github.javiewer.activity.MovieActivity"
     tools:showIn="@layout/activity_movie">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/movie_recycler_view"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/movie_info"
+            layout="@layout/content_movie_info" />
+
+        <include
+            android:id="@+id/movie_screenshots"
+            layout="@layout/content_movie_screenshots" />
+    </LinearLayout>
+
 
 </android.support.v4.widget.NestedScrollView>

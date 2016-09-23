@@ -72,6 +72,7 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> 
         public TextView mTextName;
 
         public void parse(Genre genre) {
+            mTextName.setSelected(true);
             mTextName.setText(genre.getTitle());
         }
 

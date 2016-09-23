@@ -11,7 +11,6 @@ import io.github.javiewer.adapter.item.MagnetLink;
 import io.github.javiewer.network.TorrentKitty;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
-import retrofit2.Retrofit;
 
 /**
  * Created by MagicDroidX on 2016/7/22.
@@ -22,11 +21,7 @@ public class TorrentKittyLinkProvider extends DownloadLinkProvider {
     @Override
     public Call<ResponseBody> search(String keyword, int page) {
         if (page == 1) {
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(TorrentKitty.BASE_URL)
-                    .build();
-            TorrentKitty tk = retrofit.create(TorrentKitty.class);
-            return tk.search(keyword);
+            return TorrentKitty.INSTANCE.search(keyword);
         } else {
             return null;
         }
@@ -40,7 +35,7 @@ public class TorrentKittyLinkProvider extends DownloadLinkProvider {
             try {
                 links.add(DownloadLink.create(
                         tr.getElementsByClass("name").first().text(),
-                        "种子大小：" + tr.getElementsByClass("size").first().text(),
+                        "",
                         tr.getElementsByClass("date").first().text(),
                         null,
                         tr.getElementsByAttributeValue("rel", "magnet").first().attr("href")
@@ -49,6 +44,7 @@ public class TorrentKittyLinkProvider extends DownloadLinkProvider {
 
             }
         }
+
         return links;
     }
 

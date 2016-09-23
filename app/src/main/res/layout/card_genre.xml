@@ -16,9 +16,10 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_gravity="center_horizontal|bottom"
+        android:ellipsize="marquee"
         android:gravity="center"
-        android:maxLines="1"
         android:padding="8dp"
+        android:singleLine="true"
         android:text="这里是类别"
         android:textSize="14sp" />
 

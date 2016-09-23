@@ -25,7 +25,6 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
 public class GenreFragment extends Fragment implements ToolbarNoElevationFragment {
 
@@ -52,11 +51,7 @@ public class GenreFragment extends Fragment implements ToolbarNoElevationFragmen
         mViewPager.setAdapter(mAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(AVMO.BASE_URL)
-                .build();
-        AVMO avmo = retrofit.create(AVMO.class);
-        Call<ResponseBody> call = avmo.getGenre();
+        Call<ResponseBody> call = AVMO.INSTANCE.getGenre();
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

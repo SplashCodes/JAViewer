@@ -4,9 +4,10 @@
     android:id="@+id/card_actress"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="4dp"
     android:layout_marginLeft="4dp"
     android:layout_marginRight="4dp"
-    android:layout_marginTop="8dp"
+    android:layout_marginTop="4dp"
     android:clickable="true"
     android:foreground="?android:attr/selectableItemBackground"
     app:cardCornerRadius="0dp">
@@ -20,18 +21,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
+
             android:scaleType="centerCrop"
             android:src="@drawable/ic_default_actresses" />
 
         <TextView
             android:id="@+id/actress_name"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center_horizontal|bottom"
-            android:background="#50000000"
-            android:gravity="center"
-            android:maxLines="1"
+            android:background="@drawable/actress_image_gradient"
+            android:ellipsize="marquee"
+            android:gravity="bottom|center_horizontal"
             android:padding="8dp"
+            android:singleLine="true"
             android:text="这里是名称"
             android:textColor="#ffffff"
             android:textSize="14sp" />

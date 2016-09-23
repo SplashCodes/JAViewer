@@ -31,9 +31,7 @@
             android:title="类别" />
     </group>
 
-    <group
-        android:id="@+id/nav_group3"
-        android:checkableBehavior="single">
+    <group android:id="@+id/nav_group3">
         <item
             android:id="@+id/nav_github"
             android:icon="@drawable/ic_menu_github"

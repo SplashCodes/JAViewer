@@ -19,10 +19,10 @@ import io.github.javiewer.R;
 import io.github.javiewer.adapter.GenreAdapter;
 import io.github.javiewer.adapter.item.Genre;
 import io.github.javiewer.network.AVMO;
+import io.github.javiewer.view.ViewUtil;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
-import retrofit2.Retrofit;
 
 public class GenreListFragment extends Fragment {
 
@@ -50,7 +50,14 @@ public class GenreListFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL));
+        this.mRecyclerView.setPadding(
+                ViewUtil.dpToPx(1),
+                ViewUtil.dpToPx(1),
+                ViewUtil.dpToPx(1),
+                ViewUtil.dpToPx(1)
+        );
+
+        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         mRecyclerView.setAdapter(this.mAdapter = new GenreAdapter(genres, this.getActivity()));
 
         RecyclerView.ItemAnimator animator = new SlideInUpAnimator();
@@ -61,13 +68,7 @@ public class GenreListFragment extends Fragment {
     }
 
     public Call<ResponseBody> getCall(int page) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(AVMO.BASE_URL)
-                .build();
-
-        AVMO avmo = retrofit.create(AVMO.class);
-
-        return avmo.getActresses(page);
+        return AVMO.INSTANCE.getActresses(page);
     }
 
     public List<Genre> getGenres() {

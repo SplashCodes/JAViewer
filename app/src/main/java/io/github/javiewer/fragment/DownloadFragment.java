@@ -20,7 +20,6 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
 public class DownloadFragment extends RecyclerFragment<LinearLayoutManager> {
 
@@ -129,14 +128,7 @@ public class DownloadFragment extends RecyclerFragment<LinearLayoutManager> {
     }
 
     public Call<ResponseBody> getCall(int page) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BTSO.BASE_URL)
-
-                .build();
-
-        BTSO btso = retrofit.create(BTSO.class);
-
-        return btso.search(this.keyword, page);
+        return BTSO.INSTANCE.search(this.keyword, page);
     }
 
     public static abstract class EndlessOnScrollListener extends RecyclerView.OnScrollListener {

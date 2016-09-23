@@ -1,7 +1,5 @@
 package io.github.javiewer.network.provider;
 
-import android.util.Log;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -14,7 +12,6 @@ import io.github.javiewer.adapter.item.MagnetLink;
 import io.github.javiewer.network.BTSO;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
-import retrofit2.Retrofit;
 
 /**
  * Created by MagicDroidX on 2016/7/22.
@@ -24,11 +21,7 @@ public class BTSOLinkProvider extends DownloadLinkProvider {
 
     @Override
     public Call<ResponseBody> search(String keyword, int page) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BTSO.BASE_URL)
-                .build();
-        BTSO btso = retrofit.create(BTSO.class);
-        return btso.search(keyword, page);
+        return BTSO.INSTANCE.search(keyword, page);
     }
 
     @Override
@@ -55,11 +48,7 @@ public class BTSOLinkProvider extends DownloadLinkProvider {
 
     @Override
     public Call<ResponseBody> get(String url) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BTSO.BASE_URL)
-                .build();
-        BTSO btso = retrofit.create(BTSO.class);
-        return btso.get(url);
+        return BTSO.INSTANCE.get(url);
     }
 
     @Override

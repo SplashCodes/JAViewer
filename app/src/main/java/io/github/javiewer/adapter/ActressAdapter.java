@@ -88,6 +88,7 @@ public class ActressAdapter extends RecyclerView.Adapter<ActressAdapter.ViewHold
 
         public void parse(Actress actress) {
             mTextName.setText(actress.getName());
+            mTextName.setSelected(true);
         }
 
         public ViewHolder(View view) {

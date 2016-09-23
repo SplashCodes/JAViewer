@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import io.github.javiewer.network.AVMO;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
-import retrofit2.Retrofit;
 
 /**
  * Project: JAViewer
@@ -25,12 +24,6 @@ public class MovieListFragment extends MovieFragment {
 
     @Override
     public Call<ResponseBody> getCall(int page) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(AVMO.BASE_URL)
-                .build();
-
-        AVMO avmo = retrofit.create(AVMO.class);
-
-        return avmo.get(this.query + "/page/" + page);
+        return AVMO.INSTANCE.get(this.query + "/page/" + page);
     }
 }
