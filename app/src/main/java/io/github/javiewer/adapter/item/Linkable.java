@@ -5,7 +5,7 @@ package io.github.javiewer.adapter.item;
  */
 public class Linkable {
 
-    protected String link;
+    public String link;
 
     public String getLink() {
         return link;

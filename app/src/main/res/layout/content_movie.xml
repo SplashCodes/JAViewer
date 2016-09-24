@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="32dp"
     android:background="#FAFAFA"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="io.github.javiewer.activity.MovieActivity"
@@ -13,15 +12,24 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingTop="32dp">
 
         <include
-            android:id="@+id/movie_info"
-            layout="@layout/content_movie_info" />
+            android:id="@+id/movie_headers"
+            layout="@layout/content_movie_headers" />
 
         <include
             android:id="@+id/movie_screenshots"
             layout="@layout/content_movie_screenshots" />
+
+        <include
+            android:id="@+id/movie_actress"
+            layout="@layout/content_movie_actresses" />
+
+        <include
+            android:id="@+id/movie_genre"
+            layout="@layout/content_movie_genre" />
     </LinearLayout>
 
 

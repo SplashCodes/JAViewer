@@ -2,7 +2,9 @@ package io.github.javiewer.adapter;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import java.util.List;
 
@@ -21,34 +24,36 @@ import io.github.javiewer.JAViewer;
 import io.github.javiewer.R;
 import io.github.javiewer.activity.MovieListActivity;
 import io.github.javiewer.adapter.item.Actress;
+import io.github.javiewer.view.ViewUtil;
 
 /**
- * Project: JAViewer
+ * Created by MagicDroidX on 2016/9/23.
  */
-public class ActressAdapter extends RecyclerView.Adapter<ActressAdapter.ViewHolder> {
+
+public class ActressPaletteAdapter extends RecyclerView.Adapter<ActressPaletteAdapter.ViewHolder> {
 
     private List<Actress> actresses;
 
     private Activity mParentActivity;
 
-    public ActressAdapter(List<Actress> actresses, Activity mParentActivity) {
+    private ImageView mIcon;
+
+    public ActressPaletteAdapter(List<Actress> actresses, Activity mParentActivity, ImageView mIcon) {
         this.actresses = actresses;
         this.mParentActivity = mParentActivity;
+        this.mIcon = mIcon;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_actress, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_actress_palette, parent, false);
 
         return new ViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-
         final Actress actress = actresses.get(position);
-
-        holder.parse(actress);
 
         holder.mCard.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,8 +71,30 @@ public class ActressAdapter extends RecyclerView.Adapter<ActressAdapter.ViewHold
             }
         });
 
+        ImageLoader.getInstance().displayImage(actress.getImageUrl(), holder.mImage, JAViewer.DISPLAY_IMAGE_OPTIONS, new SimpleImageLoadingListener() {
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                super.onLoadingComplete(imageUri, view, loadedImage);
 
-        ImageLoader.getInstance().displayImage(actress.getImageUrl(), holder.mImage, JAViewer.DISPLAY_IMAGE_OPTIONS);
+                Palette.from(loadedImage).generate(new Palette.PaletteAsyncListener() {
+                    @Override
+                    public void onGenerated(Palette palette) {
+                        Palette.Swatch swatch = palette.getLightVibrantSwatch();
+                        if (swatch == null) {
+                            return;
+                        }
+                        holder.mCard.setCardBackgroundColor(swatch.getRgb());
+                        holder.mName.setTextColor(swatch.getBodyTextColor());
+                    }
+                });
+            }
+        });
+
+        holder.mName.setText(actress.getName());
+
+        if (position == 0) {
+            ViewUtil.alignIconToView(mIcon, holder.mImage);
+        }
     }
 
     @Override
@@ -75,25 +102,19 @@ public class ActressAdapter extends RecyclerView.Adapter<ActressAdapter.ViewHold
         return actresses == null ? 0 : actresses.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.actress_name)
-        public TextView mTextName;
-
-        @Bind(R.id.actress_img)
+        @Bind(R.id.actress_palette_img)
         public ImageView mImage;
 
-        @Bind(R.id.card_actress)
-        public CardView mCard;
+        @Bind(R.id.actress_palette_name)
+        public TextView mName;
 
-        public void parse(Actress actress) {
-            mTextName.setText(actress.getName());
-            mTextName.setSelected(true);
-        }
+        @Bind(R.id.card_actress_palette)
+        public CardView mCard;
 
         public ViewHolder(View view) {
             super(view);
-
             ButterKnife.bind(this, view);
         }
     }

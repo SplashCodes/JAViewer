@@ -15,7 +15,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import io.github.javiewer.Javiewer;
+import io.github.javiewer.JAViewer;
 import io.github.javiewer.R;
 import io.github.javiewer.activity.GalleryActivity;
 import io.github.javiewer.adapter.item.Screenshot;
@@ -50,7 +50,7 @@ public class ScreenshotAdapter extends RecyclerView.Adapter<ScreenshotAdapter.Vi
     public void onBindViewHolder(final ViewHolder holder, int position) {
         Screenshot screenshot = screenshots.get(position);
 
-        ImageLoader.getInstance().displayImage(screenshot.getThumbnailUrl(), holder.mImage, Javiewer.DISPLAY_IMAGE_OPTIONS);
+        ImageLoader.getInstance().displayImage(screenshot.getThumbnailUrl(), holder.mImage, JAViewer.DISPLAY_IMAGE_OPTIONS);
 
         holder.mImage.setOnClickListener(new View.OnClickListener() {
             @Override

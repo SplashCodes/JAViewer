@@ -3,6 +3,7 @@ package io.github.javiewer.adapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,13 +45,13 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> 
         final Genre genre = genres.get(position);
         holder.parse(genre);
 
-        holder.mTextName.setOnClickListener(new View.OnClickListener() {
+        holder.mCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (genre.getLink() != null) {
                     Intent intent = new Intent(mParentActivity, MovieListActivity.class);
                     Bundle bundle = new Bundle();
-                    bundle.putString("title", genre.getTitle());
+                    bundle.putString("title", genre.getName());
                     bundle.putString("query", genre.getLink());
 
                     intent.putExtras(bundle);
@@ -71,8 +72,11 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> 
         @Bind(R.id.genre_name)
         public TextView mTextName;
 
+        @Bind(R.id.card_genre)
+        public CardView mCard;
+
         public void parse(Genre genre) {
-            mTextName.setText(genre.getTitle());
+            mTextName.setText(genre.getName());
         }
 
         public ViewHolder(View view) {

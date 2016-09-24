@@ -23,7 +23,7 @@
             android:adjustViewBounds="true"
 
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_default_actresses" />
+            android:src="@drawable/ic_movie_actresses" />
 
         <TextView
             android:id="@+id/actress_name"

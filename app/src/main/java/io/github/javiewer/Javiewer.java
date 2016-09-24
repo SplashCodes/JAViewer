@@ -9,9 +9,15 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import io.github.javiewer.network.BTSO;
 import io.github.javiewer.network.TorrentKitty;
+import okhttp3.Cookie;
+import okhttp3.CookieJar;
+import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -22,7 +28,7 @@ import retrofit2.Retrofit;
  * Created by MagicDroidX on 2016/9/23.
  */
 
-public class Javiewer {
+public class JAViewer {
     public static final String VERSION = "1.0.1";
 
     public static final String USER_AGENT = "Mozilla/5.0 (Linux; Android 5.1.1; Nexus 5 Build/LMY48B; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/43.0.2357.65 Mobile Safari/537.36";
@@ -38,7 +44,22 @@ public class Javiewer {
 
             return chain.proceed(request);
         }
-    }).build();
+    })
+            .cookieJar(new CookieJar() {
+                private final HashMap<HttpUrl, List<Cookie>> cookieStore = new HashMap<>();
+
+                @Override
+                public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
+                    cookieStore.put(url, cookies);
+                }
+
+                @Override
+                public List<Cookie> loadForRequest(HttpUrl url) {
+                    List<Cookie> cookies = cookieStore.get(url);
+                    return cookies != null ? cookies : new ArrayList<Cookie>();
+                }
+            })
+            .build();
 
     public static final Retrofit RETROFIT_BTSO = new Retrofit.Builder()
             .baseUrl(BTSO.BASE_URL)

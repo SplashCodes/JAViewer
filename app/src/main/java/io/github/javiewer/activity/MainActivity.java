@@ -38,7 +38,7 @@ import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import io.github.javiewer.Javiewer;
+import io.github.javiewer.JAViewer;
 import io.github.javiewer.Properties;
 import io.github.javiewer.R;
 import io.github.javiewer.fragment.ActressesFragment;
@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity
             AlertDialog dialog = new AlertDialog.Builder(this)
                     .setCancelable(false)
                     .setTitle("提示")
-                    .setMessage("你好！\n欢迎使用Javiewer！\n即将请求储存空间权限，用于图片缓存功能，减少重复流量消耗")
+                    .setMessage("你好！\n欢迎使用JAViewer！\n即将请求储存空间权限，用于图片缓存功能，减少重复流量消耗")
                     .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -108,14 +108,14 @@ public class MainActivity extends AppCompatActivity
         Request request = new Request.Builder()
                 .url("https://raw.githubusercontent.com/SplashCodes/JAViewer/master/properties.json")
                 .build();
-        Javiewer.HTTP_CLIENT.newCall(request).enqueue(new Callback() {
+        JAViewer.HTTP_CLIENT.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                final Properties properties = Javiewer.parseJson(Properties.class, response.body().string());
+                final Properties properties = JAViewer.parseJson(Properties.class, response.body().string());
                 if (properties != null) {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
@@ -129,7 +129,14 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void handleProperties(Properties properties) {
-        if (properties.getLatestVersion() != null && !Javiewer.VERSION.equals(properties.getLatestVersion())) {
+        String currentVersion;
+        try {
+            currentVersion = this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            throw new RuntimeException("Hacked???");
+        }
+
+        if (properties.getLatestVersion() != null && !currentVersion.trim().equals(properties.getLatestVersion().trim())) {
 
             String message = "新版本：" + properties.getLatestVersion();
             if (properties.getChangelog() != null) {

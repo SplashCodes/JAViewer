@@ -1,6 +1,6 @@
 package io.github.javiewer.network;
 
-import io.github.javiewer.Javiewer;
+import io.github.javiewer.JAViewer;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -16,7 +16,7 @@ public interface TorrentKitty {
 
     TorrentKitty INSTANCE = new Retrofit.Builder()
             .baseUrl(TorrentKitty.BASE_URL)
-            .client(Javiewer.HTTP_CLIENT)
+            .client(JAViewer.HTTP_CLIENT)
             .build()
             .create(TorrentKitty.class);
 

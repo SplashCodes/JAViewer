@@ -14,10 +14,11 @@
     <TextView
         android:id="@+id/genre_name"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
         android:gravity="center"
-        android:padding="8dp"
         android:text="这里是类别"
         android:textSize="14sp" />
 

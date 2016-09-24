@@ -5,32 +5,33 @@
     tools:context=".fragment.MovieFragment">
 
     <ImageView
-        android:id="@+id/movie_icon_screenshots"
+        android:id="@+id/movie_icon_genre"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
-        android:src="@drawable/ic_movie_photo"
+        android:src="@drawable/ic_movie_genre"
         android:tint="#89000000" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="72dp"
-        android:orientation="vertical"
-        android:paddingRight="16dp">
+        android:orientation="vertical">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/screenshots_recycler_view"
+        <com.wefika.flowlayout.FlowLayout
+            android:id="@+id/genre_flow_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content">
+
+        </com.wefika.flowlayout.FlowLayout>
 
         <TextView
-            android:id="@+id/screenshots_empty_text"
+            android:id="@+id/actresses_empty_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="8dp"
             android:paddingTop="8dp"
-            android:text="暂无截图"
+            android:text="暂无分类信息"
             android:visibility="gone" />
 
         <View

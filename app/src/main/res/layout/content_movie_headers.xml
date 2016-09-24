@@ -5,11 +5,11 @@
     tools:context=".fragment.MovieFragment">
 
     <ImageView
-        android:id="@+id/movie_icon_screenshots"
+        android:id="@+id/movie_icon_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
-        android:src="@drawable/ic_movie_photo"
+        android:src="@drawable/ic_general_movie"
         android:tint="#89000000" />
 
     <LinearLayout
@@ -20,17 +20,18 @@
         android:paddingRight="16dp">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/screenshots_recycler_view"
+            android:id="@+id/headers_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <TextView
-            android:id="@+id/screenshots_empty_text"
+            android:id="@+id/header_empty_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:paddingBottom="8dp"
             android:paddingTop="8dp"
-            android:text="暂无截图"
+            android:text="暂无详细信息"
             android:visibility="gone" />
 
         <View
@@ -42,4 +43,3 @@
     </LinearLayout>
 
 </RelativeLayout>
-

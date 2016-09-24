@@ -81,36 +81,92 @@ public class AVMOProvider {
     }
 
     public static MovieDetail parseMoviesDetail(String html) {
-        final String headerCode = "识别码";
-        final String headerDate = "发行时间";
-        final String headerDuration = "长度";
-
         Document document = Jsoup.parse(html);
 
         MovieDetail movie = new MovieDetail();
 
-        movie.title = document.getElementsByTag("h3").first().text();
-        movie.coverUrl = document.getElementsByClass("bigImage").first().attr("href");
-
-        for (Element element : document.getElementsByClass("sample-box")) {
-            movie.screenshots.add(Screenshot.create(element.getElementsByTag("img").first().attr("src"), element.attr("href")));
+        //General Parsing
+        {
+            movie.title = document.getElementsByTag("h3").first().text();
+            movie.coverUrl = document.getElementsByClass("bigImage").first().attr("href");
         }
 
-        Element info = document.getElementsByClass("col-md-3").first();
-        for (Element p : info.getElementsByTag("p")) {
+        //Parsing Screenshots
+        {
+            for (Element element : document.getElementsByClass("sample-box")) {
+                try {
+                    movie.screenshots.add(Screenshot.create(element.getElementsByTag("img").first().attr("src"), element.attr("href")));
+                } catch (Exception ignore) {
+                }
+            }
+        }
 
-            String[] s = p.text().split(":");
+        //Parsing Headers
+        {
+            Element headerColumn = document.getElementsByClass("col-md-3").first();
 
-            if (s.length > 1) {
+            List<MovieDetail.Header> headerHeader = new ArrayList<>();
+            List<MovieDetail.Header> headerName = new ArrayList<>();
 
-                String content = s[1].replace(" ", "");
+            for (Element p : headerColumn.getElementsByTag("p")) {
+                String text = p.text();
+                if (text.contains(":")) {
+                    String[] s = text.split(":");
+                    MovieDetail.Header header = new MovieDetail.Header();
+                    header.name = s[0];
 
-                if (s[0].contains(headerCode)) {
-                    movie.code = content;
-                } else if (s[0].contains(headerDate)) {
-                    movie.date = content;
-                } else if (s[0].contains(headerDuration)) {
-                    movie.duration = content;
+                    if (s.length > 1) {
+                        header.value = s[1];
+                        movie.headers.add(header);
+                    } else {
+                        headerHeader.add(header);
+                    }
+                } else {
+                    Elements a = p.getElementsByTag("a");
+                    if (a.size() == 1) {
+                        MovieDetail.Header header = new MovieDetail.Header();
+                        header.value = text;
+                        header.link = a.first().attr("href");
+                        headerName.add(header);
+                    } else if (a.size() > 1) {
+                        for (Element genreE : p.getElementsByClass("genre")) {
+                            Genre genre = new Genre();
+                            try {
+                                genre.link = genreE.getElementsByTag("a").attr("href");
+                            } catch (Exception e) {
+                                continue;
+                            }
+                            genre.name = genreE.text();
+                            movie.genres.add(genre);
+                        }
+                    }
+                }
+            }
+
+            for (int i = 0; i < Math.min(headerHeader.size(), headerName.size()); i++) {
+                MovieDetail.Header header = new MovieDetail.Header();
+                header.name = headerHeader.get(i).name;
+                header.value = headerName.get(i).value;
+                header.link = headerName.get(i).link;
+                movie.headers.add(header);
+            }
+        }
+
+        //Parsing Actresses
+        {
+            Element actressWaterfall = document.getElementById("avatar-waterfall");
+            if (actressWaterfall != null) {
+                for (Element box : actressWaterfall.getElementsByTag("a")) {
+                    try {
+                        movie.actresses.add(
+                                Actress.create(
+                                        box.getElementsByTag("span").text(),
+                                        box.getElementsByTag("img").first().attr("src"),
+                                        box.attr("href")
+                                )
+                        );
+                    } catch (Exception ignored) {
+                    }
                 }
             }
         }

@@ -14,9 +14,27 @@ public class MovieDetail {
 
     public final List<Screenshot> screenshots = new ArrayList<>();
 
-    public String code = "未知";
+    public List<Header> headers = new ArrayList<>();
 
-    public String date = "未知";
+    public List<Genre> genres = new ArrayList<>();
 
-    public String duration = "未知";
+    public List<Actress> actresses = new ArrayList<>();
+
+    public static class Header extends Linkable {
+        public String name;
+        public String value;
+
+        public String getName() {
+            return name;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        @Override
+        public String toString() {
+            return name + ":" + value + ":" + link;
+        }
+    }
 }

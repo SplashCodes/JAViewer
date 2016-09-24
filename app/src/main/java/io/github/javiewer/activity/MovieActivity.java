@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
@@ -14,17 +15,18 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.wefika.flowlayout.FlowLayout;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.github.javiewer.R;
+import io.github.javiewer.adapter.ActressPaletteAdapter;
+import io.github.javiewer.adapter.MovieHeaderAdapter;
 import io.github.javiewer.adapter.ScreenshotAdapter;
+import io.github.javiewer.adapter.item.Genre;
 import io.github.javiewer.adapter.item.MovieDetail;
-import io.github.javiewer.adapter.item.Screenshot;
 import io.github.javiewer.network.AVMO;
 import io.github.javiewer.network.provider.AVMOProvider;
 import io.github.javiewer.view.ViewUtil;
@@ -49,10 +51,10 @@ public class MovieActivity extends AppCompatActivity {
     @Bind(R.id.fab)
     FloatingActionButton mFab;
 
+    @Bind(R.id.genre_flow_layout)
+    FlowLayout mFlowLayout;
+
     String code;
-
-
-    List<Screenshot> screenshots = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,9 +98,6 @@ public class MovieActivity extends AppCompatActivity {
 
                     ImageLoader.getInstance().displayImage(detail.coverUrl, mToolbarLayoutBackgroud);
 
-                    screenshots.clear();
-                    screenshots.addAll(detail.screenshots);
-
                     displayInfo(detail);
                 } catch (IOException e) {
                     onFailure(call, e);
@@ -124,30 +123,84 @@ public class MovieActivity extends AppCompatActivity {
 
         //Info
         {
-            TextView mCodeText = (TextView) findViewById(R.id.info_text_code);
-            TextView mDateText = (TextView) findViewById(R.id.info_text_date);
-            TextView mDurationText = (TextView) findViewById(R.id.info_text_duration);
-            mCodeText.setText(detail.code);
-            mDateText.setText(detail.date);
-            mDurationText.setText(detail.duration);
+            RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.headers_recycler_view);
+            TextView mText = (TextView) findViewById(R.id.header_empty_text);
+            ImageView mIcon = (ImageView) findViewById(R.id.movie_icon_header);
+
+            if (detail.headers.isEmpty()) {
+                mRecyclerView.setVisibility(View.GONE);
+                mText.setVisibility(View.VISIBLE);
+                ViewUtil.alignIconToView(mIcon, mText);
+            } else {
+                mRecyclerView.setAdapter(new MovieHeaderAdapter(detail.headers, this, mIcon));
+                mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+                mRecyclerView.setNestedScrollingEnabled(false);
+            }
         }
 
         //Screenshots
         {
             RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.screenshots_recycler_view);
-            TextView mText = (TextView) findViewById(R.id.screenshots_text);
-            ImageView mIcon = (ImageView) findViewById(R.id.movie_icon_photo);
+            TextView mText = (TextView) findViewById(R.id.screenshots_empty_text);
+            ImageView mIcon = (ImageView) findViewById(R.id.movie_icon_screenshots);
 
-            mRecyclerView.setAdapter(new ScreenshotAdapter(screenshots, this, mIcon));
-            mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL));
-            mRecyclerView.setNestedScrollingEnabled(false);
-
-            if (screenshots.isEmpty()) {
+            if (detail.screenshots.isEmpty()) {
                 mRecyclerView.setVisibility(View.GONE);
                 mText.setVisibility(View.VISIBLE);
+                ViewUtil.alignIconToView(mIcon, mText);
+            } else {
+                mRecyclerView.setAdapter(new ScreenshotAdapter(detail.screenshots, this, mIcon));
+                mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL));
+                mRecyclerView.setNestedScrollingEnabled(false);
             }
+        }
 
-            ViewUtil.alignIconToView(mIcon, mText);
+        //Actress
+        {
+            RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.actresses_recycler_view);
+            TextView mText = (TextView) findViewById(R.id.actresses_empty_text);
+            ImageView mIcon = (ImageView) findViewById(R.id.movie_icon_actresses);
+
+            if (detail.actresses.isEmpty()) {
+                mRecyclerView.setVisibility(View.GONE);
+                mText.setVisibility(View.VISIBLE);
+                ViewUtil.alignIconToView(mIcon, mText);
+            } else {
+                mRecyclerView.setAdapter(new ActressPaletteAdapter(detail.actresses, this, mIcon));
+                mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+                mRecyclerView.setNestedScrollingEnabled(false);
+            }
+        }
+
+        {
+            boolean first = true;
+            for (final Genre genre : detail.genres) {
+                View view = getLayoutInflater().inflate(R.layout.card_genre_movie, mFlowLayout, false);
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (genre.getLink() != null) {
+                            Intent intent = new Intent(MovieActivity.this, MovieListActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("title", genre.getName());
+                            bundle.putString("query", genre.getLink());
+
+                            intent.putExtras(bundle);
+                            startActivity(intent);
+                        }
+                    }
+                });
+                TextView textView = (TextView) view.findViewById(R.id.chip_genre_name);
+                textView.setText(genre.getName());
+
+                mFlowLayout.addView(view);
+
+                if (first) {
+                    ImageView mIcon = (ImageView) findViewById(R.id.movie_icon_genre);
+                    ViewUtil.alignIconToView(mIcon, view);
+                    first = false;
+                }
+            }
         }
     }
 
