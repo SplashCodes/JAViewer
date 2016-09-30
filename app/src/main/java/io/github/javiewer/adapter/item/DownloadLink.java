@@ -1,7 +1,7 @@
 package io.github.javiewer.adapter.item;
 
 /**
- * Created by MagicDroidX on 2016/7/22.
+ * Project: JAViewer
  */
 public class DownloadLink extends Linkable {
     protected String title;

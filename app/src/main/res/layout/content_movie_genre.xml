@@ -21,12 +21,10 @@
         <com.wefika.flowlayout.FlowLayout
             android:id="@+id/genre_flow_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-        </com.wefika.flowlayout.FlowLayout>
+            android:layout_height="wrap_content" />
 
         <TextView
-            android:id="@+id/actresses_empty_text"
+            android:id="@+id/genre_empty_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="8dp"

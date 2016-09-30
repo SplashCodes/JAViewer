@@ -8,7 +8,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 
 /**
- * Created by MagicDroidX on 2016/7/22.
+ * Project: JAViewer
  */
 public abstract class DownloadLinkProvider {
     public abstract Call<ResponseBody> search(String keyword, int page);

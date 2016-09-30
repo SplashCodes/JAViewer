@@ -12,22 +12,17 @@ import java.util.List;
 
 import io.github.javiewer.adapter.ActressAdapter;
 import io.github.javiewer.adapter.item.Actress;
+import io.github.javiewer.listener.EndlessOnScrollListener;
 import io.github.javiewer.network.AVMO;
 import io.github.javiewer.network.provider.AVMOProvider;
 import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class ActressesFragment extends RecyclerFragment<StaggeredGridLayoutManager> {
 
     public List<Actress> actresses = new ArrayList<>();
-
-    public SwipeRefreshLayout.OnRefreshListener mRefreshListener;
-
-    public EndlessOnScrollListener mScrollListener;
 
     public ActressesFragment() {
         // Required empty public constructor
@@ -46,56 +41,32 @@ public class ActressesFragment extends RecyclerFragment<StaggeredGridLayoutManag
         animator.setAddDuration(300);
         mRecyclerView.setItemAnimator(animator);
 
-        mRecyclerView.addOnScrollListener(mScrollListener = new EndlessOnScrollListener(getLayoutManager()) {
+        this.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onLoad(final long loadingTime, final boolean refresh) {
-                final int page = currentPage;
-                Call<ResponseBody> call = getCall(page + 1);
-                call.enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if (loadingTime == latestLoadingTime && (!mRefreshLayout.isRefreshing() || refresh)) {
-                            try {
-                                List<Actress> wrappers = AVMOProvider.parseActresses(response.body().string());
-
-                                if (refresh) {
-                                    actresses.clear();
-                                }
-
-                                int pos = actresses.size();
-
-                                if (pos > 0) {
-                                    pos--;
-                                }
-
-                                actresses.addAll(wrappers);
-                                getAdapter().notifyItemChanged(pos, wrappers.size());
-
-                                currentPage++;
-                            } catch (Throwable e) {
-                                onFailure(call, e);
-                            }
-                        }
-
-                        loading = false;
-                        mRefreshLayout.setRefreshing(false);
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        loading = false;
-                        mRefreshLayout.setRefreshing(false);
-                    }
-                });
+            public void onRefresh() {
+                mScrollListener.refresh();
             }
         });
 
-        mRefreshLayout.setOnRefreshListener(mRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
+        this.addOnScrollListener(new EndlessOnScrollListener<Actress>(getLayoutManager(), mRefreshLayout, this.actresses) {
             @Override
-            public void onRefresh() {
-                mScrollListener.loading = true;
-                mScrollListener.reset();
-                mScrollListener.onLoad(mScrollListener.latestLoadingTime = System.currentTimeMillis(), true);
+            public Call<ResponseBody> newCall(int page) {
+                return ActressesFragment.this.newCall(page);
+            }
+
+            @Override
+            public void onResult(ResponseBody response) throws Exception {
+                super.onResult(response);
+                List<Actress> wrappers = AVMOProvider.parseActresses(response.string());
+
+                int pos = actresses.size();
+
+                if (pos > 0) {
+                    pos--;
+                }
+
+                actresses.addAll(wrappers);
+                getAdapter().notifyItemChanged(pos, wrappers.size());
             }
         });
 
@@ -108,47 +79,7 @@ public class ActressesFragment extends RecyclerFragment<StaggeredGridLayoutManag
         });
     }
 
-    public Call<ResponseBody> getCall(int page) {
+    public Call<ResponseBody> newCall(int page) {
         return AVMO.INSTANCE.getActresses(page);
-    }
-
-    public static abstract class EndlessOnScrollListener extends RecyclerView.OnScrollListener {
-
-        public StaggeredGridLayoutManager mLayoutManager;
-
-        public boolean loading = false;
-
-        private int loadThreshold = 5;
-        public int currentPage = 0;
-
-        public long latestLoadingTime;
-
-        public EndlessOnScrollListener(StaggeredGridLayoutManager mLayoutManager) {
-            this.mLayoutManager = mLayoutManager;
-        }
-
-        public void reset() {
-            loading = false;
-            loadThreshold = 5;
-            currentPage = 0;
-        }
-
-        public void onLoad(long loadingTime, boolean refresh) {
-
-        }
-
-        @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            super.onScrolled(recyclerView, dx, dy);
-
-            int visibleItemCount = recyclerView.getChildCount();
-            int totalItemCount = mLayoutManager.getItemCount();
-            int[] firstVisibleItems = mLayoutManager.findFirstVisibleItemPositions(null);
-
-            if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItems[0] + loadThreshold)) {
-                onLoad(latestLoadingTime = System.currentTimeMillis(), false);
-                loading = true;
-            }
-        }
     }
 }

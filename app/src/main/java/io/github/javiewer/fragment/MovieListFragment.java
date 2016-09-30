@@ -12,18 +12,18 @@ import retrofit2.Call;
  */
 public class MovieListFragment extends MovieFragment {
 
-    public String query;
+    public String link;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         Bundle bundle = getArguments();
-        this.query = bundle.getString("query");
+        this.link = bundle.getString("link");
     }
 
     @Override
-    public Call<ResponseBody> getCall(int page) {
-        return AVMO.INSTANCE.get(this.query + "/page/" + page);
+    public Call<ResponseBody> newCall(int page) {
+        return AVMO.INSTANCE.get(this.link + "/page/" + page);
     }
 }

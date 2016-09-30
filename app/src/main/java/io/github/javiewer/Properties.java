@@ -1,7 +1,7 @@
 package io.github.javiewer;
 
 /**
- * Created by MagicDroidX on 2016/9/23.
+ * Project: JAViewer
  */
 
 public class Properties {

@@ -19,7 +19,7 @@
             android:layout_width="96dp"
             android:layout_height="96dp"
             android:adjustViewBounds="true"
-            android:scaleType="centerCrop"
+            android:scaleType="matrix"
             android:src="@drawable/ic_movie_actresses" />
 
         <TextView

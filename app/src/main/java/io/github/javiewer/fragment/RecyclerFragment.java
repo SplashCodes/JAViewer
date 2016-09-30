@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.github.javiewer.R;
+import io.github.javiewer.listener.BasicOnScrollListener;
 import io.github.javiewer.view.ViewUtil;
 
 /**
@@ -22,11 +23,15 @@ public abstract class RecyclerFragment<LM extends RecyclerView.LayoutManager> ex
     @Bind(R.id.recycler_view)
     public RecyclerView mRecyclerView;
 
+    private RecyclerView.Adapter mAdapter;
+    private LM mLayoutManager;
+
     @Bind(R.id.refresh_layout)
     public SwipeRefreshLayout mRefreshLayout;
 
-    private RecyclerView.Adapter mAdapter;
-    private LM mLayoutManager;
+    public SwipeRefreshLayout.OnRefreshListener mRefreshListener;
+
+    public BasicOnScrollListener mScrollListener;
 
     protected void setRecyclerViewPadding(int dp) {
         this.mRecyclerView.setPadding(
@@ -75,5 +80,13 @@ public abstract class RecyclerFragment<LM extends RecyclerView.LayoutManager> ex
                 ContextCompat.getColor(this.getContext(), R.color.googleRed),
                 ContextCompat.getColor(this.getContext(), R.color.googleYellow)
         );
+    }
+
+    public void addOnScrollListener(BasicOnScrollListener listener) {
+        mRecyclerView.addOnScrollListener(mScrollListener = listener);
+    }
+
+    public void setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener listener) {
+        mRefreshLayout.setOnRefreshListener(mRefreshListener = listener);
     }
 }

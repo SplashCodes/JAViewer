@@ -1,7 +1,7 @@
 package io.github.javiewer.adapter.item;
 
 /**
- * Created by MagicDroidX on 2016/7/23.
+ * Project: JAViewer
  */
 public class MagnetLink {
 

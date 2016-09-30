@@ -32,6 +32,14 @@ public class MovieDetail {
             return value;
         }
 
+        public static Header create(String name, String value, String link) {
+            Header header = new Header();
+            header.name = name;
+            header.value = value;
+            header.link = link;
+            return header;
+        }
+
         @Override
         public String toString() {
             return name + ":" + value + ":" + link;

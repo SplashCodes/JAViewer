@@ -22,8 +22,8 @@
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:paddingTop="8dp"
-        android:singleLine="true"
         android:text="这里是名称"
-        android:textColor="#ffffff" />
+        android:textColor="#ffffff"
+        android:maxLines="1" />
 
 </android.support.v7.widget.CardView>

@@ -1,15 +1,17 @@
 package io.github.javiewer.adapter.item;
 
+import static io.github.javiewer.JAViewer.Objects_equals;
+
 /**
  * Project: JAViewer
  */
 public class Movie extends Linkable {
 
-    protected String title;
-    protected String code;
-    protected String coverUrl;
-    protected String date;
-    protected boolean hot;
+    public String title;
+    public String code;
+    public String coverUrl;
+    public String date;
+    public boolean hot;
 
     public static Movie create(String title, String code, String date, String coverUrl, String detailUrl, boolean hot) {
         Movie movie = new Movie();
@@ -20,6 +22,20 @@ public class Movie extends Linkable {
         movie.hot = hot;
         movie.link = detailUrl;
         return movie;
+    }
+
+    @Override
+    public boolean equals(Object movie) {
+        if (!(movie instanceof Movie)) {
+            return false;
+        }
+
+        return Objects_equals(link, ((Movie) movie).link);
+    }
+
+    @Override
+    public String toString() {
+        return title + ";" + date + ";" + code + ";" + coverUrl + ";" + link + ";" + "hot:" + (hot ? "true" : "false");
     }
 
     public String getTitle() {

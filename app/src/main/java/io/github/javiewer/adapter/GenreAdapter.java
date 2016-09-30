@@ -52,7 +52,7 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> 
                     Intent intent = new Intent(mParentActivity, MovieListActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putString("title", genre.getName());
-                    bundle.putString("query", genre.getLink());
+                    bundle.putString("link", genre.getLink());
 
                     intent.putExtras(bundle);
 

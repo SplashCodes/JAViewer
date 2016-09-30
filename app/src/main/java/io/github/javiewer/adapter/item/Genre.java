@@ -1,7 +1,7 @@
 package io.github.javiewer.adapter.item;
 
 /**
- * Created by MagicDroidX on 2016/7/24.
+ * Project: JAViewer
  */
 public class Genre extends Linkable {
     public String name;

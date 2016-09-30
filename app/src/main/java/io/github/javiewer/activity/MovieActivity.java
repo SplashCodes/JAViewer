@@ -3,11 +3,13 @@ package io.github.javiewer.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,11 +23,13 @@ import java.io.IOException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.github.javiewer.JAViewer;
 import io.github.javiewer.R;
 import io.github.javiewer.adapter.ActressPaletteAdapter;
 import io.github.javiewer.adapter.MovieHeaderAdapter;
 import io.github.javiewer.adapter.ScreenshotAdapter;
 import io.github.javiewer.adapter.item.Genre;
+import io.github.javiewer.adapter.item.Movie;
 import io.github.javiewer.adapter.item.MovieDetail;
 import io.github.javiewer.network.AVMO;
 import io.github.javiewer.network.provider.AVMOProvider;
@@ -39,8 +43,10 @@ public class MovieActivity extends AppCompatActivity {
 
     public String detailUrl;
 
+    public Movie movie;
+
     @Bind(R.id.toolbar_layout_background)
-    ImageView mToolbarLayoutBackgroud;
+    ImageView mToolbarLayoutBackground;
 
     @Bind(R.id.movie_content)
     View mContent;
@@ -54,9 +60,12 @@ public class MovieActivity extends AppCompatActivity {
     @Bind(R.id.genre_flow_layout)
     FlowLayout mFlowLayout;
 
+    MenuItem mStarButton;
+
     String code;
 
     @Override
+    @SuppressWarnings("ConstantConditions")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie);
@@ -64,15 +73,23 @@ public class MovieActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         Bundle bundle = this.getIntent().getExtras();
+        movie = (Movie) bundle.getSerializable("movie");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(bundle.getString("title"));
+        getSupportActionBar().setTitle(movie.title);
+        code = movie.code;
+        detailUrl = movie.link;
+
+        System.out.println(movie);
+        /*getSupportActionBar().setTitle(bundle.getString("title"));
 
         code = bundle.getString("code");
 
         detailUrl = bundle.getString("detail");
+        movie = new Movie();
+        movie.link = detailUrl;*/
 
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,11 +110,7 @@ public class MovieActivity extends AppCompatActivity {
                 MovieDetail detail;
                 try {
                     detail = AVMOProvider.parseMoviesDetail(response.body().string());
-
-                    //getSupportActionBar().setTitle(movie.title);
-
-                    ImageLoader.getInstance().displayImage(detail.coverUrl, mToolbarLayoutBackgroud);
-
+                    ImageLoader.getInstance().displayImage(detail.coverUrl, mToolbarLayoutBackground, JAViewer.DISPLAY_IMAGE_OPTIONS);
                     displayInfo(detail);
                 } catch (IOException e) {
                     onFailure(call, e);
@@ -124,10 +137,10 @@ public class MovieActivity extends AppCompatActivity {
         //Info
         {
             RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.headers_recycler_view);
-            TextView mText = (TextView) findViewById(R.id.header_empty_text);
             ImageView mIcon = (ImageView) findViewById(R.id.movie_icon_header);
 
             if (detail.headers.isEmpty()) {
+                TextView mText = (TextView) findViewById(R.id.header_empty_text);
                 mRecyclerView.setVisibility(View.GONE);
                 mText.setVisibility(View.VISIBLE);
                 ViewUtil.alignIconToView(mIcon, mText);
@@ -141,10 +154,10 @@ public class MovieActivity extends AppCompatActivity {
         //Screenshots
         {
             RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.screenshots_recycler_view);
-            TextView mText = (TextView) findViewById(R.id.screenshots_empty_text);
             ImageView mIcon = (ImageView) findViewById(R.id.movie_icon_screenshots);
 
             if (detail.screenshots.isEmpty()) {
+                TextView mText = (TextView) findViewById(R.id.screenshots_empty_text);
                 mRecyclerView.setVisibility(View.GONE);
                 mText.setVisibility(View.VISIBLE);
                 ViewUtil.alignIconToView(mIcon, mText);
@@ -158,10 +171,10 @@ public class MovieActivity extends AppCompatActivity {
         //Actress
         {
             RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.actresses_recycler_view);
-            TextView mText = (TextView) findViewById(R.id.actresses_empty_text);
             ImageView mIcon = (ImageView) findViewById(R.id.movie_icon_actresses);
 
             if (detail.actresses.isEmpty()) {
+                TextView mText = (TextView) findViewById(R.id.actresses_empty_text);
                 mRecyclerView.setVisibility(View.GONE);
                 mText.setVisibility(View.VISIBLE);
                 ViewUtil.alignIconToView(mIcon, mText);
@@ -172,33 +185,34 @@ public class MovieActivity extends AppCompatActivity {
             }
         }
 
+        //Genre
         {
-            boolean first = true;
-            for (final Genre genre : detail.genres) {
-                View view = getLayoutInflater().inflate(R.layout.card_genre_movie, mFlowLayout, false);
-                view.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (genre.getLink() != null) {
-                            Intent intent = new Intent(MovieActivity.this, MovieListActivity.class);
-                            Bundle bundle = new Bundle();
-                            bundle.putString("title", genre.getName());
-                            bundle.putString("query", genre.getLink());
+            ImageView mIcon = (ImageView) findViewById(R.id.movie_icon_genre);
 
-                            intent.putExtras(bundle);
-                            startActivity(intent);
+            if (detail.genres.isEmpty()) {
+                mFlowLayout.setVisibility(View.GONE);
+                TextView mText = (TextView) findViewById(R.id.genre_empty_text);
+                mText.setVisibility(View.VISIBLE);
+                ViewUtil.alignIconToView(mIcon, mText);
+            } else {
+                for (int i = 0; i < detail.genres.size(); i++) {
+                    final Genre genre = detail.genres.get(i);
+                    View view = getLayoutInflater().inflate(R.layout.card_genre_movie, mFlowLayout, false);
+                    view.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (genre.getLink() != null) {
+                                startActivity(MovieListActivity.newIntent(MovieActivity.this, genre.getName(), genre.getLink()));
+                            }
                         }
+                    });
+                    TextView textView = (TextView) view.findViewById(R.id.chip_genre_name);
+                    textView.setText(genre.getName());
+                    mFlowLayout.addView(view);
+
+                    if (i == 0) {
+                        ViewUtil.alignIconToView(mIcon, view);
                     }
-                });
-                TextView textView = (TextView) view.findViewById(R.id.chip_genre_name);
-                textView.setText(genre.getName());
-
-                mFlowLayout.addView(view);
-
-                if (first) {
-                    ImageView mIcon = (ImageView) findViewById(R.id.movie_icon_genre);
-                    ViewUtil.alignIconToView(mIcon, view);
-                    first = false;
                 }
             }
         }
@@ -213,5 +227,41 @@ public class MovieActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.movie, menu);
+
+        mStarButton = menu.findItem(R.id.action_star);
+
+        {
+            if (JAViewer.CONFIGURATIONS.starred_movies.contains(movie)) {
+                mStarButton.setIcon(R.drawable.ic_menu_star);
+                mStarButton.setTitle("取消收藏");
+            }
+        }
+
+        mStarButton.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (JAViewer.CONFIGURATIONS.starred_movies.contains(movie)) {
+                    JAViewer.CONFIGURATIONS.starred_movies.remove(movie);
+                    mStarButton.setIcon(R.drawable.ic_menu_star_border);
+                    Snackbar.make(mContent, "已取消收藏", Snackbar.LENGTH_LONG).show();
+                    mStarButton.setTitle("收藏");
+                } else {
+                    JAViewer.CONFIGURATIONS.starred_movies.add(movie);
+                    mStarButton.setIcon(R.drawable.ic_menu_star);
+                    Snackbar.make(mContent, "已收藏", Snackbar.LENGTH_LONG).show();
+                    mStarButton.setTitle("取消收藏");
+                }
+                JAViewer.CONFIGURATIONS.save();
+
+                return true;
+            }
+        });
+
+        return super.onCreateOptionsMenu(menu);
     }
 }

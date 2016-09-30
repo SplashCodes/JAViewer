@@ -1,9 +1,11 @@
 package io.github.javiewer.adapter.item;
 
+import java.io.Serializable;
+
 /**
- * Created by MagicDroidX on 2016/7/22.
+ * Project: JAViewer
  */
-public class Linkable {
+public class Linkable implements Serializable {
 
     public String link;
 

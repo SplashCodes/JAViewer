@@ -26,7 +26,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class GenreFragment extends Fragment implements ToolbarNoElevationFragment {
+public class GenreTabsFragment extends Fragment implements NoToolbarElevation {
 
     @Bind(R.id.genre_tabs)
     public TabLayout mTabLayout;
@@ -39,7 +39,7 @@ public class GenreFragment extends Fragment implements ToolbarNoElevationFragmen
 
     public ViewPagerAdapter mAdapter;
 
-    public GenreFragment() {
+    public GenreTabsFragment() {
         // Required empty public constructor
     }
 

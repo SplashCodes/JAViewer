@@ -1,6 +1,5 @@
 package io.github.javiewer.activity;
 
-import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -9,13 +8,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -24,29 +22,31 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.github.javiewer.Configurations;
 import io.github.javiewer.JAViewer;
 import io.github.javiewer.Properties;
 import io.github.javiewer.R;
 import io.github.javiewer.fragment.ActressesFragment;
-import io.github.javiewer.fragment.GenreFragment;
+import io.github.javiewer.fragment.FavouriteFragment;
+import io.github.javiewer.fragment.GenreTabsFragment;
 import io.github.javiewer.fragment.HomeFragment;
+import io.github.javiewer.fragment.NoToolbarElevation;
 import io.github.javiewer.fragment.PopularFragment;
 import io.github.javiewer.fragment.ReleasedFragment;
-import io.github.javiewer.fragment.ToolbarNoElevationFragment;
 import io.github.javiewer.network.AVMO;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -56,7 +56,7 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private Map<Integer, Fragment> fragments;
+    private SparseArray<Fragment> fragments;
     private FragmentManager fragmentManager;
 
     public Fragment currentFragment;
@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity
 
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        JAViewer.CONFIGURATIONS = Configurations.load(new File(this.getExternalFilesDir(null), "configurations.json"));
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -80,26 +81,11 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         mNavigationView.setNavigationItemSelectedListener(this);
         mNavigationView.getMenu().getItem(0).setChecked(true);
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            AlertDialog dialog = new AlertDialog.Builder(this)
-                    .setCancelable(false)
-                    .setTitle("提示")
-                    .setMessage("你好！\n欢迎使用JAViewer！\n即将请求储存空间权限，用于图片缓存功能，减少重复流量消耗")
-                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                        }
-                    })
-                    .create();
-            dialog.show();
-        }
 
         initFragments();
 
@@ -159,7 +145,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void initFragments() {
-        this.fragments = new HashMap<>();
+        this.fragments = new SparseArray<>();
         Fragment fragment = new HomeFragment();
         this.fragments.put(R.id.nav_home, fragment);
 
@@ -172,15 +158,15 @@ public class MainActivity extends AppCompatActivity
         fragment = new ActressesFragment();
         this.fragments.put(R.id.nav_actresses, fragment);
 
-        fragment = new GenreFragment();
+        fragment = new GenreTabsFragment();
         this.fragments.put(R.id.nav_genre, fragment);
 
         this.fragmentManager = getSupportFragmentManager();
         this.setFragment(R.id.nav_home);
     }
 
-    private void setFragment(int id) {
-        Fragment fragment = fragments.get(id);
+    @SuppressWarnings("ConstantConditions")
+    private void setFragment(Fragment fragment, CharSequence title) {
         Fragment old = this.currentFragment;
 
         if (old == fragment) {
@@ -204,14 +190,19 @@ public class MainActivity extends AppCompatActivity
         this.currentFragment = fragment;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            if (fragment instanceof ToolbarNoElevationFragment) {
+            if (fragment instanceof NoToolbarElevation) {
                 mAppBarLayout.setElevation(0);
             } else {
                 mAppBarLayout.setElevation(4 * getResources().getDisplayMetrics().density);
             }
         }
 
-        getSupportActionBar().setTitle(mNavigationView.getMenu().findItem(id).getTitle());
+        getSupportActionBar().setTitle(title);
+    }
+
+
+    private void setFragment(int id) {
+        this.setFragment(fragments.get(id), mNavigationView.getMenu().findItem(id).getTitle());
     }
 
     @Override
@@ -233,16 +224,11 @@ public class MainActivity extends AppCompatActivity
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Intent intent = new Intent(MainActivity.this, MovieListActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("title", query + " 的搜索结果");
                 try {
-                    bundle.putString("query", AVMO.BASE_URL + AVMO.LANGUAGE_NODE + "/search/" + URLEncoder.encode(query, "UTF-8"));
-                } catch (UnsupportedEncodingException ignored) {
+                    startActivity(MovieListActivity.newIntent(MainActivity.this, query + " 的搜索结果", AVMO.BASE_URL + AVMO.LANGUAGE_NODE + "/search/" + URLEncoder.encode(query, "UTF-8")));
+                } catch (UnsupportedEncodingException e) {
+                    return false;
                 }
-                intent.putExtras(bundle);
-
-                MainActivity.this.startActivity(intent);
                 return true;
             }
 
@@ -258,17 +244,23 @@ public class MainActivity extends AppCompatActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
-        Fragment fragment = fragments.get(id);
+        switch (id) {
+            case R.id.nav_github:
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/SplashCodes/JAViewer/releases")));
+                break;
+            case R.id.nav_favourite:
+                setFragment(new FavouriteFragment(), "收藏夹");
+                break;
+            default:
+                Fragment fragment = fragments.get(id);
 
-        if (fragment != null) {
-            setFragment(id);
-        }
-
-        if (id == R.id.nav_github) {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/SplashCodes/JAViewer/releases")));
+                if (fragment != null) {
+                    setFragment(id);
+                }
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

@@ -9,7 +9,7 @@ import retrofit2.Call;
  */
 public class ReleasedFragment extends MovieFragment {
     @Override
-    public Call<ResponseBody> getCall(int page) {
+    public Call<ResponseBody> newCall(int page) {
         return AVMO.INSTANCE.getReleased(page);
     }
 }

@@ -28,6 +28,7 @@ public class DownloadActivity extends AppCompatActivity {
     public String keyword;
 
     @Override
+    @SuppressWarnings("ConstantConditions")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_download);

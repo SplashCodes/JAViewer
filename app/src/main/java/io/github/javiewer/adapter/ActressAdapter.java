@@ -57,7 +57,7 @@ public class ActressAdapter extends RecyclerView.Adapter<ActressAdapter.ViewHold
                     Intent intent = new Intent(mParentActivity, MovieListActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putString("title", actress.getName() + " 的作品");
-                    bundle.putString("query", actress.getLink());
+                    bundle.putString("link", actress.getLink());
 
                     intent.putExtras(bundle);
 

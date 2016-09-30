@@ -6,10 +6,11 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 
 /**
- * Created by MagicDroidX on 2016/9/23.
+ * Project: JAViewer
  */
 
 public class ViewUtil {
+    @SuppressWarnings("deprecation")
     public static void alignIconToView(final View icon, final View view) {
         view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override

@@ -22,7 +22,7 @@ import io.github.javiewer.adapter.item.MovieDetail;
 import io.github.javiewer.view.ViewUtil;
 
 /**
- * Created by MagicDroidX on 2016/9/23.
+ * Project: JAViewer
  */
 
 public class MovieHeaderAdapter extends RecyclerView.Adapter<MovieHeaderAdapter.ViewHolder> {
@@ -65,7 +65,7 @@ public class MovieHeaderAdapter extends RecyclerView.Adapter<MovieHeaderAdapter.
                         Intent intent = new Intent(mParentActivity, MovieListActivity.class);
                         Bundle bundle = new Bundle();
                         bundle.putString("title", header.getName() + " " + header.getValue());
-                        bundle.putString("query", header.getLink());
+                        bundle.putString("link", header.getLink());
                         intent.putExtras(bundle);
                         mParentActivity.startActivity(intent);
                     }

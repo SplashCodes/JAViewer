@@ -3,6 +3,7 @@ package io.github.javiewer.activity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -24,6 +25,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import butterknife.Bind;
@@ -105,7 +107,15 @@ public class GalleryActivity extends AppCompatActivity {
             }
         });
 
-        hide(0);
+        {
+            ActionBar actionBar = getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.hide();
+            }
+            mControlsView.setVisibility(View.GONE);
+            mVisible = false;
+            mHidePart2Runnable.run();
+        }
 
         Bundle bundle = this.getIntent().getExtras();
 
@@ -119,12 +129,10 @@ public class GalleryActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
             }
         });
         updateIndicator();
@@ -249,6 +257,21 @@ public class GalleryActivity extends AppCompatActivity {
                 @Override
                 public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                     spinner.setVisibility(View.GONE);
+                }
+            }, new ImageLoadingProgressListener() {
+
+                @Override
+                public void onProgressUpdate(String imageUri, View view, int current, int total) {
+                    if (current > 0) {
+                        spinner.setMax(total);
+                        spinner.setIndeterminate(false);
+                    }
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        spinner.setProgress(current, true);
+                    } else {
+                        spinner.setProgress(current);
+                    }
                 }
             });
 

@@ -27,7 +27,7 @@ import io.github.javiewer.adapter.item.Actress;
 import io.github.javiewer.view.ViewUtil;
 
 /**
- * Created by MagicDroidX on 2016/9/23.
+ * Project: JAViewer
  */
 
 public class ActressPaletteAdapter extends RecyclerView.Adapter<ActressPaletteAdapter.ViewHolder> {
@@ -62,7 +62,7 @@ public class ActressPaletteAdapter extends RecyclerView.Adapter<ActressPaletteAd
                     Intent intent = new Intent(mParentActivity, MovieListActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putString("title", actress.getName() + " 的作品");
-                    bundle.putString("query", actress.getLink());
+                    bundle.putString("link", actress.getLink());
 
                     intent.putExtras(bundle);
 

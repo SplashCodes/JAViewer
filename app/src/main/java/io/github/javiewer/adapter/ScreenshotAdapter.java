@@ -22,7 +22,7 @@ import io.github.javiewer.adapter.item.Screenshot;
 import io.github.javiewer.view.ViewUtil;
 
 /**
- * Created by MagicDroidX on 2016/9/23.
+ * Project: JAViewer
  */
 
 public class ScreenshotAdapter extends RecyclerView.Adapter<ScreenshotAdapter.ViewHolder> {

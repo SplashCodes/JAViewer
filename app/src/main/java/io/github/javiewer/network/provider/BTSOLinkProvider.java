@@ -14,7 +14,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 
 /**
- * Created by MagicDroidX on 2016/7/22.
+ * Project: JAViewer
  */
 public class BTSOLinkProvider extends DownloadLinkProvider {
 

@@ -23,33 +23,26 @@ public class AVMOProvider {
     public static List<Movie> parseMovies(String html) {
         Document document = Jsoup.parse(html);
 
-        Elements items = document.getElementsByClass("item");
-
         List<Movie> movies = new ArrayList<>();
 
-        for (Element item : items) {
-            Element box = item.getElementsByClass("movie-box").first();
-
-            if (box == null) {
-                continue;
-            }
-
-            Element frame = box.getElementsByClass("photo-frame").first();
-            Element info = box.getElementsByClass("photo-info").first();
-
-            Element img = frame.getElementsByTag("img").first();
-            Element span = info.getElementsByTag("span").first();
+        for (Element box : document.select("a[class*=movie-box]")) {
+            Element img = box.select("div.photo-frame > img").first();
+            Element span = box.select("div.photo-info > span").first();
 
             boolean hot = span.getElementsByTag("i").size() > 0;
 
-            movies.add(Movie.create(
-                    img.attr("title"),
-                    hot ? span.child(2).text() : span.child(1).text(),
-                    hot ? span.child(3).text() : span.child(2).text(),
-                    img.attr("src"),
-                    box.attr("href"),
-                    hot
-            ));
+            Elements date = span.select("date");
+
+            movies.add(
+                    Movie.create(
+                            img.attr("title"),  //标题
+                            date.get(0).text(), //番号
+                            date.get(1).text(), //日期
+                            img.attr("src"),    //图片地址
+                            box.attr("href"),   //链接
+                            hot                 //是否热门
+                    )
+            );
         }
 
         return movies;
@@ -58,23 +51,18 @@ public class AVMOProvider {
     public static List<Actress> parseActresses(String html) {
         Document document = Jsoup.parse(html);
 
-        Elements items = document.getElementsByClass("item");
-
         List<Actress> actresses = new ArrayList<>();
 
-        for (Element item : items) {
-            Element box = item.getElementsByClass("avatar-box").first();
-            Element frame = box.getElementsByClass("photo-frame").first();
-            Element info = box.getElementsByClass("photo-info").first();
+        for (Element box : document.select("a[class*=avatar-box]")) {
+            Element img = box.select("div.photo-frame > img").first();
+            Element span = box.select("div.photo-info > span").first();
 
-            Element img = frame.getElementsByTag("img").first();
-            Element span = info.getElementsByTag("span").first();
-
-            actresses.add(Actress.create(
-                    span.text(),
-                    img.attr("src"),
-                    box.attr("href")
-            ));
+            actresses.add(
+                    Actress.create(
+                            span.text(),     //名字
+                            img.attr("src"), //图片地址
+                            box.attr("href") //链接
+                    ));
         }
 
         return actresses;
@@ -82,96 +70,88 @@ public class AVMOProvider {
 
     public static MovieDetail parseMoviesDetail(String html) {
         Document document = Jsoup.parse(html);
-
         MovieDetail movie = new MovieDetail();
 
         //General Parsing
         {
-            movie.title = document.getElementsByTag("h3").first().text();
-            movie.coverUrl = document.getElementsByClass("bigImage").first().attr("href");
+            movie.title = document.select("div.container > h3").first().text();
+            movie.coverUrl = document.select("[class=bigImage]").first().attr("href");
+            System.out.println("coverUrl:" + movie.coverUrl);
         }
 
         //Parsing Screenshots
         {
-            for (Element element : document.getElementsByClass("sample-box")) {
-                try {
-                    movie.screenshots.add(Screenshot.create(element.getElementsByTag("img").first().attr("src"), element.attr("href")));
-                } catch (Exception ignore) {
-                }
-            }
-        }
-
-        //Parsing Headers
-        {
-            Element headerColumn = document.getElementsByClass("col-md-3").first();
-
-            List<MovieDetail.Header> headerHeader = new ArrayList<>();
-            List<MovieDetail.Header> headerName = new ArrayList<>();
-
-            for (Element p : headerColumn.getElementsByTag("p")) {
-                String text = p.text();
-                if (text.contains(":")) {
-                    String[] s = text.split(":");
-                    MovieDetail.Header header = new MovieDetail.Header();
-                    header.name = s[0];
-
-                    if (s.length > 1) {
-                        header.value = s[1];
-                        movie.headers.add(header);
-                    } else {
-                        headerHeader.add(header);
-                    }
-                } else {
-                    Elements a = p.getElementsByTag("a");
-                    if (a.size() == 1) {
-                        MovieDetail.Header header = new MovieDetail.Header();
-                        header.value = text;
-                        header.link = a.first().attr("href");
-                        headerName.add(header);
-                    } else if (a.size() > 1) {
-                        for (Element genreE : p.getElementsByClass("genre")) {
-                            Genre genre = new Genre();
-                            try {
-                                genre.link = genreE.getElementsByTag("a").attr("href");
-                            } catch (Exception e) {
-                                continue;
-                            }
-                            genre.name = genreE.text();
-                            movie.genres.add(genre);
-                        }
-                    }
-                }
-            }
-
-            for (int i = 0; i < Math.min(headerHeader.size(), headerName.size()); i++) {
-                MovieDetail.Header header = new MovieDetail.Header();
-                header.name = headerHeader.get(i).name;
-                header.value = headerName.get(i).value;
-                header.link = headerName.get(i).link;
-                movie.headers.add(header);
+            for (Element box : document.select("[class*=sample-box]")) {
+                movie.screenshots.add(
+                        Screenshot.create(
+                                box.getElementsByTag("img").first().attr("src"),
+                                box.attr("href")
+                        )
+                );
             }
         }
 
         //Parsing Actresses
         {
-            Element actressWaterfall = document.getElementById("avatar-waterfall");
-            if (actressWaterfall != null) {
-                for (Element box : actressWaterfall.getElementsByTag("a")) {
-                    try {
-                        movie.actresses.add(
-                                Actress.create(
-                                        box.getElementsByTag("span").text(),
-                                        box.getElementsByTag("img").first().attr("src"),
-                                        box.attr("href")
-                                )
-                        );
-                    } catch (Exception ignored) {
-                    }
-                }
+            for (Element box : document.select("[class*=avatar-box]")) {
+                movie.actresses.add(
+                        Actress.create(
+                                box.text(),
+                                box.getElementsByTag("img").first().attr("src"),
+                                box.attr("href")
+                        )
+                );
             }
         }
 
-        return movie;
+        //Parsing Headers
+        {
+            Element info = document.select("div.info").first();
+            if (info != null) {
+                for (Element p : info.select("p:not([class*=header]):has(span:not([class=genre]))")) {
+                    System.out.println(p.text());
+                    String[] strings = p.text().split(":");
+                    movie.headers.add(MovieDetail.Header.create(
+                            strings[0],
+                            strings[1],
+                            null
+                    ));
+                }
+
+                {
+                    List<String> headerNames = new ArrayList<>();
+                    List<String[]> headerAttr = new ArrayList<>();
+
+                    for (Element p : info.select("p[class*=header]")) {
+                        headerNames.add(p.text().replace(":", ""));
+                    }
+
+                    for (Element a : info.select("p > a")) {
+                        headerAttr.add(new String[]{a.text(), a.attr("href")});
+                    }
+
+                    for (int i = 0; i < Math.min(headerNames.size(), headerAttr.size()); i++) {
+                        movie.headers.add(
+                                MovieDetail.Header.create(
+                                        headerNames.get(i),
+                                        headerAttr.get(i)[0],
+                                        headerAttr.get(i)[1]
+                                )
+                        );
+                    }
+                }
+
+                for (Element a : info.select("* > [class=genre]")) {
+                    movie.genres.add(
+                            Genre.create(
+                                    a.text(),
+                                    a.attr("href")
+                            )
+                    );
+                }
+            }
+            return movie;
+        }
     }
 
     public static LinkedHashMap<String, List<Genre>> parseGenres(String html) {

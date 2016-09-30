@@ -54,9 +54,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
             public void onClick(View v) {
                 Intent intent = new Intent(mParentActivity, MovieActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putString("title", movie.getTitle());
+                bundle.putSerializable("movie", movie);
+                /*bundle.putString("title", movie.getTitle());
                 bundle.putString("detail", movie.getLink());
-                bundle.putString("code", movie.getCode());
+                bundle.putString("code", movie.getCode());*/
                 intent.putExtras(bundle);
 
                 mParentActivity.startActivity(intent);
