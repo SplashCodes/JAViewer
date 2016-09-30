@@ -141,7 +141,7 @@ public class AVMOProvider {
                     }
                 }
 
-                for (Element a : info.select("* > [class=genre]")) {
+                for (Element a : info.select("* > [class=genre] > a")) {
                     movie.genres.add(
                             Genre.create(
                                     a.text(),
