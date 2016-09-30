@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.javiewer.R;
 import io.github.javiewer.adapter.item.DownloadLink;
@@ -111,16 +111,16 @@ public class DownloadLinkAdapter extends RecyclerView.Adapter<DownloadLinkAdapte
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.download_title)
+        @BindView(R.id.download_title)
         public TextView mTextTitle;
 
-        @Bind(R.id.download_size)
+        @BindView(R.id.download_size)
         public TextView mTextSize;
 
-        @Bind(R.id.download_date)
+        @BindView(R.id.download_date)
         public TextView mTextDate;
 
-        @Bind(R.id.card_download)
+        @BindView(R.id.card_download)
         public CardView mCard;
 
         public void parse(DownloadLink link) {

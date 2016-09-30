@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.javiewer.R;
 import io.github.javiewer.activity.MovieListActivity;
@@ -69,10 +69,10 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> 
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.genre_name)
+        @BindView(R.id.genre_name)
         public TextView mTextName;
 
-        @Bind(R.id.card_genre)
+        @BindView(R.id.card_genre)
         public CardView mCard;
 
         public void parse(Genre genre) {

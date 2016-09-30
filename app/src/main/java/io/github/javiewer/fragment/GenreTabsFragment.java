@@ -14,7 +14,7 @@ import android.widget.ProgressBar;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.javiewer.R;
 import io.github.javiewer.adapter.ViewPagerAdapter;
@@ -28,13 +28,13 @@ import retrofit2.Response;
 
 public class GenreTabsFragment extends Fragment implements NoToolbarElevation {
 
-    @Bind(R.id.genre_tabs)
+    @BindView(R.id.genre_tabs)
     public TabLayout mTabLayout;
 
-    @Bind(R.id.genre_view_pager)
+    @BindView(R.id.genre_view_pager)
     public ViewPager mViewPager;
 
-    @Bind(R.id.genre_progress_bar)
+    @BindView(R.id.genre_progress_bar)
     public ProgressBar mProgressBar;
 
     public ViewPagerAdapter mAdapter;

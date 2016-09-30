@@ -18,7 +18,7 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.javiewer.JAViewer;
 import io.github.javiewer.R;
@@ -104,13 +104,13 @@ public class ActressPaletteAdapter extends RecyclerView.Adapter<ActressPaletteAd
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.actress_palette_img)
+        @BindView(R.id.actress_palette_img)
         public ImageView mImage;
 
-        @Bind(R.id.actress_palette_name)
+        @BindView(R.id.actress_palette_name)
         public TextView mName;
 
-        @Bind(R.id.card_actress_palette)
+        @BindView(R.id.card_actress_palette)
         public CardView mCard;
 
         public ViewHolder(View view) {

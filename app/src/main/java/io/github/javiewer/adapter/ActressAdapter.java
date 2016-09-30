@@ -15,7 +15,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.javiewer.JAViewer;
 import io.github.javiewer.R;
@@ -77,13 +77,13 @@ public class ActressAdapter extends RecyclerView.Adapter<ActressAdapter.ViewHold
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.actress_name)
+        @BindView(R.id.actress_name)
         public TextView mTextName;
 
-        @Bind(R.id.actress_img)
+        @BindView(R.id.actress_img)
         public ImageView mImage;
 
-        @Bind(R.id.card_actress)
+        @BindView(R.id.card_actress)
         public CardView mCard;
 
         public void parse(Actress actress) {

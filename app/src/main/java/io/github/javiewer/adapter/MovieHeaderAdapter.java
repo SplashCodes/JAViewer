@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.javiewer.R;
 import io.github.javiewer.activity.MovieListActivity;
@@ -86,10 +86,10 @@ public class MovieHeaderAdapter extends RecyclerView.Adapter<MovieHeaderAdapter.
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.header_name)
+        @BindView(R.id.header_name)
         public TextView mHeaderName;
 
-        @Bind(R.id.header_value)
+        @BindView(R.id.header_value)
         public TextView mHeaderValue;
 
         public ViewHolder(View view) {

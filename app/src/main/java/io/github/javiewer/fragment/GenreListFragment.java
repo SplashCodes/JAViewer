@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.javiewer.R;
 import io.github.javiewer.adapter.GenreAdapter;
@@ -28,7 +28,7 @@ public class GenreListFragment extends Fragment {
 
     protected List<Genre> genres = new ArrayList<>();
 
-    @Bind(R.id.genre_recycler_view)
+    @BindView(R.id.genre_recycler_view)
     public RecyclerView mRecyclerView;
 
     private RecyclerView.Adapter mAdapter;

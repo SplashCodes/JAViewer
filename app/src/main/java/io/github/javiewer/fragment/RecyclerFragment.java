@@ -10,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.javiewer.R;
 import io.github.javiewer.listener.BasicOnScrollListener;
@@ -20,13 +20,13 @@ import io.github.javiewer.view.ViewUtil;
  * Project: JAViewer
  */
 public abstract class RecyclerFragment<LM extends RecyclerView.LayoutManager> extends Fragment {
-    @Bind(R.id.recycler_view)
+    @BindView(R.id.recycler_view)
     public RecyclerView mRecyclerView;
 
     private RecyclerView.Adapter mAdapter;
     private LM mLayoutManager;
 
-    @Bind(R.id.refresh_layout)
+    @BindView(R.id.refresh_layout)
     public SwipeRefreshLayout mRefreshLayout;
 
     public SwipeRefreshLayout.OnRefreshListener mRefreshListener;

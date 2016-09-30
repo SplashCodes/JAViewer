@@ -13,7 +13,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.javiewer.JAViewer;
 import io.github.javiewer.R;
@@ -82,7 +82,7 @@ public class ScreenshotAdapter extends RecyclerView.Adapter<ScreenshotAdapter.Vi
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.screenshot_image_view)
+        @BindView(R.id.screenshot_image_view)
         public ImageView mImage;
 
         public ViewHolder(View view) {

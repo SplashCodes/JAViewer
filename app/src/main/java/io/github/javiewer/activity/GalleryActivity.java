@@ -28,7 +28,7 @@ import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.javiewer.R;
 
@@ -73,13 +73,13 @@ public class GalleryActivity extends AppCompatActivity {
 
     GestureDetector detector;
 
-    @Bind(R.id.gallery_pager)
+    @BindView(R.id.gallery_pager)
     public ViewPager mPager;
 
-    @Bind(R.id.fullscreen_content_controls)
+    @BindView(R.id.fullscreen_content_controls)
     public View mControlsView;
 
-    @Bind(R.id.gallery_page_indicator)
+    @BindView(R.id.gallery_page_indicator)
     public TextView mTextIndicator;
 
     private String[] imageUrls;

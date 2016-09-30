@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.javiewer.R;
 import io.github.javiewer.adapter.ViewPagerAdapter;
@@ -16,13 +16,13 @@ import io.github.javiewer.fragment.DownloadFragment;
 
 public class DownloadActivity extends AppCompatActivity {
 
-    @Bind(R.id.download_toolbar)
+    @BindView(R.id.download_toolbar)
     public Toolbar mToolbar;
 
-    @Bind(R.id.download_tabs)
+    @BindView(R.id.download_tabs)
     public TabLayout mTabLayout;
 
-    @Bind(R.id.download_view_pager)
+    @BindView(R.id.download_view_pager)
     public ViewPager mViewPager;
 
     public String keyword;

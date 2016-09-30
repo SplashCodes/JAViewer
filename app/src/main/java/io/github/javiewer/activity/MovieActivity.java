@@ -21,7 +21,7 @@ import com.wefika.flowlayout.FlowLayout;
 
 import java.io.IOException;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.javiewer.JAViewer;
 import io.github.javiewer.R;
@@ -45,19 +45,19 @@ public class MovieActivity extends AppCompatActivity {
 
     public Movie movie;
 
-    @Bind(R.id.toolbar_layout_background)
+    @BindView(R.id.toolbar_layout_background)
     ImageView mToolbarLayoutBackground;
 
-    @Bind(R.id.movie_content)
+    @BindView(R.id.movie_content)
     View mContent;
 
-    @Bind(R.id.movie_progress_bar)
+    @BindView(R.id.movie_progress_bar)
     ProgressBar mProgressBar;
 
-    @Bind(R.id.fab)
+    @BindView(R.id.fab)
     FloatingActionButton mFab;
 
-    @Bind(R.id.genre_flow_layout)
+    @BindView(R.id.genre_flow_layout)
     FlowLayout mFlowLayout;
 
     MenuItem mStarButton;

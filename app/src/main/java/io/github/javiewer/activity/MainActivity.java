@@ -34,7 +34,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.javiewer.Configurations;
 import io.github.javiewer.JAViewer;
@@ -61,10 +61,10 @@ public class MainActivity extends AppCompatActivity
 
     public Fragment currentFragment;
 
-    @Bind(R.id.nav_view)
+    @BindView(R.id.nav_view)
     public NavigationView mNavigationView;
 
-    @Bind(R.id.app_bar)
+    @BindView(R.id.app_bar)
     public AppBarLayout mAppBarLayout;
 
     @Override

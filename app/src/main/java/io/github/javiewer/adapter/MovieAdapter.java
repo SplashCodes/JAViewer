@@ -15,7 +15,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.javiewer.JAViewer;
 import io.github.javiewer.R;
@@ -76,22 +76,22 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.movie_title)
+        @BindView(R.id.movie_title)
         public TextView mTextTitle;
 
-        @Bind(R.id.movie_size)
+        @BindView(R.id.movie_size)
         public TextView mTextCode;
 
-        @Bind(R.id.movie_date)
+        @BindView(R.id.movie_date)
         public TextView mTextDate;
 
-        @Bind(R.id.movie_cover)
+        @BindView(R.id.movie_cover)
         public ImageView mImageCover;
 
-        @Bind(R.id.movie_hot)
+        @BindView(R.id.movie_hot)
         public ImageView mImageHot;
 
-        @Bind(R.id.card_movie)
+        @BindView(R.id.card_movie)
         public CardView mCard;
 
         public void parse(Movie movie) {
