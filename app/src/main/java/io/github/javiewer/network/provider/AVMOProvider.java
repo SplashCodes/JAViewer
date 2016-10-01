@@ -76,7 +76,6 @@ public class AVMOProvider {
         {
             movie.title = document.select("div.container > h3").first().text();
             movie.coverUrl = document.select("[class=bigImage]").first().attr("href");
-            System.out.println("coverUrl:" + movie.coverUrl);
         }
 
         //Parsing Screenshots
@@ -109,7 +108,6 @@ public class AVMOProvider {
             Element info = document.select("div.info").first();
             if (info != null) {
                 for (Element p : info.select("p:not([class*=header]):has(span:not([class=genre]))")) {
-                    System.out.println(p.text());
                     String[] strings = p.text().split(":");
                     movie.headers.add(MovieDetail.Header.create(
                             strings[0],

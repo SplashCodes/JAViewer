@@ -41,8 +41,6 @@ import retrofit2.Response;
 
 public class MovieActivity extends AppCompatActivity {
 
-    public String detailUrl;
-
     public Movie movie;
 
     @BindView(R.id.toolbar_layout_background)
@@ -62,8 +60,6 @@ public class MovieActivity extends AppCompatActivity {
 
     MenuItem mStarButton;
 
-    String code;
-
     @Override
     @SuppressWarnings("ConstantConditions")
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,31 +75,20 @@ public class MovieActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(movie.title);
-        code = movie.code;
-        detailUrl = movie.link;
-
-        System.out.println(movie);
-        /*getSupportActionBar().setTitle(bundle.getString("title"));
-
-        code = bundle.getString("code");
-
-        detailUrl = bundle.getString("detail");
-        movie = new Movie();
-        movie.link = detailUrl;*/
 
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MovieActivity.this, DownloadActivity.class);
                 Bundle arguments = new Bundle();
-                arguments.putString("keyword", code);
+                arguments.putString("keyword", movie.getCode());
                 intent.putExtras(arguments);
                 startActivity(intent);
                 //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
         });
 
-        Call<ResponseBody> call = JAViewer.SERVICE.get(this.detailUrl);
+        Call<ResponseBody> call = JAViewer.SERVICE.get(this.movie.getLink());
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
