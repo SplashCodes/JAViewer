@@ -1,4 +1,5 @@
 {
-  "latest_version": "1.1",
-  "changelog": "**推荐更新**\n1. 内容页新增女优，分类等详细信息\n2. 优化诸多布局问题\n3. 修复已知BUG"
+  "latest_version": "1.2",
+  "latest_version_code": "4",
+  "changelog": "**推荐更新**\n1. 本地收藏夹功能完成\n2. 多数据源，目前支持 日本 欧美以及日本无码 三个源\n3. 修复TorrentKitty无法搜索的问题\n4. 优化下载界面的卡片布局\n5. 修复其他已知BUG"
 }
