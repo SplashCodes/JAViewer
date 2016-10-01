@@ -36,4 +36,5 @@ dependencies {
     compile 'org.jsoup:jsoup:1.9.2'
     compile 'com.google.code.gson:gson:2.7'
     compile 'com.android.support:cardview-v7:24.2.1'
+    compile 'com.pnikosis:materialish-progress:1.7'
 }

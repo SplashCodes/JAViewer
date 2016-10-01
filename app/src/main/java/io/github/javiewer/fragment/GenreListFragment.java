@@ -15,10 +15,11 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.github.javiewer.JAViewer;
 import io.github.javiewer.R;
 import io.github.javiewer.adapter.GenreAdapter;
 import io.github.javiewer.adapter.item.Genre;
-import io.github.javiewer.network.AVMO;
+import io.github.javiewer.network.BasicService;
 import io.github.javiewer.view.ViewUtil;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import okhttp3.ResponseBody;
@@ -68,7 +69,7 @@ public class GenreListFragment extends Fragment {
     }
 
     public Call<ResponseBody> getCall(int page) {
-        return AVMO.INSTANCE.getActresses(page);
+        return  JAViewer.SERVICE.getActresses(page);
     }
 
     public List<Genre> getGenres() {

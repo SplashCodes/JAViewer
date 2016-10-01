@@ -10,6 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import io.github.javiewer.adapter.item.DataSource;
 import io.github.javiewer.adapter.item.Movie;
 
 /**
@@ -20,10 +21,26 @@ public class Configurations {
 
     private static File file;
 
-    public ArrayList<Movie> starred_movies = new ArrayList<>();
+    private ArrayList<Movie> starred_movies;
+
+    private DataSource data_source;
 
     public ArrayList<Movie> getStarredMovies() {
+        if (starred_movies == null) {
+            starred_movies = new ArrayList<>();
+        }
         return starred_movies;
+    }
+
+    public DataSource getDataSource() {
+        if (data_source == null) {
+            data_source = JAViewer.DATA_SOURCES.get(0);
+        }
+        return data_source;
+    }
+
+    public void setDataSource(DataSource source) {
+        this.data_source = source;
     }
 
     public static Configurations load(File file) {

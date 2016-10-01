@@ -3,7 +3,6 @@ package io.github.javiewer.activity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -17,9 +16,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -27,6 +24,7 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.pnikosis.materialishprogress.ProgressWheel;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -218,15 +216,17 @@ public class GalleryActivity extends AppCompatActivity {
 
         @Override
         public Object instantiateItem(ViewGroup view, int position) {
-            View imageLayout = inflater.inflate(R.layout.content_pager_item, view, false);
+            View imageLayout = inflater.inflate(R.layout.content_gallery, view, false);
             assert imageLayout != null;
             ImageView imageView = (ImageView) imageLayout.findViewById(R.id.image);
-            final ProgressBar spinner = (ProgressBar) imageLayout.findViewById(R.id.loading);
+            final ProgressWheel spinner = (ProgressWheel) imageLayout.findViewById(R.id.progress_wheel);
+            final TextView textView = (TextView) imageLayout.findViewById(R.id.gallery_text_error);
 
             ImageLoader.getInstance().displayImage(imageUrls[position], imageView, options, new SimpleImageLoadingListener() {
                 @Override
                 public void onLoadingStarted(String imageUri, View view) {
                     spinner.setVisibility(View.VISIBLE);
+                    spinner.spin();
                 }
 
                 @Override
@@ -234,23 +234,23 @@ public class GalleryActivity extends AppCompatActivity {
                     String message = null;
                     switch (failReason.getType()) {
                         case IO_ERROR:
-                            message = "Input/Output error";
+                            message = "IO 错误";
                             break;
                         case DECODING_ERROR:
-                            message = "Image can't be decoded";
+                            message = "解码失败";
                             break;
                         case NETWORK_DENIED:
-                            message = "Downloads are denied";
+                            message = "网络错误";
                             break;
                         case OUT_OF_MEMORY:
-                            message = "Out Of Memory error";
+                            message = "内存不足";
                             break;
                         case UNKNOWN:
-                            message = "Unknown error";
+                            message = "未知错误";
                             break;
                     }
-                    Toast.makeText(view.getContext(), message, Toast.LENGTH_SHORT).show();
 
+                    textView.setText(message);
                     spinner.setVisibility(View.GONE);
                 }
 
@@ -262,16 +262,7 @@ public class GalleryActivity extends AppCompatActivity {
 
                 @Override
                 public void onProgressUpdate(String imageUri, View view, int current, int total) {
-                    if (current > 0) {
-                        spinner.setMax(total);
-                        spinner.setIndeterminate(false);
-                    }
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        spinner.setProgress(current, true);
-                    } else {
-                        spinner.setProgress(current);
-                    }
+                    spinner.setProgress(((float) current) / ((float) total));
                 }
             });
 

@@ -10,10 +10,11 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.javiewer.JAViewer;
 import io.github.javiewer.adapter.ActressAdapter;
 import io.github.javiewer.adapter.item.Actress;
 import io.github.javiewer.listener.EndlessOnScrollListener;
-import io.github.javiewer.network.AVMO;
+import io.github.javiewer.network.BasicService;
 import io.github.javiewer.network.provider.AVMOProvider;
 import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
@@ -48,10 +49,25 @@ public class ActressesFragment extends RecyclerFragment<StaggeredGridLayoutManag
             }
         });
 
-        this.addOnScrollListener(new EndlessOnScrollListener<Actress>(getLayoutManager(), mRefreshLayout, this.actresses) {
+        this.addOnScrollListener(new EndlessOnScrollListener<Actress>() {
             @Override
             public Call<ResponseBody> newCall(int page) {
                 return ActressesFragment.this.newCall(page);
+            }
+
+            @Override
+            public RecyclerView.LayoutManager getLayoutManager() {
+                return ActressesFragment.this.getLayoutManager();
+            }
+
+            @Override
+            public SwipeRefreshLayout getRefreshLayout() {
+                return ActressesFragment.this.mRefreshLayout;
+            }
+
+            @Override
+            public List<Actress> getItems() {
+                return ActressesFragment.this.actresses;
             }
 
             @Override
@@ -80,6 +96,6 @@ public class ActressesFragment extends RecyclerFragment<StaggeredGridLayoutManag
     }
 
     public Call<ResponseBody> newCall(int page) {
-        return AVMO.INSTANCE.getActresses(page);
+        return JAViewer.SERVICE.getActresses(page);
     }
 }

@@ -12,11 +12,22 @@
         android:adjustViewBounds="true"
         android:scaleType="fitCenter" />
 
-    <ProgressBar
-        android:id="@+id/loading"
+    <com.pnikosis.materialishprogress.ProgressWheel xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/progress_wheel"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center"
+        app:matProg_barColor="@color/colorAccent"
+        app:matProg_progressIndeterminate="false" />
+
+    <TextView
+        android:id="@+id/gallery_text_error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:text="这里是错误信息"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="16sp"
         android:visibility="gone" />
 
 </FrameLayout>

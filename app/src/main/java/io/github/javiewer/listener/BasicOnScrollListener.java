@@ -19,9 +19,6 @@ import retrofit2.Response;
 
 public abstract class BasicOnScrollListener<I> extends RecyclerView.OnScrollListener {
 
-    private RecyclerView.LayoutManager mLayoutManager;
-    private SwipeRefreshLayout mRefreshLayout;
-
     private boolean loading = false;
 
     private int loadThreshold = 5;
@@ -30,37 +27,38 @@ public abstract class BasicOnScrollListener<I> extends RecyclerView.OnScrollList
     private long token;
     private boolean end = false;
 
-    private List<I> items;
-
-    public BasicOnScrollListener(RecyclerView.LayoutManager mLayoutManager, SwipeRefreshLayout mRefreshLayout, List<I> items) {
-        this.mLayoutManager = mLayoutManager;
-        this.mRefreshLayout = mRefreshLayout;
-        this.items = items;
-    }
 
     public void reset() {
         loading = false;
         loadThreshold = 5;
         currentPage = 0;
-        items.clear();
+        getItems().clear();
     }
 
-    public List<I> getItems() {
-        return items;
-    }
+    public abstract RecyclerView.LayoutManager getLayoutManager();
+
+    public abstract SwipeRefreshLayout getRefreshLayout();
+
+    public abstract List<I> getItems();
 
     public abstract Call<ResponseBody> newCall(int page);
 
     public void refresh() {
         setLoading(true);
         reset();
-        items.clear();
+        getItems().clear();
         onLoad(token = System.currentTimeMillis());
     }
 
     private void onLoad(final long token) {
         final int page = currentPage;
         Call<ResponseBody> call = newCall(page + 1);
+
+        if (call == null) {
+            setLoading(false);
+            getRefreshLayout().setRefreshing(false);
+            return;
+        }
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -74,13 +72,13 @@ public abstract class BasicOnScrollListener<I> extends RecyclerView.OnScrollList
                 }
 
                 setLoading(false);
-                mRefreshLayout.setRefreshing(false);
+                getRefreshLayout().setRefreshing(false);
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 setLoading(false);
-                mRefreshLayout.setRefreshing(false);
+                getRefreshLayout().setRefreshing(false);
                 onExceptionCaught(t);
             }
         });
@@ -105,9 +103,9 @@ public abstract class BasicOnScrollListener<I> extends RecyclerView.OnScrollList
     }
 
     public boolean canLoadMore(RecyclerView recyclerView) {
+        RecyclerView.LayoutManager mLayoutManager = getLayoutManager();
         int visibleItemCount = recyclerView.getChildCount();
         int totalItemCount = mLayoutManager.getItemCount();
-
         int firstVisibleItem = 0;
         if (mLayoutManager instanceof StaggeredGridLayoutManager) {
             firstVisibleItem = ((StaggeredGridLayoutManager) mLayoutManager).findFirstVisibleItemPositions(null)[0];

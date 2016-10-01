@@ -25,6 +25,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -40,6 +44,7 @@ import io.github.javiewer.Configurations;
 import io.github.javiewer.JAViewer;
 import io.github.javiewer.Properties;
 import io.github.javiewer.R;
+import io.github.javiewer.adapter.item.DataSource;
 import io.github.javiewer.fragment.ActressesFragment;
 import io.github.javiewer.fragment.FavouriteFragment;
 import io.github.javiewer.fragment.GenreTabsFragment;
@@ -47,7 +52,7 @@ import io.github.javiewer.fragment.HomeFragment;
 import io.github.javiewer.fragment.NoToolbarElevation;
 import io.github.javiewer.fragment.PopularFragment;
 import io.github.javiewer.fragment.ReleasedFragment;
-import io.github.javiewer.network.AVMO;
+import io.github.javiewer.network.BasicService;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Request;
@@ -74,6 +79,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         JAViewer.CONFIGURATIONS = Configurations.load(new File(this.getExternalFilesDir(null), "configurations.json"));
+        JAViewer.recreateService();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -86,6 +92,39 @@ public class MainActivity extends AppCompatActivity
 
         mNavigationView.setNavigationItemSelectedListener(this);
         mNavigationView.getMenu().getItem(0).setChecked(true);
+
+        Spinner spinner = (Spinner) mNavigationView.getHeaderView(0).findViewById(R.id.nav_header_spinner);
+        ArrayAdapter<DataSource> adapter = new ArrayAdapter<>(this, R.layout.nav_spinner_item, JAViewer.DATA_SOURCES);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setSelection(JAViewer.DATA_SOURCES.indexOf(JAViewer.getDataSource()));
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                final DataSource newSource = JAViewer.DATA_SOURCES.get(position);
+                if (newSource.equals(JAViewer.getDataSource())) {
+                    return;
+                }
+
+                AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+                        .setMessage("是否切换到" + newSource.getName() + "数据源？")
+                        .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                JAViewer.CONFIGURATIONS.setDataSource(newSource);
+                                JAViewer.CONFIGURATIONS.save();
+                                restart();
+                            }
+                        })
+                        .setNegativeButton("取消", null)
+                        .show();
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
 
         initFragments();
 
@@ -161,6 +200,9 @@ public class MainActivity extends AppCompatActivity
         fragment = new GenreTabsFragment();
         this.fragments.put(R.id.nav_genre, fragment);
 
+        fragment = new FavouriteFragment();
+        this.fragments.put(R.id.nav_favourite, fragment);
+
         this.fragmentManager = getSupportFragmentManager();
         this.setFragment(R.id.nav_home);
     }
@@ -225,7 +267,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public boolean onQueryTextSubmit(String query) {
                 try {
-                    startActivity(MovieListActivity.newIntent(MainActivity.this, query + " 的搜索结果", AVMO.BASE_URL + AVMO.LANGUAGE_NODE + "/search/" + URLEncoder.encode(query, "UTF-8")));
+                    startActivity(MovieListActivity.newIntent(MainActivity.this, query + " 的搜索结果", JAViewer.getDataSource().getLink() + BasicService.LANGUAGE_NODE + "/search/" + URLEncoder.encode(query, "UTF-8")));
                 } catch (UnsupportedEncodingException e) {
                     return false;
                 }
@@ -251,9 +293,6 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_github:
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/SplashCodes/JAViewer/releases")));
                 break;
-            case R.id.nav_favourite:
-                setFragment(new FavouriteFragment(), "收藏夹");
-                break;
             default:
                 Fragment fragment = fragments.get(id);
 
@@ -266,5 +305,12 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void restart() {
+        Intent i = getBaseContext().getPackageManager()
+                .getLaunchIntentForPackage(getBaseContext().getPackageName());
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
     }
 }

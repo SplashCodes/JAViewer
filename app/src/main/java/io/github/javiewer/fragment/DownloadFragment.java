@@ -13,7 +13,6 @@ import java.util.List;
 import io.github.javiewer.adapter.DownloadLinkAdapter;
 import io.github.javiewer.adapter.item.DownloadLink;
 import io.github.javiewer.listener.BasicOnScrollListener;
-import io.github.javiewer.network.BTSO;
 import io.github.javiewer.network.provider.DownloadLinkProvider;
 import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
@@ -43,6 +42,7 @@ public class DownloadFragment extends RecyclerFragment<LinearLayoutManager> {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        this.setRecyclerViewPadding(4);
 
         this.setLayoutManager(new LinearLayoutManager(this.getContext()));
         this.setAdapter(new ScaleInAnimationAdapter(new DownloadLinkAdapter(links, this.getActivity(), this.provider)));
@@ -58,10 +58,25 @@ public class DownloadFragment extends RecyclerFragment<LinearLayoutManager> {
             }
         });
 
-        this.addOnScrollListener(new BasicOnScrollListener<DownloadLink>(getLayoutManager(), mRefreshLayout, this.links) {
+        this.addOnScrollListener(new BasicOnScrollListener<DownloadLink>() {
             @Override
             public Call<ResponseBody> newCall(int page) {
                 return DownloadFragment.this.newCall(page);
+            }
+
+            @Override
+            public RecyclerView.LayoutManager getLayoutManager() {
+                return DownloadFragment.this.getLayoutManager();
+            }
+
+            @Override
+            public SwipeRefreshLayout getRefreshLayout() {
+                return DownloadFragment.this.mRefreshLayout;
+            }
+
+            @Override
+            public List<DownloadLink> getItems() {
+                return DownloadFragment.this.links;
             }
 
             @Override
@@ -83,9 +98,17 @@ public class DownloadFragment extends RecyclerFragment<LinearLayoutManager> {
                 }
             }
         });
+
+        mRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mRefreshLayout.setRefreshing(true);
+                mRefreshListener.onRefresh();
+            }
+        });
     }
 
     public Call<ResponseBody> newCall(int page) {
-        return BTSO.INSTANCE.search(this.keyword, page);
+        return this.provider.search(this.keyword, page);
     }
 }

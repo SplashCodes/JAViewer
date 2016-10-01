@@ -31,7 +31,7 @@ import io.github.javiewer.adapter.ScreenshotAdapter;
 import io.github.javiewer.adapter.item.Genre;
 import io.github.javiewer.adapter.item.Movie;
 import io.github.javiewer.adapter.item.MovieDetail;
-import io.github.javiewer.network.AVMO;
+import io.github.javiewer.fragment.FavouriteFragment;
 import io.github.javiewer.network.provider.AVMOProvider;
 import io.github.javiewer.view.ViewUtil;
 import okhttp3.ResponseBody;
@@ -103,7 +103,7 @@ public class MovieActivity extends AppCompatActivity {
             }
         });
 
-        Call<ResponseBody> call = AVMO.INSTANCE.get(this.detailUrl);
+        Call<ResponseBody> call = JAViewer.SERVICE.get(this.detailUrl);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -236,7 +236,7 @@ public class MovieActivity extends AppCompatActivity {
         mStarButton = menu.findItem(R.id.action_star);
 
         {
-            if (JAViewer.CONFIGURATIONS.starred_movies.contains(movie)) {
+            if (JAViewer.CONFIGURATIONS.getStarredMovies().contains(movie)) {
                 mStarButton.setIcon(R.drawable.ic_menu_star);
                 mStarButton.setTitle("取消收藏");
             }
@@ -245,18 +245,19 @@ public class MovieActivity extends AppCompatActivity {
         mStarButton.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                if (JAViewer.CONFIGURATIONS.starred_movies.contains(movie)) {
-                    JAViewer.CONFIGURATIONS.starred_movies.remove(movie);
+                if (JAViewer.CONFIGURATIONS.getStarredMovies().contains(movie)) {
+                    JAViewer.CONFIGURATIONS.getStarredMovies().remove(movie);
                     mStarButton.setIcon(R.drawable.ic_menu_star_border);
                     Snackbar.make(mContent, "已取消收藏", Snackbar.LENGTH_LONG).show();
                     mStarButton.setTitle("收藏");
                 } else {
-                    JAViewer.CONFIGURATIONS.starred_movies.add(movie);
+                    JAViewer.CONFIGURATIONS.getStarredMovies().add(movie);
                     mStarButton.setIcon(R.drawable.ic_menu_star);
                     Snackbar.make(mContent, "已收藏", Snackbar.LENGTH_LONG).show();
                     mStarButton.setTitle("取消收藏");
                 }
                 JAViewer.CONFIGURATIONS.save();
+                FavouriteFragment.update();
 
                 return true;
             }

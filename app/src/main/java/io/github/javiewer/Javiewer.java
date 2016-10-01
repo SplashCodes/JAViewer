@@ -1,6 +1,8 @@
 package io.github.javiewer;
 
+import android.app.Application;
 import android.graphics.Bitmap;
+import android.support.v7.widget.RecyclerView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -14,6 +16,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import io.github.javiewer.adapter.item.DataSource;
+import io.github.javiewer.network.BasicService;
 import okhttp3.Cookie;
 import okhttp3.CookieJar;
 import okhttp3.HttpUrl;
@@ -21,15 +25,37 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import retrofit2.Retrofit;
 
 /**
  * Project: JAViewer
  */
 
-public class JAViewer {
+public class JAViewer extends Application {
     public static final String USER_AGENT = "Mozilla/5.0 (Linux; Android 5.1.1; Nexus 5 Build/LMY48B; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/43.0.2357.65 Mobile Safari/537.36";
 
     public static Configurations CONFIGURATIONS;
+
+    public static final List<DataSource> DATA_SOURCES = new ArrayList<DataSource>() {{
+        add(new DataSource("AVMOO 日本", "https://avmo.pw"));
+        add(new DataSource("AVSOX 日本无码", "https://avso.pw"));
+        add(new DataSource("AVMEMO 欧美", "https://avxo.pw"));
+    }};
+
+    public static DataSource getDataSource() {
+        return JAViewer.CONFIGURATIONS.getDataSource();
+    }
+
+    public static BasicService SERVICE;
+
+    public static void recreateService() {
+        SERVICE = new Retrofit.Builder()
+                .baseUrl(JAViewer.getDataSource().getLink())
+                .client(JAViewer.HTTP_CLIENT)
+                .build()
+                .create(BasicService.class);
+    }
+
 
     public static final OkHttpClient HTTP_CLIENT = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
         @Override

@@ -30,4 +30,9 @@
         <item name="android:background">@color/black_overlay</item>
     </style>
 
+    <style name="SpinnerStyle" parent="@style/ThemeOverlay.AppCompat.Dark">
+        <item name="android:spinnerItemStyle">@android:color/white</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
 </resources>

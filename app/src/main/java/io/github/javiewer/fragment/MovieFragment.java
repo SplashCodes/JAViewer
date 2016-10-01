@@ -44,10 +44,25 @@ public abstract class MovieFragment extends RecyclerFragment<LinearLayoutManager
             }
         });
 
-        this.addOnScrollListener(new EndlessOnScrollListener<Movie>(getLayoutManager(), mRefreshLayout, this.movies) {
+        this.addOnScrollListener(new EndlessOnScrollListener<Movie>() {
             @Override
             public Call<ResponseBody> newCall(int page) {
                 return MovieFragment.this.newCall(page);
+            }
+
+            @Override
+            public RecyclerView.LayoutManager getLayoutManager() {
+                return MovieFragment.this.getLayoutManager();
+            }
+
+            @Override
+            public SwipeRefreshLayout getRefreshLayout() {
+                return MovieFragment.this.mRefreshLayout;
+            }
+
+            @Override
+            public List<Movie> getItems() {
+                return MovieFragment.this.movies;
             }
 
             @Override
