@@ -9,8 +9,8 @@ android {
         applicationId "io.github.javiewer"
         minSdkVersion 15
         targetSdkVersion 24
-        versionCode 1
-        versionName "1.1"
+        versionCode 4
+        versionName "1.2"
     }
     buildTypes {
         release {

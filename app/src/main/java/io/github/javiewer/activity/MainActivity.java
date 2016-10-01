@@ -154,14 +154,14 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void handleProperties(Properties properties) {
-        String currentVersion;
+        int currentVersion;
         try {
-            currentVersion = this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionName;
+            currentVersion = this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionCode;
         } catch (PackageManager.NameNotFoundException e) {
             throw new RuntimeException("Hacked???");
         }
 
-        if (properties.getLatestVersion() != null && !currentVersion.trim().equals(properties.getLatestVersion().trim())) {
+        if (properties.getLatestVersionCode() > 0 && currentVersion < properties.getLatestVersionCode()) {
 
             String message = "新版本：" + properties.getLatestVersion();
             if (properties.getChangelog() != null) {
