@@ -72,6 +72,8 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.app_bar)
     public AppBarLayout mAppBarLayout;
 
+    int positionOfSpinner = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,14 +95,14 @@ public class MainActivity extends AppCompatActivity
         mNavigationView.setNavigationItemSelectedListener(this);
         mNavigationView.getMenu().getItem(0).setChecked(true);
 
-        Spinner spinner = (Spinner) mNavigationView.getHeaderView(0).findViewById(R.id.nav_header_spinner);
+        final Spinner spinner = (Spinner) mNavigationView.getHeaderView(0).findViewById(R.id.nav_header_spinner);
         ArrayAdapter<DataSource> adapter = new ArrayAdapter<>(this, R.layout.nav_spinner_item, JAViewer.DATA_SOURCES);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(R.layout.view_drop_down);
         spinner.setAdapter(adapter);
-        spinner.setSelection(JAViewer.DATA_SOURCES.indexOf(JAViewer.getDataSource()));
+        spinner.setSelection(positionOfSpinner = JAViewer.DATA_SOURCES.indexOf(JAViewer.getDataSource()));
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
                 final DataSource newSource = JAViewer.DATA_SOURCES.get(position);
                 if (newSource.equals(JAViewer.getDataSource())) {
                     return;
@@ -111,12 +113,18 @@ public class MainActivity extends AppCompatActivity
                         .setPositiveButton("确认", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                positionOfSpinner = position;
                                 JAViewer.CONFIGURATIONS.setDataSource(newSource);
                                 JAViewer.CONFIGURATIONS.save();
                                 restart();
                             }
                         })
-                        .setNegativeButton("取消", null)
+                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                spinner.setSelection(positionOfSpinner);
+                            }
+                        })
                         .show();
 
             }

@@ -20,6 +20,7 @@
 
     <Spinner
         android:id="@+id/nav_header_spinner"
+        android:theme="@style/SpinnerStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/nav_header_vertical_spacing" />

@@ -51,7 +51,9 @@
                 android:maxLines="1"
                 android:paddingBottom="8dp"
                 android:text="这里是番号"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:layout_toLeftOf="@+id/movie_date"
+                android:layout_toStartOf="@+id/movie_date" />
 
             <TextView
                 android:id="@+id/movie_date"

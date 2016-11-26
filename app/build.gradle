@@ -11,6 +11,7 @@ android {
         targetSdkVersion 24
         versionCode 4
         versionName "1.2"
+
     }
     buildTypes {
         release {
