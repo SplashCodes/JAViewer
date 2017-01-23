@@ -34,12 +34,14 @@ public class MovieListActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setElevation(ViewUtil.dpToPx(4));
 
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if (savedInstanceState==null){
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-        MovieListFragment fragment = new MovieListFragment();
-        fragment.setArguments(bundle);
-        transaction.replace(R.id.content_query, fragment);
-        transaction.commit();
+            MovieListFragment fragment = new MovieListFragment();
+            fragment.setArguments(bundle);
+            transaction.replace(R.id.content_query, fragment);
+            transaction.commit();
+        }
     }
 
     @Override

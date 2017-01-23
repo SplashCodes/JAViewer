@@ -22,7 +22,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.SparseArray;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -45,13 +45,7 @@ import io.github.javiewer.JAViewer;
 import io.github.javiewer.Properties;
 import io.github.javiewer.R;
 import io.github.javiewer.adapter.item.DataSource;
-import io.github.javiewer.fragment.ActressesFragment;
-import io.github.javiewer.fragment.FavouriteFragment;
-import io.github.javiewer.fragment.GenreTabsFragment;
-import io.github.javiewer.fragment.HomeFragment;
-import io.github.javiewer.fragment.NoToolbarElevation;
-import io.github.javiewer.fragment.PopularFragment;
-import io.github.javiewer.fragment.ReleasedFragment;
+import io.github.javiewer.fragment.ExtendedAppBarFragment;
 import io.github.javiewer.network.BasicService;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -61,7 +55,6 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private SparseArray<Fragment> fragments;
     private FragmentManager fragmentManager;
 
     public Fragment currentFragment;
@@ -73,13 +66,16 @@ public class MainActivity extends AppCompatActivity
     public AppBarLayout mAppBarLayout;
 
     int positionOfSpinner = 0;
+    int idOfMenuItem = R.id.nav_home;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
         ButterKnife.bind(this);
+
         JAViewer.CONFIGURATIONS = Configurations.load(new File(this.getExternalFilesDir(null), "configurations.json"));
         JAViewer.recreateService();
 
@@ -92,8 +88,16 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        this.fragmentManager = getSupportFragmentManager();
+        initFragments(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            idOfMenuItem = savedInstanceState.getInt("MenuSelectedItemId", R.id.nav_home);
+        }
         mNavigationView.setNavigationItemSelectedListener(this);
-        mNavigationView.getMenu().getItem(0).setChecked(true);
+        MenuItem selectedItem = mNavigationView.getMenu().findItem(idOfMenuItem);
+        mNavigationView.setCheckedItem(selectedItem.getItemId());
+        onNavigationItemSelected(selectedItem);
 
         final Spinner spinner = (Spinner) mNavigationView.getHeaderView(0).findViewById(R.id.nav_header_spinner);
         ArrayAdapter<DataSource> adapter = new ArrayAdapter<>(this, R.layout.nav_spinner_item, JAViewer.DATA_SOURCES);
@@ -108,7 +112,7 @@ public class MainActivity extends AppCompatActivity
                     return;
                 }
 
-                AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+                new AlertDialog.Builder(MainActivity.this)
                         .setMessage("是否切换到" + newSource.getName() + "数据源？")
                         .setPositiveButton("确认", new DialogInterface.OnClickListener() {
                             @Override
@@ -133,8 +137,6 @@ public class MainActivity extends AppCompatActivity
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-
-        initFragments();
 
         ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
 
@@ -191,38 +193,47 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public void initFragments() {
-        this.fragments = new SparseArray<>();
-        Fragment fragment = new HomeFragment();
-        this.fragments.put(R.id.nav_home, fragment);
+    public void initFragments(Bundle savedInstanceState) {
+        //FragmentTransaction transaction = this.fragmentManager.beginTransaction();
 
-        fragment = new PopularFragment();
-        this.fragments.put(R.id.nav_popular, fragment);
+        if (savedInstanceState != null) {
+            String tag = savedInstanceState.getString("CurrentFragment");
+            this.currentFragment = fragmentManager.findFragmentByTag(tag);
+            /*for (Fragment fragment : fragmentManager.getFragments()) {
+                transaction.hide(fragment);
+            }
 
-        fragment = new ReleasedFragment();
-        this.fragments.put(R.id.nav_released, fragment);
+            transaction.show(this.currentFragment);
+            transaction.commit();*/
+            return;
+        }
 
-        fragment = new ActressesFragment();
-        this.fragments.put(R.id.nav_actresses, fragment);
-
-        fragment = new GenreTabsFragment();
-        this.fragments.put(R.id.nav_genre, fragment);
-
-        fragment = new FavouriteFragment();
-        this.fragments.put(R.id.nav_favourite, fragment);
-
-        this.fragmentManager = getSupportFragmentManager();
-        this.setFragment(R.id.nav_home);
+        FragmentTransaction transaction = this.fragmentManager.beginTransaction();
+        for (int id : JAViewer.FRAGMENTS.keySet()) {
+            Class<? extends Fragment> fragmentClass = JAViewer.FRAGMENTS.get(id);
+            try {
+                Fragment fragment = (Fragment) fragmentClass.getConstructor(new Class[0]).newInstance();
+                transaction.add(R.id.content, fragment, fragmentClass.getSimpleName()).hide(fragment);
+                Log.i("FragmentManager", "Added " + fragment.getClass().getSimpleName());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        transaction.commit();
+        this.fragmentManager.executePendingTransactions();
     }
 
     @SuppressWarnings("ConstantConditions")
     private void setFragment(Fragment fragment, CharSequence title) {
+        getSupportActionBar().setTitle(title);
+
         Fragment old = this.currentFragment;
 
         if (old == fragment) {
             return;
         }
 
+        /*
         FragmentTransaction transaction = fragmentManager.beginTransaction();
 
         if (old != null) {
@@ -233,26 +244,37 @@ public class MainActivity extends AppCompatActivity
             transaction.add(R.id.content, fragment);
         } else {
             transaction.show(fragment);
+        }*/
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        /*for (Fragment f : fragmentManager.getFragments()) {
+            transaction.hide(f);
+        }*/
+        if (old != null) {
+            transaction.hide(old);
         }
-
+        transaction.show(fragment);
         transaction.commit();
 
         this.currentFragment = fragment;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            if (fragment instanceof NoToolbarElevation) {
+            if (fragment instanceof ExtendedAppBarFragment) {
                 mAppBarLayout.setElevation(0);
             } else {
                 mAppBarLayout.setElevation(4 * getResources().getDisplayMetrics().density);
             }
         }
-
-        getSupportActionBar().setTitle(title);
     }
 
+    private void setFragment(int id, CharSequence title) {
+        this.setFragment(fragmentManager.findFragmentByTag(JAViewer.FRAGMENTS.get(id).getSimpleName()), title);
+    }
 
-    private void setFragment(int id) {
-        this.setFragment(fragments.get(id), mNavigationView.getMenu().findItem(id).getTitle());
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putString("CurrentFragment", this.currentFragment.getClass().getSimpleName());
+        outState.putInt("MenuSelectedItemId", this.idOfMenuItem);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -291,22 +313,19 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        Log.i("OnItemSelected", item.getTitle() + "");
         int id = item.getItemId();
+        idOfMenuItem = id;
 
         switch (id) {
             case R.id.nav_github:
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/SplashCodes/JAViewer/releases")));
                 break;
             default:
-                Fragment fragment = fragments.get(id);
-
-                if (fragment != null) {
-                    setFragment(id);
-                }
+                setFragment(id, item.getTitle());
                 break;
         }
 

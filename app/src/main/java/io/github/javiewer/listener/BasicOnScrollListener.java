@@ -1,5 +1,6 @@
 package io.github.javiewer.listener;
 
+import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -33,6 +34,16 @@ public abstract class BasicOnScrollListener<I> extends RecyclerView.OnScrollList
         loadThreshold = 5;
         currentPage = 0;
         getItems().clear();
+    }
+
+    public Bundle saveState() {
+        Bundle bundle = new Bundle();
+        bundle.putInt("CurrentPage", currentPage);
+        return bundle;
+    }
+
+    public void restoreState(Bundle bundle) {
+        currentPage = bundle.getInt("CurrentPage");
     }
 
     public abstract RecyclerView.LayoutManager getLayoutManager();

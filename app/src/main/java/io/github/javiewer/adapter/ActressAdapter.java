@@ -25,14 +25,12 @@ import io.github.javiewer.adapter.item.Actress;
 /**
  * Project: JAViewer
  */
-public class ActressAdapter extends RecyclerView.Adapter<ActressAdapter.ViewHolder> {
-
-    private List<Actress> actresses;
+public class ActressAdapter extends ItemAdapter<Actress, ActressAdapter.ViewHolder> {
 
     private Activity mParentActivity;
 
     public ActressAdapter(List<Actress> actresses, Activity mParentActivity) {
-        this.actresses = actresses;
+        super(actresses);
         this.mParentActivity = mParentActivity;
     }
 
@@ -46,7 +44,7 @@ public class ActressAdapter extends RecyclerView.Adapter<ActressAdapter.ViewHold
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
 
-        final Actress actress = actresses.get(position);
+        final Actress actress = getItems().get(position);
 
         holder.parse(actress);
 
@@ -68,11 +66,6 @@ public class ActressAdapter extends RecyclerView.Adapter<ActressAdapter.ViewHold
 
 
         ImageLoader.getInstance().displayImage(actress.getImageUrl(), holder.mImage, JAViewer.DISPLAY_IMAGE_OPTIONS);
-    }
-
-    @Override
-    public int getItemCount() {
-        return actresses == null ? 0 : actresses.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

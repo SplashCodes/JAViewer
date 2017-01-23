@@ -4,7 +4,6 @@ package io.github.javiewer.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,14 +19,13 @@ import io.github.javiewer.JAViewer;
 import io.github.javiewer.R;
 import io.github.javiewer.adapter.ViewPagerAdapter;
 import io.github.javiewer.adapter.item.Genre;
-import io.github.javiewer.network.BasicService;
 import io.github.javiewer.network.provider.AVMOProvider;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class GenreTabsFragment extends Fragment implements NoToolbarElevation {
+public class GenreTabsFragment extends ExtendedAppBarFragment {
 
     @BindView(R.id.genre_tabs)
     public TabLayout mTabLayout;
@@ -52,7 +50,7 @@ public class GenreTabsFragment extends Fragment implements NoToolbarElevation {
         mViewPager.setAdapter(mAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
 
-        Call<ResponseBody> call =  JAViewer.SERVICE.getGenre();
+        Call<ResponseBody> call = JAViewer.SERVICE.getGenre();
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

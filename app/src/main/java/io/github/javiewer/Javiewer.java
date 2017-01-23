@@ -2,7 +2,7 @@ package io.github.javiewer;
 
 import android.app.Application;
 import android.graphics.Bitmap;
-import android.support.v7.widget.RecyclerView;
+import android.support.v4.app.Fragment;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -15,8 +15,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.github.javiewer.adapter.item.DataSource;
+import io.github.javiewer.fragment.ActressesFragment;
+import io.github.javiewer.fragment.FavouriteFragment;
+import io.github.javiewer.fragment.GenreTabsFragment;
+import io.github.javiewer.fragment.HomeFragment;
+import io.github.javiewer.fragment.PopularFragment;
+import io.github.javiewer.fragment.ReleasedFragment;
 import io.github.javiewer.network.BasicService;
 import okhttp3.Cookie;
 import okhttp3.CookieJar;
@@ -40,6 +47,15 @@ public class JAViewer extends Application {
         add(new DataSource("AVMOO 日本", "https://avmo.pw"));
         add(new DataSource("AVSOX 日本无码", "https://avso.pw"));
         add(new DataSource("AVMEMO 欧美", "https://avxo.pw"));
+    }};
+
+    public static final Map<Integer, Class<? extends Fragment>> FRAGMENTS = new HashMap<Integer, Class<? extends Fragment>>() {{
+        put(R.id.nav_home, HomeFragment.class);
+        put(R.id.nav_popular, PopularFragment.class);
+        put(R.id.nav_released, ReleasedFragment.class);
+        put(R.id.nav_actresses, ActressesFragment.class);
+        put(R.id.nav_genre, GenreTabsFragment.class);
+        put(R.id.nav_favourite, FavouriteFragment.class);
     }};
 
     public static DataSource getDataSource() {

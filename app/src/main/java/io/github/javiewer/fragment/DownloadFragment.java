@@ -7,7 +7,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.github.javiewer.adapter.DownloadLinkAdapter;
@@ -19,9 +18,7 @@ import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
-public class DownloadFragment extends RecyclerFragment<LinearLayoutManager> {
-
-    public List<DownloadLink> links = new ArrayList<>();
+public class DownloadFragment extends RecyclerFragment<DownloadLink, LinearLayoutManager> {
 
     public DownloadLinkProvider provider;
 
@@ -41,11 +38,10 @@ public class DownloadFragment extends RecyclerFragment<LinearLayoutManager> {
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
         this.setRecyclerViewPadding(4);
 
         this.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        this.setAdapter(new ScaleInAnimationAdapter(new DownloadLinkAdapter(links, this.getActivity(), this.provider)));
+        this.setAdapter(new ScaleInAnimationAdapter(new DownloadLinkAdapter(this.getItems(), this.getActivity(), this.provider)));
 
         RecyclerView.ItemAnimator animator = new SlideInUpAnimator();
         animator.setAddDuration(300);
@@ -54,7 +50,7 @@ public class DownloadFragment extends RecyclerFragment<LinearLayoutManager> {
         this.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mScrollListener.refresh();
+                getOnScrollListener().refresh();
             }
         });
 
@@ -76,7 +72,7 @@ public class DownloadFragment extends RecyclerFragment<LinearLayoutManager> {
 
             @Override
             public List<DownloadLink> getItems() {
-                return DownloadFragment.this.links;
+                return DownloadFragment.this.getItems();
             }
 
             @Override
@@ -84,7 +80,7 @@ public class DownloadFragment extends RecyclerFragment<LinearLayoutManager> {
                 super.onResult(response);
                 List<DownloadLink> downloads = provider.parseDownloadLinks(response.string());
 
-                int pos = links.size();
+                int pos = getItems().size();
 
                 if (pos > 0) {
                     pos--;
@@ -93,7 +89,7 @@ public class DownloadFragment extends RecyclerFragment<LinearLayoutManager> {
                 if (downloads.isEmpty()) {
                     setEnd(true);
                 } else {
-                    links.addAll(downloads);
+                    getItems().addAll(downloads);
                     getAdapter().notifyItemChanged(pos, downloads.size());
                 }
             }
@@ -103,9 +99,11 @@ public class DownloadFragment extends RecyclerFragment<LinearLayoutManager> {
             @Override
             public void run() {
                 mRefreshLayout.setRefreshing(true);
-                mRefreshListener.onRefresh();
+                getOnRefreshListener().onRefresh();
             }
         });
+
+        super.onActivityCreated(savedInstanceState);
     }
 
     public Call<ResponseBody> newCall(int page) {

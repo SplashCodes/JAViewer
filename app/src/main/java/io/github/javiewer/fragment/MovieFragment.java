@@ -7,21 +7,18 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.github.javiewer.adapter.MovieAdapter;
 import io.github.javiewer.adapter.item.Movie;
 import io.github.javiewer.listener.EndlessOnScrollListener;
 import io.github.javiewer.network.provider.AVMOProvider;
-import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
+import jp.wasabeef.recyclerview.adapters.SlideInBottomAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
-public abstract class MovieFragment extends RecyclerFragment<LinearLayoutManager> {
-
-    public List<Movie> movies = new ArrayList<>();
+public abstract class MovieFragment extends RecyclerFragment<Movie, LinearLayoutManager> {
 
     public MovieFragment() {
         // Required empty public constructor
@@ -29,10 +26,8 @@ public abstract class MovieFragment extends RecyclerFragment<LinearLayoutManager
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
         this.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        this.setAdapter(new ScaleInAnimationAdapter(new MovieAdapter(movies, this.getActivity())));
+        this.setAdapter(new SlideInBottomAnimationAdapter(new MovieAdapter(getItems(), this.getActivity())));
         RecyclerView.ItemAnimator animator = new SlideInUpAnimator();
         animator.setAddDuration(300);
         mRecyclerView.setItemAnimator(animator);
@@ -40,7 +35,7 @@ public abstract class MovieFragment extends RecyclerFragment<LinearLayoutManager
         this.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mScrollListener.refresh();
+                getOnScrollListener().refresh();
             }
         });
 
@@ -62,7 +57,7 @@ public abstract class MovieFragment extends RecyclerFragment<LinearLayoutManager
 
             @Override
             public List<Movie> getItems() {
-                return MovieFragment.this.movies;
+                return MovieFragment.this.getItems();
             }
 
             @Override
@@ -70,13 +65,13 @@ public abstract class MovieFragment extends RecyclerFragment<LinearLayoutManager
                 super.onResult(response);
                 List<Movie> wrappers = AVMOProvider.parseMovies(response.string());
 
-                int pos = movies.size();
+                int pos = getItems().size();
 
                 if (pos > 0) {
                     pos--;
                 }
 
-                movies.addAll(wrappers);
+                getItems().addAll(wrappers);
                 getAdapter().notifyItemChanged(pos, wrappers.size());
             }
         });
@@ -85,9 +80,11 @@ public abstract class MovieFragment extends RecyclerFragment<LinearLayoutManager
             @Override
             public void run() {
                 mRefreshLayout.setRefreshing(true);
-                mRefreshListener.onRefresh();
+                getOnRefreshListener().onRefresh();
             }
         });
+
+        super.onActivityCreated(savedInstanceState);
     }
 
     public abstract Call<ResponseBody> newCall(int page);

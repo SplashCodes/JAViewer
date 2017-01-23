@@ -10,28 +10,30 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.javiewer.R;
 import io.github.javiewer.listener.BasicOnScrollListener;
 import io.github.javiewer.view.ViewUtil;
+import jp.wasabeef.recyclerview.animators.LandingAnimator;
 
 /**
  * Project: JAViewer
  */
-public abstract class RecyclerFragment<LM extends RecyclerView.LayoutManager> extends Fragment {
+public abstract class RecyclerFragment<I, LM extends RecyclerView.LayoutManager> extends Fragment {
     @BindView(R.id.recycler_view)
-    public RecyclerView mRecyclerView;
-
-    private RecyclerView.Adapter mAdapter;
-    private LM mLayoutManager;
+    RecyclerView mRecyclerView;
 
     @BindView(R.id.refresh_layout)
-    public SwipeRefreshLayout mRefreshLayout;
+    SwipeRefreshLayout mRefreshLayout;
 
-    public SwipeRefreshLayout.OnRefreshListener mRefreshListener;
+    private SwipeRefreshLayout.OnRefreshListener mRefreshListener;
 
-    public BasicOnScrollListener mScrollListener;
+    private BasicOnScrollListener mScrollListener;
+
+    private ArrayList<I> items = new ArrayList<>();
 
     protected void setRecyclerViewPadding(int dp) {
         this.mRecyclerView.setPadding(
@@ -47,19 +49,36 @@ public abstract class RecyclerFragment<LM extends RecyclerView.LayoutManager> ex
     }
 
     public void setLayoutManager(LM mLayoutManager) {
-        this.mRecyclerView.setLayoutManager(this.mLayoutManager = mLayoutManager);
+        this.mRecyclerView.setLayoutManager(mLayoutManager);
     }
 
+    @SuppressWarnings("unchecked")
     public LM getLayoutManager() {
-        return mLayoutManager;
+        return (LM) this.mRecyclerView.getLayoutManager();
     }
 
     public void setAdapter(RecyclerView.Adapter mAdapter) {
-        this.mRecyclerView.setAdapter(this.mAdapter = mAdapter);
+        this.mRecyclerView.setAdapter(mAdapter);
     }
 
     public RecyclerView.Adapter getAdapter() {
-        return mAdapter;
+        return this.mRecyclerView.getAdapter();
+    }
+
+    public ArrayList<I> getItems() {
+        return items;
+    }
+
+    public void setItems(ArrayList<I> items) {
+        if (this.getItems().size() > 0) {
+            this.getItems().clear();
+        }
+
+        this.getItems().addAll(items);
+
+        mRecyclerView.stopScroll();
+        mRecyclerView.getRecycledViewPool().clear();
+        getAdapter().notifyDataSetChanged();
     }
 
     @Override
@@ -70,6 +89,7 @@ public abstract class RecyclerFragment<LM extends RecyclerView.LayoutManager> ex
         return view;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -80,13 +100,41 @@ public abstract class RecyclerFragment<LM extends RecyclerView.LayoutManager> ex
                 ContextCompat.getColor(this.getContext(), R.color.googleRed),
                 ContextCompat.getColor(this.getContext(), R.color.googleYellow)
         );
+
+        if (savedInstanceState != null) {
+            this.getLayoutManager().onRestoreInstanceState(savedInstanceState.getParcelable("LayoutManagerState"));
+            this.setItems((ArrayList<I>) savedInstanceState.getSerializable("Items"));
+            if (this.getOnScrollListener() != null) {
+                this.getOnScrollListener().restoreState(savedInstanceState.getBundle("ScrollListenerState"));
+            }
+        }
     }
 
     public void addOnScrollListener(BasicOnScrollListener listener) {
         mRecyclerView.addOnScrollListener(mScrollListener = listener);
     }
 
+    public BasicOnScrollListener getOnScrollListener() {
+        return mScrollListener;
+    }
+
     public void setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener listener) {
         mRefreshLayout.setOnRefreshListener(mRefreshListener = listener);
+    }
+
+    public SwipeRefreshLayout.OnRefreshListener getOnRefreshListener() {
+        return mRefreshListener;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable("Items", this.getItems());
+        outState.putParcelable("LayoutManagerState", getLayoutManager().onSaveInstanceState());
+
+        if (this.getOnScrollListener() != null) {
+            outState.putBundle("ScrollListenerState", getOnScrollListener().saveState());
+        }
+
+        super.onSaveInstanceState(outState);
     }
 }

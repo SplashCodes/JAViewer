@@ -7,23 +7,19 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.github.javiewer.JAViewer;
 import io.github.javiewer.adapter.ActressAdapter;
 import io.github.javiewer.adapter.item.Actress;
 import io.github.javiewer.listener.EndlessOnScrollListener;
-import io.github.javiewer.network.BasicService;
 import io.github.javiewer.network.provider.AVMOProvider;
-import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
+import jp.wasabeef.recyclerview.adapters.SlideInBottomAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
-public class ActressesFragment extends RecyclerFragment<StaggeredGridLayoutManager> {
-
-    public List<Actress> actresses = new ArrayList<>();
+public class ActressesFragment extends RecyclerFragment<Actress, StaggeredGridLayoutManager> {
 
     public ActressesFragment() {
         // Required empty public constructor
@@ -31,12 +27,10 @@ public class ActressesFragment extends RecyclerFragment<StaggeredGridLayoutManag
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
         this.setRecyclerViewPadding(4);
 
         this.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));
-        this.setAdapter(new ScaleInAnimationAdapter(new ActressAdapter(actresses, this.getActivity())));
+        this.setAdapter(new SlideInBottomAnimationAdapter(new ActressAdapter(getItems(), this.getActivity())));
 
         RecyclerView.ItemAnimator animator = new SlideInUpAnimator();
         animator.setAddDuration(300);
@@ -45,7 +39,7 @@ public class ActressesFragment extends RecyclerFragment<StaggeredGridLayoutManag
         this.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mScrollListener.refresh();
+                getOnScrollListener().refresh();
             }
         });
 
@@ -67,7 +61,7 @@ public class ActressesFragment extends RecyclerFragment<StaggeredGridLayoutManag
 
             @Override
             public List<Actress> getItems() {
-                return ActressesFragment.this.actresses;
+                return ActressesFragment.this.getItems();
             }
 
             @Override
@@ -75,13 +69,13 @@ public class ActressesFragment extends RecyclerFragment<StaggeredGridLayoutManag
                 super.onResult(response);
                 List<Actress> wrappers = AVMOProvider.parseActresses(response.string());
 
-                int pos = actresses.size();
+                int pos = getItems().size();
 
                 if (pos > 0) {
                     pos--;
                 }
 
-                actresses.addAll(wrappers);
+                getItems().addAll(wrappers);
                 getAdapter().notifyItemChanged(pos, wrappers.size());
             }
         });
@@ -90,9 +84,11 @@ public class ActressesFragment extends RecyclerFragment<StaggeredGridLayoutManag
             @Override
             public void run() {
                 mRefreshLayout.setRefreshing(true);
-                mRefreshListener.onRefresh();
+                getOnRefreshListener().onRefresh();
             }
         });
+
+        super.onActivityCreated(savedInstanceState);
     }
 
     public Call<ResponseBody> newCall(int page) {

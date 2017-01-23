@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import io.github.javiewer.JAViewer;
-import io.github.javiewer.network.BasicService;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
@@ -25,6 +24,6 @@ public class MovieListFragment extends MovieFragment {
 
     @Override
     public Call<ResponseBody> newCall(int page) {
-        return  JAViewer.SERVICE.get(this.link + "/page/" + page);
+        return JAViewer.SERVICE.get(this.link + "/page/" + page);
     }
 }

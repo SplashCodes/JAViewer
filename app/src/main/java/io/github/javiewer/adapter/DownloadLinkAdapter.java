@@ -29,16 +29,14 @@ import retrofit2.Response;
 /**
  * Project: JAViewer
  */
-public class DownloadLinkAdapter extends RecyclerView.Adapter<DownloadLinkAdapter.ViewHolder> {
-
-    private List<DownloadLink> links;
+public class DownloadLinkAdapter extends ItemAdapter<DownloadLink, DownloadLinkAdapter.ViewHolder> {
 
     private Activity mParentActivity;
 
     private DownloadLinkProvider provider;
 
     public DownloadLinkAdapter(List<DownloadLink> links, Activity mParentActivity, DownloadLinkProvider provider) {
-        this.links = links;
+        super(links);
         this.mParentActivity = mParentActivity;
         this.provider = provider;
     }
@@ -52,7 +50,7 @@ public class DownloadLinkAdapter extends RecyclerView.Adapter<DownloadLinkAdapte
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        final DownloadLink link = links.get(position);
+        final DownloadLink link = getItems().get(position);
 
         holder.parse(link);
 
@@ -102,11 +100,6 @@ public class DownloadLinkAdapter extends RecyclerView.Adapter<DownloadLinkAdapte
         } else {
             Toast.makeText(mParentActivity, "磁力链接获取失败", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    @Override
-    public int getItemCount() {
-        return links == null ? 0 : links.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

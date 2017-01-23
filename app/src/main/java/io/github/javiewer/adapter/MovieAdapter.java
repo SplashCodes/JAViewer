@@ -25,14 +25,12 @@ import io.github.javiewer.adapter.item.Movie;
 /**
  * Project: JAViewer
  */
-public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
-
-    private List<Movie> movies;
+public class MovieAdapter extends ItemAdapter<Movie, MovieAdapter.ViewHolder> {
 
     private Activity mParentActivity;
 
     public MovieAdapter(List<Movie> movies, Activity mParentActivity) {
-        this.movies = movies;
+        super(movies);
         this.mParentActivity = mParentActivity;
     }
 
@@ -45,7 +43,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        final Movie movie = movies.get(position);
+        final Movie movie = getItems().get(position);
 
         holder.parse(movie);
 
@@ -55,9 +53,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
                 Intent intent = new Intent(mParentActivity, MovieActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("movie", movie);
-                /*bundle.putString("title", movie.getTitle());
-                bundle.putString("detail", movie.getLink());
-                bundle.putString("code", movie.getCode());*/
                 intent.putExtras(bundle);
 
                 mParentActivity.startActivity(intent);
@@ -67,11 +62,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         ImageLoader.getInstance().displayImage(movie.getCoverUrl(), holder.mImageCover, JAViewer.DISPLAY_IMAGE_OPTIONS);
 
         holder.mImageHot.setVisibility(movie.isHot() ? View.VISIBLE : View.INVISIBLE);
-    }
-
-    @Override
-    public int getItemCount() {
-        return movies == null ? 0 : movies.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
