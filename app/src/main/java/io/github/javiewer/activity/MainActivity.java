@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -76,7 +77,12 @@ public class MainActivity extends AppCompatActivity
 
         ButterKnife.bind(this);
 
-        JAViewer.CONFIGURATIONS = Configurations.load(new File(this.getExternalFilesDir(null), "configurations.json"));
+        File oldConfig = new File(this.getExternalFilesDir(null), "configurations.json");
+        File config = new File(Environment.getExternalStorageDirectory(), "javiewer.json");
+        if (oldConfig.exists()) {
+            oldConfig.renameTo(config);
+        }
+        JAViewer.CONFIGURATIONS = Configurations.load(config);
         JAViewer.recreateService();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -114,6 +120,12 @@ public class MainActivity extends AppCompatActivity
 
                 new AlertDialog.Builder(MainActivity.this)
                         .setMessage("是否切换到" + newSource.getName() + "数据源？")
+                        .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                            @Override
+                            public void onCancel(DialogInterface dialogInterface) {
+                                spinner.setSelection(positionOfSpinner);
+                            }
+                        })
                         .setPositiveButton("确认", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

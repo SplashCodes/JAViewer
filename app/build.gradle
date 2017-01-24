@@ -2,13 +2,13 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion '24.0.1'
+    compileSdkVersion 25
+    buildToolsVersion '25.0.1'
 
     defaultConfig {
         applicationId "io.github.javiewer"
         minSdkVersion 15
-        targetSdkVersion 24
+        targetSdkVersion 25
         versionCode 4
         versionName "1.2"
 
@@ -25,17 +25,17 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile 'jp.wasabeef:recyclerview-animators:2.2.3'
-    compile 'com.android.support:appcompat-v7:24.2.1'
+    compile 'com.android.support:appcompat-v7:25.1.0'
     compile "com.wefika:flowlayout:0.4.1"
-    compile 'com.android.support:design:24.2.1'
-    compile 'com.jakewharton:butterknife:8.4.0'
+    compile 'com.android.support:design:25.1.0'
+    compile 'com.jakewharton:butterknife:8.5.0'
     apt 'com.jakewharton:butterknife-compiler:8.4.0'
-    compile 'com.android.support:palette-v7:24.2.1'
-    compile 'com.squareup.retrofit2:retrofit:2.0.2'
-    compile 'com.android.support:support-v4:24.2.1'
+    compile 'com.android.support:palette-v7:25.1.0'
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.android.support:support-v4:25.1.0'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     compile 'org.jsoup:jsoup:1.9.2'
-    compile 'com.google.code.gson:gson:2.7'
-    compile 'com.android.support:cardview-v7:24.2.1'
+    compile 'com.google.code.gson:gson:2.8.0'
+    compile 'com.android.support:cardview-v7:25.1.0'
     compile 'com.pnikosis:materialish-progress:1.7'
 }
