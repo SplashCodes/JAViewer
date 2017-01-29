@@ -8,9 +8,9 @@ android {
     defaultConfig {
         applicationId "io.github.javiewer"
         minSdkVersion 15
-        targetSdkVersion 24
-        versionCode 4
-        versionName "1.2"
+        targetSdkVersion 25
+        versionCode 5
+        versionName "1.2.1"
 
     }
     buildTypes {

@@ -1,5 +1,5 @@
 {
-  "latest_version": "1.2",
-  "latest_version_code": "4",
-  "changelog": "**推荐更新**\n1. 本地收藏夹功能完成\n2. 多数据源，目前支持 日本 欧美以及日本无码 三个源\n3. 修复TorrentKitty无法搜索的问题\n4. 优化下载界面的卡片布局\n5. 修复其他已知BUG"
+  "latest_version": "1.2.1",
+  "latest_version_code": "5",
+  "changelog": "**推荐更新**\n1. 修复无法切换数据源问题\n2. 对安卓N多窗口模式进行优化\n3. 修复Fragment重叠问题\n4. 调整部分动画\n5. 修复其他已知BUG"
 }
