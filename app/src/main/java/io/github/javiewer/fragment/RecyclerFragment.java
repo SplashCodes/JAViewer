@@ -17,7 +17,6 @@ import butterknife.ButterKnife;
 import io.github.javiewer.R;
 import io.github.javiewer.listener.BasicOnScrollListener;
 import io.github.javiewer.view.ViewUtil;
-import jp.wasabeef.recyclerview.animators.LandingAnimator;
 
 /**
  * Project: JAViewer

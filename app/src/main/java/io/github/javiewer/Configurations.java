@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -44,12 +43,18 @@ public class Configurations {
     }
 
     public static Configurations load(File file) {
+        Configurations.file = file;
+        Configurations config = null;
         try {
-            Configurations.file = file;
-            return JAViewer.parseJson(Configurations.class, new JsonReader(new FileReader(file)));
-        } catch (FileNotFoundException e) {
-            return new Configurations();
+            config = JAViewer.parseJson(Configurations.class, new JsonReader(new FileReader(file)));
+        } catch (Exception ignored) {
         }
+
+        if (config == null) {
+            config = new Configurations();
+        }
+
+        return config;
     }
 
     public void save() {
@@ -62,4 +67,5 @@ public class Configurations {
             e.printStackTrace();
         }
     }
+
 }

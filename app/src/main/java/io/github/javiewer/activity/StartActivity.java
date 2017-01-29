@@ -6,13 +6,24 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.single.PermissionListener;
+
+import java.io.File;
+
+import io.github.javiewer.Configurations;
+import io.github.javiewer.JAViewer;
 import io.github.javiewer.R;
 
 public class StartActivity extends AppCompatActivity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,40 +33,50 @@ public class StartActivity extends AppCompatActivity {
         checkPermissions();
     }
 
-    public void checkPermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                new AlertDialog.Builder(this)
-                        .setTitle("权限申请")
-                        .setCancelable(false)
-                        .setMessage("JAViewer 需要您授予我们使用储存空间的权限，用来储存用户收藏夹等配置文件。请在接下来的对话框中选择允许。")
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                    StartActivity.this.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                                }
-                            }
-                        })
-                        .show();
-            } else {
-                startActivity(new Intent(StartActivity.this, MainActivity.class));
-                finish();
+    private void checkPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && this.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            File oldConfig = new File(StartActivity.this.getExternalFilesDir(null), "configurations.json");
+            File config = new File(JAViewer.getStorageDir(), "configurations.json");
+            if (oldConfig.exists()) {
+                oldConfig.renameTo(config);
             }
-        }
-    }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        /*if (requestCode == 1) {
-            if (permissions[0].equals(Manifest.permission.WRITE_EXTERNAL_STORAGE) && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startActivity(new Intent(StartActivity.this, MainActivity.class));
-                finish();
-            } else {
-                checkPermissions();
-            }
+            JAViewer.CONFIGURATIONS = Configurations.load(config);
+
+            startActivity(new Intent(StartActivity.this, MainActivity.class));
+            finish();
+            return;
         }
-        checkPermissions();*/
+
+        Dexter.withActivity(this)
+                .withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .withListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted(PermissionGrantedResponse response) {
+                        checkPermissions();
+                    }
+
+                    @Override
+                    public void onPermissionDenied(PermissionDeniedResponse response) {
+                        new AlertDialog.Builder(StartActivity.this)
+                                .setTitle("权限申请")
+                                .setCancelable(false)
+                                .setMessage("JAViewer 需要储存空间权限，储存用户配置。请您允许。")
+                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        checkPermissions();
+                                    }
+                                })
+                                .show();
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+                        token.continuePermissionRequest();
+                    }
+                })
+                .onSameThread()
+                .check();
     }
 }

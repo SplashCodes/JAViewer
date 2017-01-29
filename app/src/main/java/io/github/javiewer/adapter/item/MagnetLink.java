@@ -1,9 +1,11 @@
 package io.github.javiewer.adapter.item;
 
+import java.io.Serializable;
+
 /**
  * Project: JAViewer
  */
-public class MagnetLink {
+public class MagnetLink implements Serializable {
 
     protected String magnetLink;
 

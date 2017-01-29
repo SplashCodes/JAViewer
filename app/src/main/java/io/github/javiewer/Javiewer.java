@@ -2,15 +2,18 @@ package io.github.javiewer;
 
 import android.app.Application;
 import android.graphics.Bitmap;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
 import com.google.gson.stream.JsonReader;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,6 +75,11 @@ public class JAViewer extends Application {
                 .create(BasicService.class);
     }
 
+    public static File getStorageDir() {
+        File dir = new File(Environment.getExternalStorageDirectory(), "JAViewer/");
+        dir.mkdirs();
+        return dir;
+    }
 
     public static final OkHttpClient HTTP_CLIENT = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
         @Override
@@ -111,13 +119,13 @@ public class JAViewer extends Application {
             .displayer(new FadeInBitmapDisplayer(500)) // default
             .build();
 
-    public static <T> T parseJson(Class<T> beanClass, JsonReader reader) {
+    public static <T> T parseJson(Class<T> beanClass, JsonReader reader) throws JsonParseException {
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
         return gson.fromJson(reader, beanClass);
     }
 
-    public static <T> T parseJson(Class<T> beanClass, String json) {
+    public static <T> T parseJson(Class<T> beanClass, String json) throws JsonParseException {
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
         return gson.fromJson(json, beanClass);

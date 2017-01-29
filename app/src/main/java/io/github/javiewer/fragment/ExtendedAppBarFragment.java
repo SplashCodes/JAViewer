@@ -2,7 +2,6 @@ package io.github.javiewer.fragment;
 
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.Toolbar;
 
 /**
  * Project: JAViewer

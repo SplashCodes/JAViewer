@@ -34,7 +34,7 @@ public class MovieListActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setElevation(ViewUtil.dpToPx(4));
 
-        if (savedInstanceState==null){
+        if (savedInstanceState == null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
             MovieListFragment fragment = new MovieListFragment();

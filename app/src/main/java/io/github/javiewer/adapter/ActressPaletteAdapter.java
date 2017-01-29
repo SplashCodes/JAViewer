@@ -76,17 +76,20 @@ public class ActressPaletteAdapter extends RecyclerView.Adapter<ActressPaletteAd
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                 super.onLoadingComplete(imageUri, view, loadedImage);
 
-                Palette.from(loadedImage).generate(new Palette.PaletteAsyncListener() {
-                    @Override
-                    public void onGenerated(Palette palette) {
-                        Palette.Swatch swatch = palette.getLightVibrantSwatch();
-                        if (swatch == null) {
-                            return;
+                try {
+                    Palette.from(loadedImage).generate(new Palette.PaletteAsyncListener() {
+                        @Override
+                        public void onGenerated(Palette palette) {
+                            Palette.Swatch swatch = palette.getLightVibrantSwatch();
+                            if (swatch == null) {
+                                return;
+                            }
+                            holder.mCard.setCardBackgroundColor(swatch.getRgb());
+                            holder.mName.setTextColor(swatch.getBodyTextColor());
                         }
-                        holder.mCard.setCardBackgroundColor(swatch.getRgb());
-                        holder.mName.setTextColor(swatch.getBodyTextColor());
-                    }
-                });
+                    });
+                } catch (Exception ignored) {
+                }
             }
         });
 

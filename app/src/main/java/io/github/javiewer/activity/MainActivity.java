@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -23,7 +22,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,14 +32,12 @@ import android.widget.Spinner;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.github.javiewer.Configurations;
 import io.github.javiewer.JAViewer;
 import io.github.javiewer.Properties;
 import io.github.javiewer.R;
@@ -77,12 +73,6 @@ public class MainActivity extends AppCompatActivity
 
         ButterKnife.bind(this);
 
-        File oldConfig = new File(this.getExternalFilesDir(null), "configurations.json");
-        File config = new File(Environment.getExternalStorageDirectory(), "javiewer.json");
-        if (oldConfig.exists()) {
-            oldConfig.renameTo(config);
-        }
-        JAViewer.CONFIGURATIONS = Configurations.load(config);
         JAViewer.recreateService();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -226,7 +216,6 @@ public class MainActivity extends AppCompatActivity
             try {
                 Fragment fragment = (Fragment) fragmentClass.getConstructor(new Class[0]).newInstance();
                 transaction.add(R.id.content, fragment, fragmentClass.getSimpleName()).hide(fragment);
-                Log.i("FragmentManager", "Added " + fragment.getClass().getSimpleName());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -328,13 +317,14 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        Log.i("OnItemSelected", item.getTitle() + "");
         int id = item.getItemId();
         idOfMenuItem = id;
 
         switch (id) {
             case R.id.nav_github:
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/SplashCodes/JAViewer/releases")));
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/SplashCodes/JAViewer/releases"));
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
                 break;
             default:
                 setFragment(id, item.getTitle());

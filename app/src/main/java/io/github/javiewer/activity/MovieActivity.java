@@ -87,6 +87,7 @@ public class MovieActivity extends AppCompatActivity {
                 //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
         });
+        mFab.bringToFront();
 
         Call<ResponseBody> call = JAViewer.SERVICE.get(this.movie.getLink());
         call.enqueue(new Callback<ResponseBody>() {
@@ -95,8 +96,9 @@ public class MovieActivity extends AppCompatActivity {
                 MovieDetail detail;
                 try {
                     detail = AVMOProvider.parseMoviesDetail(response.body().string());
-                    ImageLoader.getInstance().displayImage(detail.coverUrl, mToolbarLayoutBackground, JAViewer.DISPLAY_IMAGE_OPTIONS);
                     displayInfo(detail);
+
+                    ImageLoader.getInstance().displayImage(detail.coverUrl, mToolbarLayoutBackground, JAViewer.DISPLAY_IMAGE_OPTIONS);
                 } catch (IOException e) {
                     onFailure(call, e);
                 }
@@ -110,15 +112,6 @@ public class MovieActivity extends AppCompatActivity {
     }
 
     private void displayInfo(MovieDetail detail) {
-        //Changing visibility
-        mProgressBar.setVisibility(View.GONE);
-        mContent.setVisibility(View.VISIBLE);
-
-        //Slide Up Animation
-        mContent.setY(mContent.getY() + 120);
-        mContent.setAlpha(0);
-        mContent.animate().translationY(0).setDuration(500).alpha(1);
-
         //Info
         {
             RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.headers_recycler_view);
@@ -201,6 +194,15 @@ public class MovieActivity extends AppCompatActivity {
                 }
             }
         }
+
+        //Changing visibility
+        mProgressBar.animate().setDuration(200).alpha(0).start();
+
+        //Slide Up Animation
+        mContent.setVisibility(View.VISIBLE);
+        mContent.setY(mContent.getY() + 120);
+        mContent.setAlpha(0);
+        mContent.animate().translationY(0).alpha(1).setDuration(500).start();
     }
 
     @Override
