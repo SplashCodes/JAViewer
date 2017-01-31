@@ -47,13 +47,13 @@
                 android:layout_alignBottom="@+id/movie_date"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
+                android:layout_toLeftOf="@+id/movie_date"
+                android:layout_toStartOf="@+id/movie_date"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:paddingBottom="8dp"
                 android:text="这里是番号"
-                android:textSize="12sp"
-                android:layout_toLeftOf="@+id/movie_date"
-                android:layout_toStartOf="@+id/movie_date" />
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/movie_date"

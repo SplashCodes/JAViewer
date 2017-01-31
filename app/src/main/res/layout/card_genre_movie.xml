@@ -18,12 +18,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:maxLines="1"
         android:paddingBottom="8dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:paddingTop="8dp"
         android:text="这里是名称"
-        android:textColor="#ffffff"
-        android:maxLines="1" />
+        android:textColor="#ffffff" />
 
 </android.support.v7.widget.CardView>

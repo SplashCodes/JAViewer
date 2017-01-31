@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
 
+import com.google.firebase.crash.FirebaseCrash;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
@@ -42,6 +43,15 @@ import retrofit2.Retrofit;
  */
 
 public class JAViewer extends Application {
+    static {
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread t, Throwable e) {
+                FirebaseCrash.report(e);
+            }
+        });
+    }
+
     public static final String USER_AGENT = "Mozilla/5.0 (Linux; Android 5.1.1; Nexus 5 Build/LMY48B; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/43.0.2357.65 Mobile Safari/537.36";
 
     public static Configurations CONFIGURATIONS;

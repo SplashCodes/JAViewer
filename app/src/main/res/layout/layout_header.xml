@@ -10,10 +10,10 @@
         android:layout_height="wrap_content"
         android:layout_weight="5"
         android:gravity="center_vertical"
-        android:singleLine="true"
         android:paddingBottom="8dp"
         android:paddingRight="8dp"
         android:paddingTop="8dp"
+        android:singleLine="true"
         android:text="这里是名称"
         android:textColor="?android:textColorPrimary"
         android:textIsSelectable="true" />
@@ -24,9 +24,9 @@
         android:layout_height="wrap_content"
         android:layout_weight="2"
         android:gravity="center_vertical"
-        android:singleLine="true"
         android:paddingBottom="8dp"
         android:paddingTop="8dp"
+        android:singleLine="true"
         android:text="这里是内容"
         android:textIsSelectable="true" />
 

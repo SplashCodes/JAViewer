@@ -5,7 +5,7 @@
     </item>
 
     <item
-        android:gravity="center"
-        android:drawable="@drawable/ic_logo" />
+        android:drawable="@drawable/ic_logo"
+        android:gravity="center" />
 
 </layer-list>

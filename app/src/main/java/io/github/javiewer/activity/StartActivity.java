@@ -34,49 +34,50 @@ public class StartActivity extends AppCompatActivity {
     }
 
     private void checkPermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && this.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            File oldConfig = new File(StartActivity.this.getExternalFilesDir(null), "configurations.json");
-            File config = new File(JAViewer.getStorageDir(), "configurations.json");
-            if (oldConfig.exists()) {
-                oldConfig.renameTo(config);
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && this.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            Dexter.withActivity(this)
+                    .withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    .withListener(new PermissionListener() {
+                        @Override
+                        public void onPermissionGranted(PermissionGrantedResponse response) {
+                            checkPermissions();
+                        }
 
-            JAViewer.CONFIGURATIONS = Configurations.load(config);
+                        @Override
+                        public void onPermissionDenied(PermissionDeniedResponse response) {
+                            new AlertDialog.Builder(StartActivity.this)
+                                    .setTitle("权限申请")
+                                    .setCancelable(false)
+                                    .setMessage("JAViewer 需要储存空间权限，储存用户配置。请您允许。")
+                                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            checkPermissions();
+                                        }
+                                    })
+                                    .show();
+                        }
 
-            startActivity(new Intent(StartActivity.this, MainActivity.class));
-            finish();
+                        @Override
+                        public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+                            token.continuePermissionRequest();
+                        }
+                    })
+                    .onSameThread()
+                    .check();
             return;
         }
 
-        Dexter.withActivity(this)
-                .withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .withListener(new PermissionListener() {
-                    @Override
-                    public void onPermissionGranted(PermissionGrantedResponse response) {
-                        checkPermissions();
-                    }
+        File oldConfig = new File(StartActivity.this.getExternalFilesDir(null), "configurations.json");
+        File config = new File(JAViewer.getStorageDir(), "configurations.json");
+        if (oldConfig.exists()) {
+            oldConfig.renameTo(config);
+        }
 
-                    @Override
-                    public void onPermissionDenied(PermissionDeniedResponse response) {
-                        new AlertDialog.Builder(StartActivity.this)
-                                .setTitle("权限申请")
-                                .setCancelable(false)
-                                .setMessage("JAViewer 需要储存空间权限，储存用户配置。请您允许。")
-                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        checkPermissions();
-                                    }
-                                })
-                                .show();
-                    }
+        JAViewer.CONFIGURATIONS = Configurations.load(config);
 
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
-                        token.continuePermissionRequest();
-                    }
-                })
-                .onSameThread()
-                .check();
+        startActivity(new Intent(StartActivity.this, MainActivity.class));
+        finish();
     }
+
 }

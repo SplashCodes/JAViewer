@@ -20,9 +20,9 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/actresses_recycler_view"
-            android:requiresFadingEdge="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:requiresFadingEdge="horizontal" />
 
         <TextView
             android:id="@+id/actresses_empty_text"
