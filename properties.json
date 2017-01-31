@@ -1,5 +1,5 @@
 {
-  "latest_version": "1.2.1",
-  "latest_version_code": "5",
+  "latest_version": "1.2.2",
+  "latest_version_code": "6",
   "changelog": "**推荐更新**\n1. 修复无法切换数据源问题\n2. 对安卓N多窗口模式进行优化\n3. 修复Fragment重叠问题\n4. 调整部分动画\n5. 修复其他已知BUG"
 }
