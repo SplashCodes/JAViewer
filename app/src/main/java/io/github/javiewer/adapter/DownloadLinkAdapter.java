@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -97,6 +99,9 @@ public class DownloadLinkAdapter extends ItemAdapter<DownloadLink, DownloadLinkA
             ClipboardManager clip = (ClipboardManager) mParentActivity.getSystemService(Context.CLIPBOARD_SERVICE);
             clip.setPrimaryClip(ClipData.newPlainText("magnet-link", magnetLink));
             Toast.makeText(mParentActivity, "磁力链接：" + magnetLink + " 已复制到剪贴板", Toast.LENGTH_SHORT).show();
+
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(magnetLink));
+            mParentActivity.startActivity(intent);
         } else {
             Toast.makeText(mParentActivity, "磁力链接获取失败", Toast.LENGTH_SHORT).show();
         }
