@@ -1,7 +1,6 @@
 package io.github.javiewer;
 
 import android.app.Application;
-import android.graphics.Bitmap;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
 
@@ -10,9 +9,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
 import com.google.gson.stream.JsonReader;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 import java.io.File;
 import java.io.IOException;
@@ -119,7 +115,7 @@ public class JAViewer extends Application {
             })
             .build();
 
-    public static final DisplayImageOptions DISPLAY_IMAGE_OPTIONS = new DisplayImageOptions.Builder()
+    /*public static final DisplayImageOptions DISPLAY_IMAGE_OPTIONS = new DisplayImageOptions.Builder()
             .resetViewBeforeLoading(true)
             .cacheInMemory(true)
             .cacheOnDisk(true)
@@ -127,7 +123,7 @@ public class JAViewer extends Application {
             .bitmapConfig(Bitmap.Config.ARGB_8888) // default
             .delayBeforeLoading(1000)
             .displayer(new FadeInBitmapDisplayer(500)) // default
-            .build();
+            .build();*/
 
     public static <T> T parseJson(Class<T> beanClass, JsonReader reader) throws JsonParseException {
         GsonBuilder builder = new GsonBuilder();

@@ -3,6 +3,7 @@ package io.github.javiewer.adapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
@@ -13,14 +14,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.github.javiewer.JAViewer;
 import io.github.javiewer.R;
 import io.github.javiewer.activity.MovieListActivity;
 import io.github.javiewer.adapter.item.Actress;
@@ -71,33 +71,56 @@ public class ActressPaletteAdapter extends RecyclerView.Adapter<ActressPaletteAd
             }
         });
 
-        ImageLoader.getInstance().displayImage(actress.getImageUrl(), holder.mImage, JAViewer.DISPLAY_IMAGE_OPTIONS, new SimpleImageLoadingListener() {
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                super.onLoadingComplete(imageUri, view, loadedImage);
-
-                try {
-                    Palette.from(loadedImage).generate(new Palette.PaletteAsyncListener() {
-                        @Override
-                        public void onGenerated(Palette palette) {
-                            Palette.Swatch swatch = palette.getLightVibrantSwatch();
-                            if (swatch == null) {
-                                return;
-                            }
-                            holder.mCard.setCardBackgroundColor(swatch.getRgb());
-                            holder.mName.setTextColor(swatch.getBodyTextColor());
-                        }
-                    });
-                } catch (Exception ignored) {
-                }
-            }
-        });
 
         holder.mName.setText(actress.getName());
 
         if (position == 0) {
             ViewUtil.alignIconToView(mIcon, holder.mImage);
         }
+
+        holder.mImage.setImageResource(R.drawable.ic_movie_actresses);
+
+        if (actress.getImageUrl().trim().isEmpty()) {
+            return;
+        }
+
+        Picasso.with(holder.mImage.getContext())
+                .load(actress.getImageUrl())
+                .placeholder(R.drawable.ic_movie_actresses)
+                //.centerCrop()
+                .into(new Target() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                        holder.mImage.setImageBitmap(bitmap);
+                        ViewUtil.imageTopCrop(holder.mImage);
+
+                        try {
+                            Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
+                                @Override
+                                public void onGenerated(Palette palette) {
+                                    Palette.Swatch swatch = palette.getLightVibrantSwatch();
+                                    if (swatch == null) {
+                                        return;
+                                    }
+                                    holder.mCard.setCardBackgroundColor(swatch.getRgb());
+                                    holder.mName.setTextColor(swatch.getBodyTextColor());
+                                }
+                            });
+                        } catch (Exception ignored) {
+                        }
+                    }
+
+                    @Override
+                    public void onBitmapFailed(Drawable errorDrawable) {
+                        holder.mImage.setImageDrawable(errorDrawable);
+                    }
+
+                    @Override
+                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+                        holder.mImage.setImageDrawable(placeHolderDrawable);
+                    }
+                });
+
     }
 
     @Override

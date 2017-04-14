@@ -38,6 +38,12 @@ public class DownloadFragment extends RecyclerFragment<DownloadLink, LinearLayou
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        /*mAdView.setVisibility(View.VISIBLE);
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice("52546C5153814CA9A9714647F5960AFE")
+                .build();
+        mAdView.loadAd(adRequest);*/
+
         this.setRecyclerViewPadding(4);
 
         this.setLayoutManager(new LinearLayoutManager(this.getContext()));

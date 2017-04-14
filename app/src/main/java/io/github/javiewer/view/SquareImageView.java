@@ -7,17 +7,17 @@ import android.widget.ImageView;
 /**
  * Project: JAViewer
  */
-public class ScaleImageView extends ImageView {
+public class SquareImageView extends ImageView {
 
-    public ScaleImageView(Context context) {
+    public SquareImageView(Context context) {
         super(context);
     }
 
-    public ScaleImageView(Context context, AttributeSet attrs) {
+    public SquareImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public ScaleImageView(Context context, AttributeSet attrs, int defStyle) {
+    public SquareImageView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 

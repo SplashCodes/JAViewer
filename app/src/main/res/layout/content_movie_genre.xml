@@ -32,12 +32,12 @@
             android:text="暂无分类信息"
             android:visibility="gone" />
 
-        <View
+        <!--<View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
-            android:background="#E6E6E6" />
+            android:background="#E6E6E6" />-->
     </LinearLayout>
 
 </RelativeLayout>

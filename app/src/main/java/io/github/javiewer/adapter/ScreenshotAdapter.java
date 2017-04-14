@@ -9,13 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.github.javiewer.JAViewer;
 import io.github.javiewer.R;
 import io.github.javiewer.activity.GalleryActivity;
 import io.github.javiewer.adapter.item.Screenshot;
@@ -50,7 +49,11 @@ public class ScreenshotAdapter extends RecyclerView.Adapter<ScreenshotAdapter.Vi
     public void onBindViewHolder(final ViewHolder holder, int position) {
         Screenshot screenshot = screenshots.get(position);
 
-        ImageLoader.getInstance().displayImage(screenshot.getThumbnailUrl(), holder.mImage, JAViewer.DISPLAY_IMAGE_OPTIONS);
+        holder.mImage.setImageDrawable(null);
+        Picasso.with(holder.mImage.getContext())
+                .load(screenshot.getThumbnailUrl())
+                .noPlaceholder()
+                .into(holder.mImage);
 
         holder.mImage.setOnClickListener(new View.OnClickListener() {
             @Override

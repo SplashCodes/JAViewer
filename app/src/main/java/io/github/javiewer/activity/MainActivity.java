@@ -29,9 +29,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -140,7 +137,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
+        //ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
 
         Request request = new Request.Builder()
                 .url("https://raw.githubusercontent.com/SplashCodes/JAViewer/master/properties.json")
@@ -321,11 +318,21 @@ public class MainActivity extends AppCompatActivity
         idOfMenuItem = id;
 
         switch (id) {
-            case R.id.nav_github:
+            case R.id.nav_github: {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/SplashCodes/JAViewer/releases"));
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
                 break;
+            }
+            case R.id.nav_donate: {
+                String qrCode = "https://qr.alipay.com/a6x05027ymf6n8kl0qkoa54";
+                String scheme = "alipays://platformapi/startapp?saId=10000007&clientVersion=3.7.0.0718&qrcode=https%3A%2F%2Fqr.alipay.com%2Fa6x05027ymf6n8kl0qkoa54%3F_s%3Dweb-other";
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(qrCode));
+                //Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("alipayqr://platformapi/startapp?saId=10000007&clientVersion=3.7.0.0718&qrcode=" + qrCode + "?_s=web-other&_t=" + System.currentTimeMillis()));
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                break;
+            }
             default:
                 setFragment(id, item.getTitle());
                 break;

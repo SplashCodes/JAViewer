@@ -1,6 +1,8 @@
 package io.github.javiewer.activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,13 +14,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.MeasureSpec;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.robertlevonyan.views.chip.Chip;
+import com.squareup.picasso.Picasso;
 import com.wefika.flowlayout.FlowLayout;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import butterknife.BindView;
@@ -84,7 +91,6 @@ public class MovieActivity extends AppCompatActivity {
                 arguments.putString("keyword", movie.getCode());
                 intent.putExtras(arguments);
                 startActivity(intent);
-                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
         });
         mFab.bringToFront();
@@ -98,7 +104,11 @@ public class MovieActivity extends AppCompatActivity {
                     detail = AVMOProvider.parseMoviesDetail(response.body().string());
                     displayInfo(detail);
 
-                    ImageLoader.getInstance().displayImage(detail.coverUrl, mToolbarLayoutBackground, JAViewer.DISPLAY_IMAGE_OPTIONS);
+                    Picasso.with(mToolbarLayoutBackground.getContext())
+                            .load(detail.coverUrl)
+                            .noPlaceholder()
+                            .into(mToolbarLayoutBackground);
+                    //ImageLoader.getInstance().displayImage(detail.coverUrl, mToolbarLayoutBackground, JAViewer.DISPLAY_IMAGE_OPTIONS);
                 } catch (IOException e) {
                     onFailure(call, e);
                 }
@@ -175,7 +185,7 @@ public class MovieActivity extends AppCompatActivity {
             } else {
                 for (int i = 0; i < detail.genres.size(); i++) {
                     final Genre genre = detail.genres.get(i);
-                    View view = getLayoutInflater().inflate(R.layout.card_genre_movie, mFlowLayout, false);
+                    Chip view = (Chip) getLayoutInflater().inflate(R.layout.chip_genre, mFlowLayout, false);
                     view.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -184,8 +194,7 @@ public class MovieActivity extends AppCompatActivity {
                             }
                         }
                     });
-                    TextView textView = (TextView) view.findViewById(R.id.chip_genre_name);
-                    textView.setText(genre.getName());
+                    view.setChipText(genre.getName());
                     mFlowLayout.addView(view);
 
                     if (i == 0) {
@@ -221,14 +230,12 @@ public class MovieActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.movie, menu);
 
         mStarButton = menu.findItem(R.id.action_star);
-
         {
             if (JAViewer.CONFIGURATIONS.getStarredMovies().contains(movie)) {
                 mStarButton.setIcon(R.drawable.ic_menu_star);
                 mStarButton.setTitle("取消收藏");
             }
         }
-
         mStarButton.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -250,6 +257,47 @@ public class MovieActivity extends AppCompatActivity {
             }
         });
 
+        MenuItem mShareButton = menu.findItem(R.id.action_share);
+        mShareButton.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                try {
+                    File cache = new File(getExternalFilesDir("cache"), "screenshot");
+                    FileOutputStream os = new FileOutputStream(cache);
+                    Bitmap screenshot = getScreenBitmap();
+                    screenshot.compress(Bitmap.CompressFormat.JPEG, 100, os);
+                    os.flush();
+                    os.close();
+
+                    Uri uri = Uri.fromFile(cache);
+                    Intent intent = new Intent(Intent.ACTION_SEND)
+                            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            .setType("image/jpeg")
+                            .putExtra(Intent.EXTRA_STREAM, uri);
+                    startActivity(Intent.createChooser(intent, "分享此影片"));
+
+                    return true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(MovieActivity.this, "无法分享：" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+                return false;
+            }
+        });
+
         return super.onCreateOptionsMenu(menu);
+    }
+
+    public Bitmap getScreenBitmap() {
+        View v = findViewById(android.R.id.content).getRootView();
+        v.setDrawingCacheEnabled(true);
+        v.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
+                MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+        v.layout(0, 0, v.getMeasuredWidth(), v.getMeasuredHeight());
+
+        v.buildDrawingCache(true);
+        Bitmap b = Bitmap.createBitmap(v.getDrawingCache());
+        v.setDrawingCacheEnabled(false); // clear drawing cache
+        return b;
     }
 }

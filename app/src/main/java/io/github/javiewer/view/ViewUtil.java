@@ -1,9 +1,11 @@
 package io.github.javiewer.view;
 
 import android.content.res.Resources;
+import android.graphics.Matrix;
 import android.os.Build;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.ImageView;
 
 /**
  * Project: JAViewer
@@ -38,5 +40,25 @@ public class ViewUtil {
 
     public static int pxToDp(int px) {
         return (int) (px / Resources.getSystem().getDisplayMetrics().density);
+    }
+
+    public static void imageTopCrop(ImageView view) {
+        view.setScaleType(ImageView.ScaleType.MATRIX);
+        final Matrix matrix = view.getImageMatrix();
+
+        float scale;
+        final int viewWidth = view.getWidth() - view.getPaddingLeft() - view.getPaddingRight();
+        final int viewHeight = view.getHeight() - view.getPaddingTop() - view.getPaddingBottom();
+        final int drawableWidth = view.getDrawable().getIntrinsicWidth();
+        final int drawableHeight = view.getDrawable().getIntrinsicHeight();
+
+        if (drawableWidth * viewHeight > drawableHeight * viewWidth) {
+            scale = (float) viewHeight / (float) drawableHeight;
+        } else {
+            scale = (float) viewWidth / (float) drawableWidth;
+        }
+
+        matrix.setScale(scale, scale);
+        view.setImageMatrix(matrix);
     }
 }

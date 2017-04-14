@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.ads.AdView;
+
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -27,6 +29,9 @@ public abstract class RecyclerFragment<I, LM extends RecyclerView.LayoutManager>
 
     @BindView(R.id.refresh_layout)
     SwipeRefreshLayout mRefreshLayout;
+
+    @BindView(R.id.adView)
+    AdView mAdView;
 
     private SwipeRefreshLayout.OnRefreshListener mRefreshListener;
 

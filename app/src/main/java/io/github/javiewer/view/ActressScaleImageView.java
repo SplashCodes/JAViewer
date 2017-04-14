@@ -10,7 +10,7 @@ import io.github.javiewer.R;
 /**
  * Project: JAViewer
  */
-public class ActressScaleImageView extends ScaleImageView {
+public class ActressScaleImageView extends SquareImageView {
 
     public ActressScaleImageView(Context context) {
         super(context);

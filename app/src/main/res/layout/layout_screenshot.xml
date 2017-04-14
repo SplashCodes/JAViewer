@@ -12,7 +12,7 @@
     app:cardCornerRadius="0dp"
     app:cardElevation="0dp">
 
-    <io.github.javiewer.view.ScaleImageView
+    <io.github.javiewer.view.SquareImageView
         android:id="@+id/screenshot_image_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

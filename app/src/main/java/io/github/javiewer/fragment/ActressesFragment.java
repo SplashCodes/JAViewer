@@ -4,8 +4,8 @@ package io.github.javiewer.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
-public class ActressesFragment extends RecyclerFragment<Actress, StaggeredGridLayoutManager> {
+public class ActressesFragment extends RecyclerFragment<Actress, LinearLayoutManager> {
 
     public ActressesFragment() {
         // Required empty public constructor
@@ -27,9 +27,10 @@ public class ActressesFragment extends RecyclerFragment<Actress, StaggeredGridLa
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        this.setRecyclerViewPadding(4);
+        //this.setRecyclerViewPadding(4);
 
-        this.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));
+        //this.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));
+        this.setLayoutManager(new LinearLayoutManager(this.getContext()));
         this.setAdapter(new SlideInBottomAnimationAdapter(new ActressAdapter(getItems(), this.getActivity())));
 
         RecyclerView.ItemAnimator animator = new SlideInUpAnimator();

@@ -2,7 +2,6 @@ package io.github.javiewer.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -16,15 +15,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
-import com.pnikosis.materialishprogress.ProgressWheel;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -190,16 +185,16 @@ public class GalleryActivity extends AppCompatActivity {
 
         private final String[] imageUrls;
         private LayoutInflater inflater;
-        private DisplayImageOptions options;
+        //private DisplayImageOptions options;
 
         ImageAdapter(Context context, String[] imageUrls) {
             inflater = LayoutInflater.from(context);
 
-            options = new DisplayImageOptions.Builder()
+            /*options = new DisplayImageOptions.Builder()
                     .resetViewBeforeLoading(true)
                     .cacheOnDisk(true)
                     .displayer(new FadeInBitmapDisplayer(300))
-                    .build();
+                    .build();*/
 
             this.imageUrls = imageUrls;
         }
@@ -217,54 +212,23 @@ public class GalleryActivity extends AppCompatActivity {
         @Override
         public Object instantiateItem(ViewGroup view, int position) {
             View imageLayout = inflater.inflate(R.layout.content_gallery, view, false);
-            assert imageLayout != null;
             ImageView imageView = (ImageView) imageLayout.findViewById(R.id.image);
-            final ProgressWheel spinner = (ProgressWheel) imageLayout.findViewById(R.id.progress_wheel);
+            final ProgressBar progressBar = (ProgressBar) imageLayout.findViewById(R.id.progress_bar);
             final TextView textView = (TextView) imageLayout.findViewById(R.id.gallery_text_error);
 
-            ImageLoader.getInstance().displayImage(imageUrls[position], imageView, options, new SimpleImageLoadingListener() {
-                @Override
-                public void onLoadingStarted(String imageUri, View view) {
-                    spinner.setVisibility(View.VISIBLE);
-                    spinner.spin();
-                }
+            Picasso.with(imageView.getContext())
+                    .load(imageUrls[position])
+                    .into(imageView, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            progressBar.setVisibility(View.GONE);
+                        }
 
-                @Override
-                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                    String message = null;
-                    switch (failReason.getType()) {
-                        case IO_ERROR:
-                            message = "IO 错误";
-                            break;
-                        case DECODING_ERROR:
-                            message = "解码失败";
-                            break;
-                        case NETWORK_DENIED:
-                            message = "网络错误";
-                            break;
-                        case OUT_OF_MEMORY:
-                            message = "内存不足";
-                            break;
-                        case UNKNOWN:
-                            message = "未知错误";
-                            break;
-                    }
-
-                    textView.setText(message);
-                    spinner.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                    spinner.setVisibility(View.GONE);
-                }
-            }, new ImageLoadingProgressListener() {
-
-                @Override
-                public void onProgressUpdate(String imageUri, View view, int current, int total) {
-                    spinner.setProgress(((float) current) / ((float) total));
-                }
-            });
+                        @Override
+                        public void onError() {
+                            textView.setText("图片加载失败 :(");
+                        }
+                    });
 
             view.addView(imageLayout, 0);
             return imageLayout;

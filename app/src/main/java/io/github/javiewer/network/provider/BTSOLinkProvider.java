@@ -34,7 +34,7 @@ public class BTSOLinkProvider extends DownloadLinkProvider {
                 links.add(
                         DownloadLink.create(
                                 row.getElementsByClass("file").first().text(),
-                                "文件大小：" + row.getElementsByClass("size").first().text(),
+                                row.getElementsByClass("size").first().text(),
                                 row.getElementsByClass("date").first().text(),
                                 a.attr("href"),
                                 null)
