@@ -54,7 +54,7 @@ public class GenreTabsFragment extends ExtendedAppBarFragment {
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                mProgressBar.setVisibility(View.INVISIBLE);
+                mProgressBar.setVisibility(View.GONE);
                 try {
                     LinkedHashMap<String, List<Genre>> genres = AVMOProvider.parseGenres(response.body().string());
 

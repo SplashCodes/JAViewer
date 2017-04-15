@@ -1,6 +1,9 @@
 package io.github.javiewer.adapter;
 
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
@@ -11,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -53,6 +57,15 @@ public class MovieHeaderAdapter extends RecyclerView.Adapter<MovieHeaderAdapter.
         final MovieDetail.Header header = headers.get(position);
 
         if (header.name != null && header.value != null) {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ClipboardManager clip = (ClipboardManager) mParentActivity.getSystemService(Context.CLIPBOARD_SERVICE);
+                    clip.setPrimaryClip(ClipData.newPlainText(header.name, header.value));
+                    Toast.makeText(mParentActivity, "已复制到剪贴板", Toast.LENGTH_SHORT).show();
+                }
+            });
+
             holder.mHeaderName.setText(header.name);
             holder.mHeaderValue.setText(header.value);
 

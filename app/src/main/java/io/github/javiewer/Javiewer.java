@@ -115,16 +115,6 @@ public class JAViewer extends Application {
             })
             .build();
 
-    /*public static final DisplayImageOptions DISPLAY_IMAGE_OPTIONS = new DisplayImageOptions.Builder()
-            .resetViewBeforeLoading(true)
-            .cacheInMemory(true)
-            .cacheOnDisk(true)
-            .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2) // default
-            .bitmapConfig(Bitmap.Config.ARGB_8888) // default
-            .delayBeforeLoading(1000)
-            .displayer(new FadeInBitmapDisplayer(500)) // default
-            .build();*/
-
     public static <T> T parseJson(Class<T> beanClass, JsonReader reader) throws JsonParseException {
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();

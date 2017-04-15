@@ -87,7 +87,6 @@ public class ActressPaletteAdapter extends RecyclerView.Adapter<ActressPaletteAd
         Picasso.with(holder.mImage.getContext())
                 .load(actress.getImageUrl())
                 .placeholder(R.drawable.ic_movie_actresses)
-                //.centerCrop()
                 .into(new Target() {
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {

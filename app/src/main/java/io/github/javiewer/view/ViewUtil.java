@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import android.graphics.Matrix;
 import android.os.Build;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
@@ -18,12 +19,13 @@ public class ViewUtil {
             @Override
             public void onGlobalLayout() {
 
-                icon.setPadding(
-                        icon.getPaddingLeft(),
-                        (view.getMeasuredHeight() - icon.getMeasuredHeight()) / 2,
-                        icon.getPaddingRight(),
-                        icon.getPaddingBottom()
-                );
+                ViewGroup.MarginLayoutParams viewMargin = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+                ViewGroup.MarginLayoutParams iconMargin = (ViewGroup.MarginLayoutParams) icon.getLayoutParams();
+                int topMargin = viewMargin.topMargin;
+                topMargin += (view.getMeasuredHeight() - icon.getMeasuredHeight()) / 2;
+
+                iconMargin.topMargin = topMargin;
+                icon.setLayoutParams(iconMargin);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     view.getViewTreeObserver().removeOnGlobalLayoutListener(this);

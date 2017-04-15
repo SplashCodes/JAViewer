@@ -51,6 +51,6 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:background="#E6E6E6" />
+        android:background="@color/colorDivider" />
 
 </RelativeLayout>

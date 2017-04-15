@@ -34,7 +34,6 @@ public class ActressAdapter extends ItemAdapter<Actress, ActressAdapter.ViewHold
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        //View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_actress, parent, false);
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_actress, parent, false);
 
         return new ViewHolder(v);
@@ -77,9 +76,6 @@ public class ActressAdapter extends ItemAdapter<Actress, ActressAdapter.ViewHold
 
         @BindView(R.id.actress_img)
         public ImageView mImage;
-
-        /*@BindView(R.id.card_actress)
-        public CardView mCard;*/
 
         @BindView(R.id.layout_actress)
         public View mLayout;

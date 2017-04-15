@@ -1,5 +1,7 @@
 package io.github.javiewer.activity;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -108,7 +110,6 @@ public class MovieActivity extends AppCompatActivity {
                             .load(detail.coverUrl)
                             .noPlaceholder()
                             .into(mToolbarLayoutBackground);
-                    //ImageLoader.getInstance().displayImage(detail.coverUrl, mToolbarLayoutBackground, JAViewer.DISPLAY_IMAGE_OPTIONS);
                 } catch (IOException e) {
                     onFailure(call, e);
                 }
@@ -205,7 +206,13 @@ public class MovieActivity extends AppCompatActivity {
         }
 
         //Changing visibility
-        mProgressBar.animate().setDuration(200).alpha(0).start();
+        mProgressBar.animate().setDuration(200).alpha(0).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                mProgressBar.setVisibility(View.GONE);
+            }
+        }).start();
 
         //Slide Up Animation
         mContent.setVisibility(View.VISIBLE);

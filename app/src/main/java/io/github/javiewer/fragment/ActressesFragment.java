@@ -27,9 +27,6 @@ public class ActressesFragment extends RecyclerFragment<Actress, LinearLayoutMan
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        //this.setRecyclerViewPadding(4);
-
-        //this.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));
         this.setLayoutManager(new LinearLayoutManager(this.getContext()));
         this.setAdapter(new SlideInBottomAnimationAdapter(new ActressAdapter(getItems(), this.getActivity())));
 

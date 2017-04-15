@@ -64,7 +64,7 @@ public class MovieAdapter extends ItemAdapter<Movie, MovieAdapter.ViewHolder> {
                 .noPlaceholder()
                 .into(holder.mImageCover);
 
-        holder.mImageHot.setVisibility(movie.isHot() ? View.VISIBLE : View.INVISIBLE);
+        holder.mImageHot.setVisibility(movie.isHot() ? View.VISIBLE : View.GONE);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

@@ -24,6 +24,8 @@ public class Configurations {
 
     private DataSource data_source;
 
+    private boolean showAds;
+
     public ArrayList<Movie> getStarredMovies() {
         if (starred_movies == null) {
             starred_movies = new ArrayList<>();
@@ -68,4 +70,11 @@ public class Configurations {
         }
     }
 
+    public void setShowAds(boolean showAds) {
+        this.showAds = showAds;
+    }
+
+    public boolean showAds() {
+        return showAds;
+    }
 }

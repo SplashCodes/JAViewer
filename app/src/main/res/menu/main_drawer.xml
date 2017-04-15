@@ -40,7 +40,7 @@
         <item
             android:id="@+id/nav_donate"
             android:icon="@drawable/ic_menu_donate"
-            android:title="捐赠" />
+            android:title="支持开发" />
 
         <item
             android:id="@+id/nav_github"
