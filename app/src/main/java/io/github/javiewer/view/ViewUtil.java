@@ -1,8 +1,12 @@
 package io.github.javiewer.view;
 
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.os.Build;
+import android.support.v4.widget.NestedScrollView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -62,5 +66,22 @@ public class ViewUtil {
 
         matrix.setScale(scale, scale);
         view.setImageMatrix(matrix);
+    }
+
+    public static Bitmap getBitmapByView(NestedScrollView scrollView) {
+        int h = 0;
+        Bitmap bitmap = null;
+        // 获取scrollview实际高度
+        for (int i = 0; i < scrollView.getChildCount(); i++) {
+            h += scrollView.getChildAt(i).getHeight();
+            scrollView.getChildAt(i).setBackgroundColor(
+                    Color.parseColor("#ffffff"));
+        }
+        // 创建对应大小的bitmap
+        bitmap = Bitmap.createBitmap(scrollView.getWidth(), h,
+                Bitmap.Config.ARGB_8888);
+        final Canvas canvas = new Canvas(bitmap);
+        scrollView.draw(canvas);
+        return bitmap;
     }
 }

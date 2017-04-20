@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -19,6 +19,9 @@ import butterknife.ButterKnife;
 import io.github.javiewer.R;
 import io.github.javiewer.activity.MovieListActivity;
 import io.github.javiewer.adapter.item.Actress;
+import io.github.javiewer.view.SquareTopCrop;
+
+import static com.bumptech.glide.load.engine.DiskCacheStrategy.SOURCE;
 
 /**
  * Project: JAViewer
@@ -63,9 +66,13 @@ public class ActressAdapter extends ItemAdapter<Actress, ActressAdapter.ViewHold
         });
 
         holder.mImage.setImageDrawable(null);
-        Picasso.with(holder.mImage.getContext())
+        Glide.with(holder.mImage.getContext())
                 .load(actress.getImageUrl())
                 .placeholder(R.drawable.ic_movie_actresses)
+                .diskCacheStrategy(SOURCE) // override default RESULT cache and apply transform always
+                .skipMemoryCache(true) // do not reuse the transformed result while running
+                .transform(new SquareTopCrop(holder.mImage.getContext()))
+                .dontAnimate()
                 .into(holder.mImage);
     }
 

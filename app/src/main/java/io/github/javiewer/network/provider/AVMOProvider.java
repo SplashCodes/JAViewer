@@ -111,7 +111,7 @@ public class AVMOProvider {
                     String[] strings = p.text().split(":");
                     movie.headers.add(MovieDetail.Header.create(
                             strings[0].trim(),
-                            strings[1].trim(),
+                            strings.length > 1 ? strings[1].trim() : "",
                             null
                     ));
                 }

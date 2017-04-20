@@ -4,10 +4,13 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,14 +19,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.MeasureSpec;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.robertlevonyan.views.chip.Chip;
-import com.squareup.picasso.Picasso;
 import com.wefika.flowlayout.FlowLayout;
 
 import java.io.File;
@@ -56,7 +58,7 @@ public class MovieActivity extends AppCompatActivity {
     ImageView mToolbarLayoutBackground;
 
     @BindView(R.id.movie_content)
-    View mContent;
+    NestedScrollView mContent;
 
     @BindView(R.id.movie_progress_bar)
     ProgressBar mProgressBar;
@@ -66,6 +68,7 @@ public class MovieActivity extends AppCompatActivity {
 
     @BindView(R.id.genre_flow_layout)
     FlowLayout mFlowLayout;
+
 
     MenuItem mStarButton;
 
@@ -101,14 +104,17 @@ public class MovieActivity extends AppCompatActivity {
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (!response.isSuccessful()) {
+                    return;
+                }
+
                 MovieDetail detail;
                 try {
                     detail = AVMOProvider.parseMoviesDetail(response.body().string());
                     displayInfo(detail);
 
-                    Picasso.with(mToolbarLayoutBackground.getContext())
+                    Glide.with(mToolbarLayoutBackground.getContext())
                             .load(detail.coverUrl)
-                            .noPlaceholder()
                             .into(mToolbarLayoutBackground);
                 } catch (IOException e) {
                     onFailure(call, e);
@@ -264,7 +270,7 @@ public class MovieActivity extends AppCompatActivity {
             }
         });
 
-        MenuItem mShareButton = menu.findItem(R.id.action_share);
+        final MenuItem mShareButton = menu.findItem(R.id.action_share);
         mShareButton.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -272,6 +278,7 @@ public class MovieActivity extends AppCompatActivity {
                     File cache = new File(getExternalFilesDir("cache"), "screenshot");
                     FileOutputStream os = new FileOutputStream(cache);
                     Bitmap screenshot = getScreenBitmap();
+                    //Bitmap screenshot = ViewUtil.getBitmapByView(mContent);
                     screenshot.compress(Bitmap.CompressFormat.JPEG, 100, os);
                     os.flush();
                     os.close();
@@ -296,15 +303,31 @@ public class MovieActivity extends AppCompatActivity {
     }
 
     public Bitmap getScreenBitmap() {
-        View v = findViewById(android.R.id.content).getRootView();
-        v.setDrawingCacheEnabled(true);
-        v.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
-                MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
-        v.layout(0, 0, v.getMeasuredWidth(), v.getMeasuredHeight());
+        int imageHeight = mToolbarLayoutBackground.getHeight();
+        int scrollViewHeight = 0;
+        for (int i = 0; i < mContent.getChildCount(); i++) {
+            scrollViewHeight += mContent.getChildAt(i).getHeight();
+        }
+        Bitmap result = Bitmap.createBitmap(mContent.getWidth(), imageHeight + scrollViewHeight, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(result);
+        canvas.drawColor(Color.parseColor("#FAFAFA"));
 
-        v.buildDrawingCache(true);
-        Bitmap b = Bitmap.createBitmap(v.getDrawingCache());
-        v.setDrawingCacheEnabled(false); // clear drawing cache
-        return b;
+        //Image
+        {
+            Bitmap bitmap = Bitmap.createBitmap(mToolbarLayoutBackground.getWidth(), imageHeight, Bitmap.Config.ARGB_8888);
+            Canvas c = new Canvas(bitmap);
+            mToolbarLayoutBackground.draw(c);
+            canvas.drawBitmap(bitmap, 0, 0, null);
+        }
+
+        //ScrollView
+        {
+            Bitmap bitmap = Bitmap.createBitmap(mContent.getWidth(), scrollViewHeight, Bitmap.Config.ARGB_8888);
+            Canvas c = new Canvas(bitmap);
+            mContent.draw(c);
+            canvas.drawBitmap(bitmap, 0, imageHeight, null);
+        }
+
+        return result;
     }
 }

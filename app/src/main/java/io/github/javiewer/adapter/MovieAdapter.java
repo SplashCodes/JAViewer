@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -59,9 +59,8 @@ public class MovieAdapter extends ItemAdapter<Movie, MovieAdapter.ViewHolder> {
         });
 
         holder.mImageCover.setImageDrawable(null);
-        Picasso.with(holder.mImageCover.getContext())
+        Glide.with(holder.mImageCover.getContext())
                 .load(movie.getCoverUrl())
-                .noPlaceholder()
                 .into(holder.mImageCover);
 
         holder.mImageHot.setVisibility(movie.isHot() ? View.VISIBLE : View.GONE);

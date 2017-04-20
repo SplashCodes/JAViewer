@@ -13,6 +13,7 @@ import io.github.javiewer.adapter.MovieAdapter;
 import io.github.javiewer.adapter.item.Movie;
 import io.github.javiewer.listener.EndlessOnScrollListener;
 import io.github.javiewer.network.provider.AVMOProvider;
+import io.github.javiewer.view.MovieItemDecoration;
 import jp.wasabeef.recyclerview.adapters.SlideInBottomAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import okhttp3.ResponseBody;
@@ -28,6 +29,7 @@ public abstract class MovieFragment extends RecyclerFragment<Movie, LinearLayout
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         this.setLayoutManager(new LinearLayoutManager(this.getContext()));
         this.setAdapter(new SlideInBottomAnimationAdapter(new MovieAdapter(getItems(), this.getActivity())));
+        mRecyclerView.addItemDecoration(new MovieItemDecoration());
         RecyclerView.ItemAnimator animator = new SlideInUpAnimator();
         animator.setAddDuration(300);
         mRecyclerView.setItemAnimator(animator);

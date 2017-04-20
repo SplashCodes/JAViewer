@@ -2,6 +2,7 @@ package io.github.javiewer.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -18,8 +19,10 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -212,21 +215,23 @@ public class GalleryActivity extends AppCompatActivity {
         @Override
         public Object instantiateItem(ViewGroup view, int position) {
             View imageLayout = inflater.inflate(R.layout.content_gallery, view, false);
-            ImageView imageView = (ImageView) imageLayout.findViewById(R.id.image);
+            final ImageView imageView = (ImageView) imageLayout.findViewById(R.id.image);
             final ProgressBar progressBar = (ProgressBar) imageLayout.findViewById(R.id.progress_bar);
             final TextView textView = (TextView) imageLayout.findViewById(R.id.gallery_text_error);
 
-            Picasso.with(imageView.getContext())
+            Glide.with(imageView.getContext())
                     .load(imageUrls[position])
-                    .into(imageView, new Callback() {
+                    .into(new SimpleTarget<GlideDrawable>() {
                         @Override
-                        public void onSuccess() {
+                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
                             progressBar.setVisibility(View.GONE);
+                            imageView.setImageDrawable(resource);
                         }
 
                         @Override
-                        public void onError() {
-                            textView.setText("图片加载失败 :(");
+                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                            super.onLoadFailed(e, errorDrawable);
+                            textView.setText("图片加载失败 :(\n" + e.getMessage());
                         }
                     });
 

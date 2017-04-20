@@ -13,6 +13,7 @@ import io.github.javiewer.adapter.DownloadLinkAdapter;
 import io.github.javiewer.adapter.item.DownloadLink;
 import io.github.javiewer.listener.BasicOnScrollListener;
 import io.github.javiewer.network.provider.DownloadLinkProvider;
+import io.github.javiewer.view.DownloadItemDecoration;
 import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import okhttp3.ResponseBody;
@@ -44,10 +45,9 @@ public class DownloadFragment extends RecyclerFragment<DownloadLink, LinearLayou
                 .build();
         mAdView.loadAd(adRequest);*/
 
-        this.setRecyclerViewPadding(4);
-
         this.setLayoutManager(new LinearLayoutManager(this.getContext()));
         this.setAdapter(new ScaleInAnimationAdapter(new DownloadLinkAdapter(this.getItems(), this.getActivity(), this.provider)));
+        mRecyclerView.addItemDecoration(new DownloadItemDecoration());
 
         RecyclerView.ItemAnimator animator = new SlideInUpAnimator();
         animator.setAddDuration(300);

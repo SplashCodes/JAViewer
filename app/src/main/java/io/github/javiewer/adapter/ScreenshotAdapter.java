@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -50,9 +50,8 @@ public class ScreenshotAdapter extends RecyclerView.Adapter<ScreenshotAdapter.Vi
         Screenshot screenshot = screenshots.get(position);
 
         holder.mImage.setImageDrawable(null);
-        Picasso.with(holder.mImage.getContext())
+        Glide.with(holder.mImage.getContext())
                 .load(screenshot.getThumbnailUrl())
-                .noPlaceholder()
                 .into(holder.mImage);
 
         holder.mImage.setOnClickListener(new View.OnClickListener() {
