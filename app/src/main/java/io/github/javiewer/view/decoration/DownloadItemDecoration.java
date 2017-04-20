@@ -1,8 +1,10 @@
-package io.github.javiewer.view;
+package io.github.javiewer.view.decoration;
 
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+
+import io.github.javiewer.view.ViewUtil;
 
 /**
  * Project: JAViewer

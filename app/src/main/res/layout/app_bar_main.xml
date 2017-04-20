@@ -25,10 +25,17 @@
                 android:weightSum="1"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-            <com.miguelcatalan.materialsearchview.MaterialSearchView
+            <!--<com.miguelcatalan.materialsearchview.MaterialSearchView
                 android:id="@+id/search_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content" />-->
+
+            <io.github.javiewer.view.SimpleSearchView
+                android:id="@+id/search_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="搜索"
+                android:textColorHint="#757575" />
         </FrameLayout>
     </android.support.design.widget.AppBarLayout>
 

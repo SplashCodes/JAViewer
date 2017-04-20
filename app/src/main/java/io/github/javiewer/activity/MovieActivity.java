@@ -157,7 +157,7 @@ public class MovieActivity extends AppCompatActivity {
                 mText.setVisibility(View.VISIBLE);
                 ViewUtil.alignIconToView(mIcon, mText);
             } else {
-                mRecyclerView.setAdapter(new ScreenshotAdapter(detail.screenshots, this, mIcon));
+                mRecyclerView.setAdapter(new ScreenshotAdapter(detail.screenshots, this, mIcon, movie));
                 mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL));
                 mRecyclerView.setNestedScrollingEnabled(false);
             }

@@ -28,8 +28,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.miguelcatalan.materialsearchview.MaterialSearchView;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -42,6 +40,7 @@ import io.github.javiewer.R;
 import io.github.javiewer.adapter.item.DataSource;
 import io.github.javiewer.fragment.ExtendedAppBarFragment;
 import io.github.javiewer.network.BasicService;
+import io.github.javiewer.view.SimpleSearchView;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Request;
@@ -61,7 +60,7 @@ public class MainActivity extends AppCompatActivity
     public AppBarLayout mAppBarLayout;
 
     @BindView(R.id.search_view)
-    public MaterialSearchView mSearchView;
+    public SimpleSearchView mSearchView;
 
     @BindView(R.id.drawer_layout)
     public DrawerLayout mDrawerLayout;
@@ -294,7 +293,7 @@ public class MainActivity extends AppCompatActivity
 
         MenuItem item = menu.findItem(R.id.action_search);
         mSearchView.setMenuItem(item);
-        mSearchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+        mSearchView.setOnQueryTextListener(new SimpleSearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 try {

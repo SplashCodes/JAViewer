@@ -17,6 +17,7 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.io.File;
+import java.io.IOException;
 
 import io.github.javiewer.Configurations;
 import io.github.javiewer.JAViewer;
@@ -72,6 +73,13 @@ public class StartActivity extends AppCompatActivity {
         File config = new File(JAViewer.getStorageDir(), "configurations.json");
         if (oldConfig.exists()) {
             oldConfig.renameTo(config);
+        }
+
+        File noMedia = new File(JAViewer.getStorageDir(), ".nomedia");
+        try {
+            noMedia.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         JAViewer.CONFIGURATIONS = Configurations.load(config);

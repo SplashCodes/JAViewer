@@ -14,6 +14,7 @@ import io.github.javiewer.adapter.ActressAdapter;
 import io.github.javiewer.adapter.item.Actress;
 import io.github.javiewer.listener.EndlessOnScrollListener;
 import io.github.javiewer.network.provider.AVMOProvider;
+import io.github.javiewer.view.decoration.ActressItemDecoration;
 import jp.wasabeef.recyclerview.adapters.SlideInBottomAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import okhttp3.ResponseBody;
@@ -29,6 +30,8 @@ public class ActressesFragment extends RecyclerFragment<Actress, LinearLayoutMan
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         this.setLayoutManager(new LinearLayoutManager(this.getContext()));
         this.setAdapter(new SlideInBottomAnimationAdapter(new ActressAdapter(getItems(), this.getActivity())));
+
+        mRecyclerView.addItemDecoration(new ActressItemDecoration());
 
         RecyclerView.ItemAnimator animator = new SlideInUpAnimator();
         animator.setAddDuration(300);

@@ -8,7 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import io.github.javiewer.JAViewer;
 import io.github.javiewer.adapter.MovieAdapter;
 import io.github.javiewer.adapter.item.Movie;
-import io.github.javiewer.view.MovieItemDecoration;
+import io.github.javiewer.view.decoration.MovieItemDecoration;
 
 /**
  * Project: JAViewer

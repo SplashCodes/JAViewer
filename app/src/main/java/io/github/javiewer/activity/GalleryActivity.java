@@ -2,6 +2,7 @@ package io.github.javiewer.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,29 +11,59 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.github.javiewer.JAViewer;
 import io.github.javiewer.R;
+import io.github.javiewer.adapter.item.Movie;
 
 public class GalleryActivity extends AppCompatActivity {
 
     private static final boolean AUTO_HIDE = true;
     private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
     private static final int UI_ANIMATION_DELAY = 300;
+
+    Animation fadeIn = new AlphaAnimation(0, 1);
+
+    {
+        fadeIn.setInterpolator(new DecelerateInterpolator()); //add this
+        fadeIn.setDuration(150);
+    }
+
+    Animation fadeOut = new AlphaAnimation(1, 0);
+
+    {
+        fadeOut.setInterpolator(new AccelerateInterpolator()); //and this
+        fadeOut.setDuration(150);
+    }
 
     private final Handler mHideHandler = new Handler();
     private final Runnable mHidePart2Runnable = new Runnable() {
@@ -55,7 +86,9 @@ public class GalleryActivity extends AppCompatActivity {
             if (actionBar != null) {
                 actionBar.show();
             }
-            mControlsView.setVisibility(View.VISIBLE);
+            mToolbar.startAnimation(fadeIn);
+
+            //mControlsView.setVisibility(View.VISIBLE);
         }
     };
 
@@ -72,13 +105,11 @@ public class GalleryActivity extends AppCompatActivity {
     @BindView(R.id.gallery_pager)
     public ViewPager mPager;
 
-    @BindView(R.id.fullscreen_content_controls)
-    public View mControlsView;
-
-    @BindView(R.id.gallery_page_indicator)
-    public TextView mTextIndicator;
+    @BindView(R.id.toolbar_gallery)
+    public Toolbar mToolbar;
 
     private String[] imageUrls;
+    private Movie movie;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +118,10 @@ public class GalleryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_gallery);
 
         ButterKnife.bind(this);
+
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         detector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
             @Override
@@ -108,7 +143,8 @@ public class GalleryActivity extends AppCompatActivity {
             if (actionBar != null) {
                 actionBar.hide();
             }
-            mControlsView.setVisibility(View.GONE);
+            mToolbar.startAnimation(fadeOut);
+            //mControlsView.setVisibility(View.GONE);
             mVisible = false;
             mHidePart2Runnable.run();
         }
@@ -132,10 +168,14 @@ public class GalleryActivity extends AppCompatActivity {
             }
         });
         updateIndicator();
+
+        movie = (Movie) bundle.getSerializable("movie");
     }
 
     private void updateIndicator() {
-        mTextIndicator.setText((mPager.getCurrentItem() + 1) + " / " + (imageUrls.length));
+        delayedHide(AUTO_HIDE_DELAY_MILLIS);
+        getSupportActionBar().setTitle((mPager.getCurrentItem() + 1) + " / " + (imageUrls.length));
+        //mTextIndicator.setText((mPager.getCurrentItem() + 1) + " / " + (imageUrls.length));
     }
 
     private void toggle() {
@@ -159,7 +199,8 @@ public class GalleryActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.hide();
         }
-        mControlsView.setVisibility(View.GONE);
+        mToolbar.startAnimation(fadeOut);
+        //mControlsView.setVisibility(View.GONE);
         mVisible = false;
 
         // Schedule a runnable to remove the status and navigation bar after a delay
@@ -184,6 +225,52 @@ public class GalleryActivity extends AppCompatActivity {
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.gallery, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_save:
+                final File dir = new File(
+                        JAViewer.getStorageDir(),
+                        String.format("/movies/[%s] %s", movie.code, movie.title).replaceAll("^(?!(COM[0-9]|LPT[0-9]|CON|PRN|AUX|CLOCK\\$|NUL)$)[^./\\\\:*?\u200C\u200B\"<>|]+$", "-")
+                );
+                dir.mkdirs();
+                final int index = mPager.getCurrentItem();
+                Glide
+                        .with(this)
+                        .load(imageUrls[index])
+                        .asBitmap()
+                        .into(new SimpleTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                                try {
+                                    OutputStream os = new BufferedOutputStream(new FileOutputStream(new File(dir, (index + 1) + ".jpeg")));
+                                    resource.compress(Bitmap.CompressFormat.JPEG, 100, os);
+                                    os.flush();
+                                    os.close();
+                                    Toast.makeText(GalleryActivity.this, "成功保存到 " + dir, Toast.LENGTH_SHORT).show();
+                                } catch (IOException e) {
+                                    onLoadFailed(e, null);
+                                }
+                            }
+                        });
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
     private static class ImageAdapter extends PagerAdapter {
 
         private final String[] imageUrls;
@@ -192,12 +279,6 @@ public class GalleryActivity extends AppCompatActivity {
 
         ImageAdapter(Context context, String[] imageUrls) {
             inflater = LayoutInflater.from(context);
-
-            /*options = new DisplayImageOptions.Builder()
-                    .resetViewBeforeLoading(true)
-                    .cacheOnDisk(true)
-                    .displayer(new FadeInBitmapDisplayer(300))
-                    .build();*/
 
             this.imageUrls = imageUrls;
         }

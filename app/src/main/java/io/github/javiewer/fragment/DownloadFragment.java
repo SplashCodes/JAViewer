@@ -13,7 +13,7 @@ import io.github.javiewer.adapter.DownloadLinkAdapter;
 import io.github.javiewer.adapter.item.DownloadLink;
 import io.github.javiewer.listener.BasicOnScrollListener;
 import io.github.javiewer.network.provider.DownloadLinkProvider;
-import io.github.javiewer.view.DownloadItemDecoration;
+import io.github.javiewer.view.decoration.DownloadItemDecoration;
 import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import okhttp3.ResponseBody;

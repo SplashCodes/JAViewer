@@ -17,6 +17,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.javiewer.R;
 import io.github.javiewer.activity.GalleryActivity;
+import io.github.javiewer.adapter.item.Movie;
 import io.github.javiewer.adapter.item.Screenshot;
 import io.github.javiewer.view.ViewUtil;
 
@@ -32,10 +33,13 @@ public class ScreenshotAdapter extends RecyclerView.Adapter<ScreenshotAdapter.Vi
 
     private ImageView mIcon;
 
-    public ScreenshotAdapter(List<Screenshot> screenshots, Activity mParentActivity, ImageView mIcon) {
+    private Movie movie;
+
+    public ScreenshotAdapter(List<Screenshot> screenshots, Activity mParentActivity, ImageView mIcon, Movie movie) {
         this.screenshots = screenshots;
         this.mParentActivity = mParentActivity;
         this.mIcon = mIcon;
+        this.movie = movie;
     }
 
     @Override
@@ -65,6 +69,7 @@ public class ScreenshotAdapter extends RecyclerView.Adapter<ScreenshotAdapter.Vi
                     urls[k] = screenshots.get(k).getImageUrl();
                 }
                 bundle.putStringArray("urls", urls);
+                bundle.putSerializable("movie", movie);
                 bundle.putInt("position", holder.getAdapterPosition());
                 i.putExtras(bundle);
                 mParentActivity.startActivity(i);
