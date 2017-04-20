@@ -31,6 +31,8 @@ import com.wefika.flowlayout.FlowLayout;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -258,7 +260,10 @@ public class MovieActivity extends AppCompatActivity {
                     Snackbar.make(mContent, "已取消收藏", Snackbar.LENGTH_LONG).show();
                     mStarButton.setTitle("收藏");
                 } else {
-                    JAViewer.CONFIGURATIONS.getStarredMovies().add(movie);
+                    List<Movie> movies = JAViewer.CONFIGURATIONS.getStarredMovies();
+                    Collections.reverse(movies);
+                    movies.add(movie);
+                    Collections.reverse(movies);
                     mStarButton.setIcon(R.drawable.ic_menu_star);
                     Snackbar.make(mContent, "已收藏", Snackbar.LENGTH_LONG).show();
                     mStarButton.setTitle("取消收藏");
