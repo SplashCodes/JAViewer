@@ -37,6 +37,7 @@ import butterknife.ButterKnife;
 import io.github.javiewer.JAViewer;
 import io.github.javiewer.Properties;
 import io.github.javiewer.R;
+import io.github.javiewer.adapter.NavigationSpinnerAdapter;
 import io.github.javiewer.adapter.item.DataSource;
 import io.github.javiewer.fragment.ExtendedAppBarFragment;
 import io.github.javiewer.network.BasicService;
@@ -99,7 +100,7 @@ public class MainActivity extends AppCompatActivity
         onNavigationItemSelected(selectedItem);
 
         final Spinner spinner = (Spinner) mNavigationView.getHeaderView(0).findViewById(R.id.nav_header_spinner);
-        ArrayAdapter<DataSource> adapter = new ArrayAdapter<>(this, R.layout.nav_spinner_item, JAViewer.DATA_SOURCES);
+        ArrayAdapter<DataSource> adapter = new NavigationSpinnerAdapter<>(this, R.layout.nav_spinner_item, JAViewer.DATA_SOURCES);
         adapter.setDropDownViewResource(R.layout.view_drop_down);
         spinner.setAdapter(adapter);
         spinner.setSelection(positionOfSpinner = JAViewer.DATA_SOURCES.indexOf(JAViewer.getDataSource()));

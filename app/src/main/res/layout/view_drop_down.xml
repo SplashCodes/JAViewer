@@ -1,8 +1,26 @@
-<CheckedTextView xmlns:android="http://schemas.android.com/apk/res/android"
+<!--<CheckedTextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@android:id/text1"
     style="?android:attr/spinnerDropDownItemStyle"
     android:layout_width="match_parent"
     android:layout_height="?attr/dropdownListPreferredItemHeight"
     android:ellipsize="marquee"
     android:singleLine="true"
-    android:textColor="#ffffff" />
+    android:textColor="?android:textColorPrimary"
+    android:textSize="16sp" />-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp">
+
+    <CheckedTextView
+        android:id="@+id/dropdown_text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:ellipsize="marquee"
+        android:gravity="center_vertical"
+        android:singleLine="true"
+        android:text="TEST"
+        android:textColor="?android:textColorPrimary"
+        android:textSize="16sp" />
+</LinearLayout>
