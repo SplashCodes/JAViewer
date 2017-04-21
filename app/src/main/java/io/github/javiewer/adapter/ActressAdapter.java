@@ -1,8 +1,6 @@
 package io.github.javiewer.adapter;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,9 +15,10 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.javiewer.R;
-import io.github.javiewer.activity.MovieListActivity;
 import io.github.javiewer.adapter.item.Actress;
 import io.github.javiewer.view.SquareTopCrop;
+import io.github.javiewer.view.listener.ActressClickListener;
+import io.github.javiewer.view.listener.ActressLongClickListener;
 
 import static com.bumptech.glide.load.engine.DiskCacheStrategy.SOURCE;
 
@@ -49,21 +48,8 @@ public class ActressAdapter extends ItemAdapter<Actress, ActressAdapter.ViewHold
 
         holder.parse(actress);
 
-        holder.mLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (actress.getLink() != null) {
-                    Intent intent = new Intent(mParentActivity, MovieListActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("title", actress.getName() + " 的作品");
-                    bundle.putString("link", actress.getLink());
-
-                    intent.putExtras(bundle);
-
-                    mParentActivity.startActivity(intent);
-                }
-            }
-        });
+        holder.mLayout.setOnClickListener(new ActressClickListener(actress, mParentActivity));
+        holder.mLayout.setOnLongClickListener(new ActressLongClickListener(actress, mParentActivity));
 
         holder.mImage.setImageDrawable(null);
         Glide.with(holder.mImage.getContext())

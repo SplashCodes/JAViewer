@@ -19,11 +19,11 @@ import java.util.Map;
 
 import io.github.javiewer.adapter.item.DataSource;
 import io.github.javiewer.fragment.ActressesFragment;
-import io.github.javiewer.fragment.FavouriteFragment;
-import io.github.javiewer.fragment.GenreTabsFragment;
 import io.github.javiewer.fragment.HomeFragment;
 import io.github.javiewer.fragment.PopularFragment;
 import io.github.javiewer.fragment.ReleasedFragment;
+import io.github.javiewer.fragment.favourite.FavouriteTabsFragment;
+import io.github.javiewer.fragment.genre.GenreTabsFragment;
 import io.github.javiewer.network.BasicService;
 import okhttp3.Cookie;
 import okhttp3.CookieJar;
@@ -64,7 +64,7 @@ public class JAViewer extends Application {
         put(R.id.nav_released, ReleasedFragment.class);
         put(R.id.nav_actresses, ActressesFragment.class);
         put(R.id.nav_genre, GenreTabsFragment.class);
-        put(R.id.nav_favourite, FavouriteFragment.class);
+        put(R.id.nav_favourite, FavouriteTabsFragment.class);
     }};
 
     public static DataSource getDataSource() {

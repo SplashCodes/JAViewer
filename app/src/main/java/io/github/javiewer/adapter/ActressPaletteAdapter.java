@@ -1,9 +1,7 @@
 package io.github.javiewer.adapter;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.os.Bundle;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -22,10 +20,11 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.javiewer.R;
-import io.github.javiewer.activity.MovieListActivity;
 import io.github.javiewer.adapter.item.Actress;
 import io.github.javiewer.view.SquareTopCrop;
 import io.github.javiewer.view.ViewUtil;
+import io.github.javiewer.view.listener.ActressClickListener;
+import io.github.javiewer.view.listener.ActressLongClickListener;
 
 import static com.bumptech.glide.load.engine.DiskCacheStrategy.SOURCE;
 
@@ -58,22 +57,8 @@ public class ActressPaletteAdapter extends RecyclerView.Adapter<ActressPaletteAd
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final Actress actress = actresses.get(position);
 
-        holder.mCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (actress.getLink() != null) {
-                    Intent intent = new Intent(mParentActivity, MovieListActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("title", actress.getName() + " 的作品");
-                    bundle.putString("link", actress.getLink());
-
-                    intent.putExtras(bundle);
-
-                    mParentActivity.startActivity(intent);
-                }
-            }
-        });
-
+        holder.mCard.setOnClickListener(new ActressClickListener(actress, mParentActivity));
+        holder.mCard.setOnLongClickListener(new ActressLongClickListener(actress, mParentActivity));
 
         holder.mName.setText(actress.getName());
 

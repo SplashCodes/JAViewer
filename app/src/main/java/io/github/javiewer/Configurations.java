@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import io.github.javiewer.adapter.item.Actress;
 import io.github.javiewer.adapter.item.DataSource;
 import io.github.javiewer.adapter.item.Movie;
 
@@ -22,6 +23,8 @@ public class Configurations {
 
     private ArrayList<Movie> starred_movies;
 
+    private ArrayList<Actress> starred_actresses;
+
     private DataSource data_source;
 
     private boolean showAds;
@@ -31,6 +34,13 @@ public class Configurations {
             starred_movies = new ArrayList<>();
         }
         return starred_movies;
+    }
+
+    public ArrayList<Actress> getStarredActresses() {
+        if (starred_actresses == null) {
+            starred_actresses = new ArrayList<>();
+        }
+        return starred_actresses;
     }
 
     public DataSource getDataSource() {

@@ -25,13 +25,13 @@ import io.github.javiewer.view.ViewUtil;
  */
 public abstract class RecyclerFragment<I, LM extends RecyclerView.LayoutManager> extends Fragment {
     @BindView(R.id.recycler_view)
-    RecyclerView mRecyclerView;
+    protected RecyclerView mRecyclerView;
 
     @BindView(R.id.refresh_layout)
-    SwipeRefreshLayout mRefreshLayout;
+    protected SwipeRefreshLayout mRefreshLayout;
 
     @BindView(R.id.adView)
-    AdView mAdView;
+    protected AdView mAdView;
 
     private SwipeRefreshLayout.OnRefreshListener mRefreshListener;
 

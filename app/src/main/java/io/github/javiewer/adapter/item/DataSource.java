@@ -23,12 +23,4 @@ public class DataSource extends Linkable {
         return name;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof DataSource) {
-            return JAViewer.Objects_equals(((DataSource) obj).getLink(), getLink());
-        }
-
-        return false;
-    }
 }
