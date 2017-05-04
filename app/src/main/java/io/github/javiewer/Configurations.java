@@ -27,7 +27,9 @@ public class Configurations {
 
     private DataSource data_source;
 
-    private boolean showAds;
+    private boolean show_ads;
+
+    private long download_counter;
 
     public ArrayList<Movie> getStarredMovies() {
         if (starred_movies == null) {
@@ -80,11 +82,19 @@ public class Configurations {
         }
     }
 
-    public void setShowAds(boolean showAds) {
-        this.showAds = showAds;
+    public void setShowAds(boolean show_ads) {
+        this.show_ads = show_ads;
     }
 
     public boolean showAds() {
-        return showAds;
+        return show_ads;
+    }
+
+    public long getDownloadCounter() {
+        return download_counter;
+    }
+
+    public void setDownloadCounter(long download_counter) {
+        this.download_counter = download_counter;
     }
 }

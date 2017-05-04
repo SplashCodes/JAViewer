@@ -6,9 +6,13 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+
+import com.google.android.gms.ads.AdRequest;
 
 import java.util.List;
 
+import io.github.javiewer.JAViewer;
 import io.github.javiewer.adapter.DownloadLinkAdapter;
 import io.github.javiewer.adapter.item.DownloadLink;
 import io.github.javiewer.listener.BasicOnScrollListener;
@@ -39,11 +43,13 @@ public class DownloadFragment extends RecyclerFragment<DownloadLink, LinearLayou
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        /*mAdView.setVisibility(View.VISIBLE);
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice("52546C5153814CA9A9714647F5960AFE")
-                .build();
-        mAdView.loadAd(adRequest);*/
+        if (JAViewer.CONFIGURATIONS.showAds()) {
+            mAdView.setVisibility(View.VISIBLE);
+            AdRequest adRequest = new AdRequest.Builder()
+                    .addTestDevice("52546C5153814CA9A9714647F5960AFE")
+                    .build();
+            mAdView.loadAd(adRequest);
+        }
 
         this.setLayoutManager(new LinearLayoutManager(this.getContext()));
         this.setAdapter(new ScaleInAnimationAdapter(new DownloadLinkAdapter(this.getItems(), this.getActivity(), this.provider)));

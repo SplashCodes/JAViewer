@@ -26,7 +26,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -327,10 +326,6 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
                 break;
             }
-            case R.id.nav_donate: {
-                openDonateDialog();
-                break;
-            }
             default:
                 setFragment(id, item.getTitle());
                 break;
@@ -348,31 +343,4 @@ public class MainActivity extends AppCompatActivity
         finish();
     }
 
-    public void openDonateDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("支持开发")
-                .setItems(R.array.donate, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which) {
-                            case 0: {
-                                String url = "https://qr.alipay.com/a6x05027ymf6n8kl0qkoa54";
-                                String scheme = "alipays://platformapi/startapp?saId=10000007&clientVersion=3.7.0.0718&qrcode=https%3A%2F%2Fqr.alipay.com%2Fa6x05027ymf6n8kl0qkoa54%3F_s%3Dweb-other";
-                                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(intent);
-                                break;
-                            }
-                            case 1: {
-                                //TODO:
-                                break;
-                            }
-                            case 2:
-                                Toast.makeText(MainActivity.this, "感谢您的支持，本软件暂时未加入广告 :)", Toast.LENGTH_SHORT).show();
-                                //TODO: 广告
-                                break;
-                        }
-                    }
-                });
-        builder.create().show();
-    }
 }

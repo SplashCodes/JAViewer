@@ -41,7 +41,7 @@ public class ActressLongClickListener implements View.OnLongClickListener {
         } else {
             items = new String[]{"复制女优名字", "收藏"};
         }
-        builder.setTitle("支持开发")
+        builder.setTitle(actress.getName())
                 .setItems(items, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {

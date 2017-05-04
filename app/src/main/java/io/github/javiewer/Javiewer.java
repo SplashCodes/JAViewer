@@ -1,6 +1,9 @@
 package io.github.javiewer;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
 
@@ -53,7 +56,7 @@ public class JAViewer extends Application {
     public static Configurations CONFIGURATIONS;
 
     public static final List<DataSource> DATA_SOURCES = new ArrayList<DataSource>() {{
-        add(new DataSource("AVMOO 日本", "https://avmo.pw"));
+        add(new DataSource("AVMOO 日本", "https://avmoo.com"));
         add(new DataSource("AVSOX 日本无码", "https://avso.pw"));
         add(new DataSource("AVMEMO 欧美", "https://avxo.pw"));
     }};
@@ -129,5 +132,13 @@ public class JAViewer extends Application {
 
     public static boolean Objects_equals(Object a, Object b) {
         return (a == b) || (a != null && a.equals(b));
+    }
+
+    public static void a(Context context) {
+        String url = "https://qr.alipay.com/a6x05027ymf6n8kl0qkoa54";
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        context.startActivity(intent);
+        return;
     }
 }
