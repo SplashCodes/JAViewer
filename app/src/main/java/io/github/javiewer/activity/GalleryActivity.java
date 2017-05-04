@@ -334,4 +334,10 @@ public class GalleryActivity extends AppCompatActivity {
             return null;
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Glide.with(this).onDestroy();
+    }
 }

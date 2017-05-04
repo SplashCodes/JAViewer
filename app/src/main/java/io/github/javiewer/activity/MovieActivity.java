@@ -335,4 +335,10 @@ public class MovieActivity extends AppCompatActivity {
 
         return result;
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Glide.with(this).onDestroy();
+    }
 }
