@@ -59,7 +59,7 @@ public class MovieAdapter extends ItemAdapter<Movie, MovieAdapter.ViewHolder> {
         });
 
         holder.mImageCover.setImageDrawable(null);
-        Glide.with(holder.mImageCover.getContext())
+        Glide.with(holder.mImageCover.getContext().getApplicationContext())
                 .load(movie.getCoverUrl())
                 .into(holder.mImageCover);
 

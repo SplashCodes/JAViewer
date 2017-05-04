@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string-array name="donate">
-        <item>支付宝捐赠</item>
-        <item>微信捐赠</item>
-        <item>显示一些广告支持开发者</item>
-    </string-array>
-</resources>

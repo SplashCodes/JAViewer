@@ -54,7 +54,7 @@ public class ScreenshotAdapter extends RecyclerView.Adapter<ScreenshotAdapter.Vi
         Screenshot screenshot = screenshots.get(position);
 
         holder.mImage.setImageDrawable(null);
-        Glide.with(holder.mImage.getContext())
+        Glide.with(holder.mImage.getContext().getApplicationContext())
                 .load(screenshot.getThumbnailUrl())
                 .into(holder.mImage);
 

@@ -115,7 +115,7 @@ public class MovieActivity extends AppCompatActivity {
                     detail = AVMOProvider.parseMoviesDetail(response.body().string());
                     displayInfo(detail);
 
-                    Glide.with(mToolbarLayoutBackground.getContext())
+                    Glide.with(mToolbarLayoutBackground.getContext().getApplicationContext())
                             .load(detail.coverUrl)
                             .into(mToolbarLayoutBackground);
                 } catch (IOException e) {
@@ -334,11 +334,5 @@ public class MovieActivity extends AppCompatActivity {
         }
 
         return result;
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Glide.with(this).onDestroy();
     }
 }

@@ -72,7 +72,7 @@ public class ActressPaletteAdapter extends RecyclerView.Adapter<ActressPaletteAd
             return;
         }
 
-        Glide.with(holder.mImage.getContext())
+        Glide.with(holder.mImage.getContext().getApplicationContext())
                 .load(actress.getImageUrl())
                 .asBitmap()
                 .placeholder(R.drawable.ic_movie_actresses)

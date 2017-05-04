@@ -300,7 +300,7 @@ public class GalleryActivity extends AppCompatActivity {
             final ProgressBar progressBar = (ProgressBar) imageLayout.findViewById(R.id.progress_bar);
             final TextView textView = (TextView) imageLayout.findViewById(R.id.gallery_text_error);
 
-            Glide.with(imageView.getContext())
+            Glide.with(imageView.getContext().getApplicationContext())
                     .load(imageUrls[position])
                     .into(new SimpleTarget<GlideDrawable>() {
                         @Override
@@ -333,11 +333,5 @@ public class GalleryActivity extends AppCompatActivity {
         public Parcelable saveState() {
             return null;
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Glide.with(this).onDestroy();
     }
 }

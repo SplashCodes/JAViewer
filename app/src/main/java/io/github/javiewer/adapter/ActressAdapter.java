@@ -52,7 +52,7 @@ public class ActressAdapter extends ItemAdapter<Actress, ActressAdapter.ViewHold
         holder.mLayout.setOnLongClickListener(new ActressLongClickListener(actress, mParentActivity));
 
         holder.mImage.setImageDrawable(null);
-        Glide.with(holder.mImage.getContext())
+        Glide.with(holder.mImage.getContext().getApplicationContext())
                 .load(actress.getImageUrl())
                 .placeholder(R.drawable.ic_movie_actresses)
                 .diskCacheStrategy(SOURCE) // override default RESULT cache and apply transform always
