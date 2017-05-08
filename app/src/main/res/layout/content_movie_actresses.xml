@@ -32,13 +32,12 @@
             android:text="暂无演员信息"
             android:visibility="gone" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="8dp"
-            android:background="@color/colorDivider" />
+        <LinearLayout
+            android:paddingRight="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <include layout="@layout/layout_divider_margin" />
+        </LinearLayout>
     </LinearLayout>
 
 </RelativeLayout>

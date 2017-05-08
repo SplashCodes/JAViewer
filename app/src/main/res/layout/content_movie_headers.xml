@@ -30,7 +30,14 @@
             android:text="暂无详细信息"
             android:visibility="gone" />
 
-        <include layout="@layout/layout_divider_margin" />
+        <LinearLayout
+            android:paddingRight="16dp"
+            android:paddingLeft="72dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <include layout="@layout/layout_divider_margin" />
+        </LinearLayout>
+
     </LinearLayout>
 
 </RelativeLayout>
