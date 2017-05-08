@@ -16,7 +16,10 @@ import io.github.javiewer.fragment.RecyclerFragment;
 public abstract class FavouriteFragment extends RecyclerFragment<Movie, LinearLayoutManager> {
 
     public void update() {
-        getAdapter().notifyDataSetChanged();
+        RecyclerView.Adapter adapter = getAdapter();
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
     }
 
     @Override
