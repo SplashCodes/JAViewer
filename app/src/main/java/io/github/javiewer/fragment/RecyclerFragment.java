@@ -74,15 +74,14 @@ public abstract class RecyclerFragment<I, LM extends RecyclerView.LayoutManager>
     }
 
     public void setItems(ArrayList<I> items) {
-        if (this.getItems().size() > 0) {
-            this.getItems().clear();
+        int size = getItems().size();
+        if (size > 0) {
+           getItems().clear();
+            getAdapter().notifyItemRangeRemoved(0, size);
         }
 
-        this.getItems().addAll(items);
-
-        mRecyclerView.stopScroll();
-        mRecyclerView.getRecycledViewPool().clear();
-        getAdapter().notifyDataSetChanged();
+        getItems().addAll(items);
+        getAdapter().notifyItemRangeInserted(0, items.size());
     }
 
     @Override

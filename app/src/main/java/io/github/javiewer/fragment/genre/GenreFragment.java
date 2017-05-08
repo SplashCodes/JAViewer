@@ -64,7 +64,7 @@ public class GenreFragment extends Fragment {
         animator.setAddDuration(300);
         mRecyclerView.setItemAnimator(animator);
 
-        this.mAdapter.notifyItemRangeChanged(0, this.mAdapter.getItemCount());
+        this.mAdapter.notifyItemRangeInserted(0, this.mAdapter.getItemCount());
     }
 
     public Call<ResponseBody> getCall(int page) {

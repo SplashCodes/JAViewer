@@ -15,8 +15,6 @@ import io.github.javiewer.adapter.item.Actress;
 import io.github.javiewer.listener.EndlessOnScrollListener;
 import io.github.javiewer.network.provider.AVMOProvider;
 import io.github.javiewer.view.decoration.ActressItemDecoration;
-import jp.wasabeef.recyclerview.adapters.SlideInBottomAnimationAdapter;
-import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
@@ -29,13 +27,14 @@ public class ActressesFragment extends RecyclerFragment<Actress, LinearLayoutMan
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         this.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        this.setAdapter(new SlideInBottomAnimationAdapter(new ActressAdapter(getItems(), this.getActivity())));
+        //this.setAdapter(new SlideInBottomAnimationAdapter(new ActressAdapter(getItems(), this.getActivity())));
+        this.setAdapter(new ActressAdapter(getItems(), this.getActivity()));
 
         mRecyclerView.addItemDecoration(new ActressItemDecoration());
 
-        RecyclerView.ItemAnimator animator = new SlideInUpAnimator();
+        /*RecyclerView.ItemAnimator animator = new SlideInUpAnimator();
         animator.setAddDuration(300);
-        mRecyclerView.setItemAnimator(animator);
+        mRecyclerView.setItemAnimator(animator);*/
 
         this.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -72,12 +71,8 @@ public class ActressesFragment extends RecyclerFragment<Actress, LinearLayoutMan
 
                 int pos = getItems().size();
 
-                if (pos > 0) {
-                    pos--;
-                }
-
                 getItems().addAll(wrappers);
-                getAdapter().notifyItemChanged(pos, wrappers.size());
+                getAdapter().notifyItemRangeInserted(pos, wrappers.size());
             }
         });
 

@@ -28,8 +28,8 @@ public abstract class MovieFragment extends RecyclerFragment<Movie, LinearLayout
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         this.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        this.setAdapter(new SlideInBottomAnimationAdapter(new MovieAdapter(getItems(), this.getActivity())));
         mRecyclerView.addItemDecoration(new MovieItemDecoration());
+        this.setAdapter(new SlideInBottomAnimationAdapter(new MovieAdapter(getItems(), this.getActivity())));
         RecyclerView.ItemAnimator animator = new SlideInUpAnimator();
         animator.setAddDuration(300);
         mRecyclerView.setItemAnimator(animator);
@@ -69,12 +69,8 @@ public abstract class MovieFragment extends RecyclerFragment<Movie, LinearLayout
 
                 int pos = getItems().size();
 
-                if (pos > 0) {
-                    pos--;
-                }
-
                 getItems().addAll(wrappers);
-                getAdapter().notifyItemChanged(pos, wrappers.size());
+                getAdapter().notifyItemRangeInserted(pos, wrappers.size());
             }
         });
 
