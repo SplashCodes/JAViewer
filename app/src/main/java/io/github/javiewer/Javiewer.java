@@ -90,12 +90,21 @@ public class JAViewer extends Application {
         return dir;
     }
 
+    public static HttpUrl replaceUrl(HttpUrl url) {
+        if (url.url().getHost().equals("avmo.cn")) {
+            return url.resolve("avmoo.com");
+        }
+
+        return url;
+    }
+
     public static final OkHttpClient HTTP_CLIENT = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
         @Override
         public Response intercept(Interceptor.Chain chain) throws IOException {
             Request original = chain.request();
 
             Request request = original.newBuilder()
+                    .url(replaceUrl(original.url()))
                     .header("User-Agent", USER_AGENT)
                     .build();
 
