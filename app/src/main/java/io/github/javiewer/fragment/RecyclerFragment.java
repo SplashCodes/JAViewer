@@ -76,7 +76,7 @@ public abstract class RecyclerFragment<I, LM extends RecyclerView.LayoutManager>
     public void setItems(ArrayList<I> items) {
         int size = getItems().size();
         if (size > 0) {
-           getItems().clear();
+            getItems().clear();
             getAdapter().notifyItemRangeRemoved(0, size);
         }
 

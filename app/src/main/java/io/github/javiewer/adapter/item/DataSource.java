@@ -1,7 +1,5 @@
 package io.github.javiewer.adapter.item;
 
-import io.github.javiewer.JAViewer;
-
 /**
  * Project: JAViewer
  */

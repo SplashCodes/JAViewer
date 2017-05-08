@@ -91,8 +91,10 @@ public class JAViewer extends Application {
     }
 
     public static HttpUrl replaceUrl(HttpUrl url) {
-        if (url.url().getHost().equals("avmo.cn")) {
-            return url.resolve("avmoo.com");
+        HttpUrl.Builder builder = url.newBuilder();
+        if (url.url().getHost().equals("avmo.pw")) {
+            builder.host("avmoo.com");
+            return builder.build();
         }
 
         return url;
