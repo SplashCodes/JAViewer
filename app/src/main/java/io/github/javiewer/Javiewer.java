@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cat.ereza.customactivityoncrash.CustomActivityOnCrash;
 import io.github.javiewer.adapter.item.DataSource;
 import io.github.javiewer.fragment.ActressesFragment;
 import io.github.javiewer.fragment.HomeFragment;
@@ -151,5 +152,11 @@ public class JAViewer extends Application {
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(intent);
         return;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        CustomActivityOnCrash.install(this);
     }
 }

@@ -8,8 +8,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.google.android.gms.ads.AdRequest;
-
 import java.util.List;
 
 import io.github.javiewer.JAViewer;
@@ -43,13 +41,13 @@ public class DownloadFragment extends RecyclerFragment<DownloadLink, LinearLayou
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        if (JAViewer.CONFIGURATIONS.showAds()) {
+        /*if (JAViewer.CONFIGURATIONS.showAds()) {
             mAdView.setVisibility(View.VISIBLE);
             AdRequest adRequest = new AdRequest.Builder()
                     .addTestDevice("52546C5153814CA9A9714647F5960AFE")
                     .build();
             mAdView.loadAd(adRequest);
-        }
+        }*/
 
         this.setLayoutManager(new LinearLayoutManager(this.getContext()));
         this.setAdapter(new ScaleInAnimationAdapter(new DownloadLinkAdapter(this.getItems(), this.getActivity(), this.provider)));
