@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.javiewer.R;
-import io.github.javiewer.listener.BasicOnScrollListener;
 import io.github.javiewer.view.ViewUtil;
+import io.github.javiewer.view.listener.BasicOnScrollListener;
 
 /**
  * Project: JAViewer
@@ -66,6 +66,9 @@ public abstract class RecyclerFragment<I, LM extends RecyclerView.LayoutManager>
     }
 
     public RecyclerView.Adapter getAdapter() {
+        if (this.mRecyclerView == null) {
+            return null;
+        }
         return this.mRecyclerView.getAdapter();
     }
 
@@ -77,11 +80,11 @@ public abstract class RecyclerFragment<I, LM extends RecyclerView.LayoutManager>
         int size = getItems().size();
         if (size > 0) {
             getItems().clear();
-            getAdapter().notifyItemRangeRemoved(0, size);
+            getAdapter().notifyDataSetChanged();
         }
 
         getItems().addAll(items);
-        getAdapter().notifyItemRangeInserted(0, items.size());
+        getAdapter().notifyDataSetChanged();
     }
 
     @Override

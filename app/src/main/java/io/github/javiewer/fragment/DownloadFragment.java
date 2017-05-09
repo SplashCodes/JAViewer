@@ -15,9 +15,9 @@ import java.util.List;
 import io.github.javiewer.JAViewer;
 import io.github.javiewer.adapter.DownloadLinkAdapter;
 import io.github.javiewer.adapter.item.DownloadLink;
-import io.github.javiewer.listener.BasicOnScrollListener;
 import io.github.javiewer.network.provider.DownloadLinkProvider;
 import io.github.javiewer.view.decoration.DownloadItemDecoration;
+import io.github.javiewer.view.listener.BasicOnScrollListener;
 import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import okhttp3.ResponseBody;
@@ -80,6 +80,11 @@ public class DownloadFragment extends RecyclerFragment<DownloadLink, LinearLayou
             @Override
             public SwipeRefreshLayout getRefreshLayout() {
                 return DownloadFragment.this.mRefreshLayout;
+            }
+
+            @Override
+            public RecyclerView.Adapter getAdapter() {
+                return DownloadFragment.this.getAdapter();
             }
 
             @Override

@@ -11,9 +11,9 @@ import java.util.List;
 
 import io.github.javiewer.adapter.MovieAdapter;
 import io.github.javiewer.adapter.item.Movie;
-import io.github.javiewer.listener.EndlessOnScrollListener;
 import io.github.javiewer.network.provider.AVMOProvider;
 import io.github.javiewer.view.decoration.MovieItemDecoration;
+import io.github.javiewer.view.listener.EndlessOnScrollListener;
 import jp.wasabeef.recyclerview.adapters.SlideInBottomAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import okhttp3.ResponseBody;
@@ -60,6 +60,11 @@ public abstract class MovieFragment extends RecyclerFragment<Movie, LinearLayout
             @Override
             public List<Movie> getItems() {
                 return MovieFragment.this.getItems();
+            }
+
+            @Override
+            public RecyclerView.Adapter getAdapter() {
+                return MovieFragment.this.getAdapter();
             }
 
             @Override

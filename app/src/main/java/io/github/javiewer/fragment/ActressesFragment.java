@@ -12,9 +12,9 @@ import java.util.List;
 import io.github.javiewer.JAViewer;
 import io.github.javiewer.adapter.ActressAdapter;
 import io.github.javiewer.adapter.item.Actress;
-import io.github.javiewer.listener.EndlessOnScrollListener;
 import io.github.javiewer.network.provider.AVMOProvider;
 import io.github.javiewer.view.decoration.ActressItemDecoration;
+import io.github.javiewer.view.listener.EndlessOnScrollListener;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
@@ -57,6 +57,11 @@ public class ActressesFragment extends RecyclerFragment<Actress, LinearLayoutMan
             @Override
             public SwipeRefreshLayout getRefreshLayout() {
                 return ActressesFragment.this.mRefreshLayout;
+            }
+
+            @Override
+            public RecyclerView.Adapter getAdapter() {
+                return ActressesFragment.this.getAdapter();
             }
 
             @Override
