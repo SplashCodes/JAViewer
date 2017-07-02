@@ -194,8 +194,9 @@ public class MovieActivity extends AppCompatActivity {
             } else {
                 for (int i = 0; i < detail.genres.size(); i++) {
                     final Genre genre = detail.genres.get(i);
-                    Chip view = (Chip) getLayoutInflater().inflate(R.layout.chip_genre, mFlowLayout, false);
-                    view.setOnClickListener(new View.OnClickListener() {
+                    View view = getLayoutInflater().inflate(R.layout.chip_genre, mFlowLayout, false);
+                    Chip chip = (Chip) view.findViewById(R.id.chip_genre);
+                    chip.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             if (genre.getLink() != null) {
@@ -203,7 +204,7 @@ public class MovieActivity extends AppCompatActivity {
                             }
                         }
                     });
-                    view.setChipText(genre.getName());
+                    chip.setChipText(genre.getName());
                     mFlowLayout.addView(view);
 
                     if (i == 0) {
@@ -269,8 +270,7 @@ public class MovieActivity extends AppCompatActivity {
                     mStarButton.setTitle("取消收藏");
                 }
                 JAViewer.CONFIGURATIONS.save();
-                FavouriteTabsFragment.update();
-
+                FavouriteActivity.update();
                 return true;
             }
         });

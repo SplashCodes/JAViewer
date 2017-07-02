@@ -322,7 +322,12 @@ public class MainActivity extends AppCompatActivity
         switch (id) {
             case R.id.nav_github: {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/SplashCodes/JAViewer/releases"));
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                break;
+            }
+            case R.id.nav_favourite: {
+                Intent intent = new Intent(MainActivity.this, FavouriteActivity.class);
                 startActivity(intent);
                 break;
             }

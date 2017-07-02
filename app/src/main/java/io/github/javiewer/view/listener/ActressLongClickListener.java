@@ -5,6 +5,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Toast;
@@ -13,7 +14,9 @@ import java.util.Collections;
 import java.util.List;
 
 import io.github.javiewer.JAViewer;
+import io.github.javiewer.activity.FavouriteActivity;
 import io.github.javiewer.adapter.item.Actress;
+import io.github.javiewer.fragment.favourite.FavouriteFragment;
 import io.github.javiewer.fragment.favourite.FavouriteTabsFragment;
 
 /**
@@ -62,7 +65,7 @@ public class ActressLongClickListener implements View.OnLongClickListener {
                                     Toast.makeText(mActivity, "已收藏", Toast.LENGTH_SHORT).show();
                                 }
                                 JAViewer.CONFIGURATIONS.save();
-                                FavouriteTabsFragment.update();
+                                FavouriteActivity.update();
                                 break;
                             }
                         }
