@@ -10,13 +10,13 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:src="@drawable/ic_movie_genre"
-        android:tint="#89000000" />
+        android:tint="@color/colorPrimary" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="72dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingLeft="72dp">
 
         <com.wefika.flowlayout.FlowLayout
             android:id="@+id/genre_flow_layout"
@@ -26,18 +26,10 @@
         <TextView
             android:id="@+id/genre_empty_text"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="8dp"
-            android:paddingTop="8dp"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
             android:text="暂无分类信息"
             android:visibility="gone" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp"
-            android:background="#E6E6E6" />
     </LinearLayout>
 
 </RelativeLayout>

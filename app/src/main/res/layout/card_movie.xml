@@ -4,27 +4,27 @@
     android:id="@+id/card_movie"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="4dp"
-    android:layout_marginTop="4dp"
     android:clickable="true"
     android:foreground="?android:attr/selectableItemBackground"
-    app:cardCornerRadius="0dp">
+    app:cardCornerRadius="0dp"
+    app:cardElevation="2dp">
 
+    <!--android:layout_marginBottom="4dp"
+    android:layout_marginTop="4dp"-->
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/movie_cover"
-            android:layout_width="70dp"
-            android:layout_height="100dp"
+            android:layout_width="68dp"
+            android:layout_height="96dp"
             android:layout_margin="8dp"
             android:scaleType="centerCrop" />
 
         <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="116dp"
-            android:layout_marginLeft="4dp"
+            android:layout_height="112dp"
             android:layout_marginRight="8dp"
             android:layout_toEndOf="@+id/movie_cover"
             android:layout_toRightOf="@+id/movie_cover">
@@ -32,7 +32,7 @@
             <TextView
                 android:id="@+id/movie_title"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="56dp"
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:paddingTop="8dp"
@@ -43,7 +43,7 @@
             <TextView
                 android:id="@+id/movie_size"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="32dp"
                 android:layout_alignBottom="@+id/movie_date"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
@@ -52,19 +52,21 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:paddingBottom="8dp"
+                android:paddingTop="8dp"
                 android:text="这里是番号"
                 android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/movie_date"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="32dp"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:paddingBottom="8dp"
+                android:paddingTop="8dp"
                 android:text="这里是时间"
                 android:textSize="12sp" />
 
@@ -75,10 +77,9 @@
                 android:layout_above="@+id/movie_date"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_marginBottom="8dp"
                 android:src="@drawable/ic_menu_popular"
                 android:tint="#ffcc0000"
-                android:visibility="invisible" />
+                android:visibility="gone" />
         </RelativeLayout>
     </RelativeLayout>
 

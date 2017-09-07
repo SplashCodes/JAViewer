@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,8 +42,7 @@ public class DownloadLinkAdapter extends ItemAdapter<DownloadLink, DownloadLinkA
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_download, parent, false);
-
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_download, parent, false);
         return new ViewHolder(v);
     }
 
@@ -54,7 +52,7 @@ public class DownloadLinkAdapter extends ItemAdapter<DownloadLink, DownloadLinkA
 
         holder.parse(link);
 
-        holder.mCard.setOnClickListener(new View.OnClickListener() {
+        holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!link.hasMagnetLink()) {
@@ -113,8 +111,8 @@ public class DownloadLinkAdapter extends ItemAdapter<DownloadLink, DownloadLinkA
         @BindView(R.id.download_date)
         public TextView mTextDate;
 
-        @BindView(R.id.card_download)
-        public CardView mCard;
+        @BindView(R.id.layout_download)
+        public View mView;
 
         public void parse(DownloadLink link) {
             mTextSize.setText(link.getSize());

@@ -42,7 +42,10 @@ public class MovieDetail {
 
         @Override
         public String toString() {
-            return name + ":" + value + ":" + link;
+            return "Header{" +
+                    "name='" + name + '\'' +
+                    ", value='" + value + '\'' +
+                    '}';
         }
     }
 }

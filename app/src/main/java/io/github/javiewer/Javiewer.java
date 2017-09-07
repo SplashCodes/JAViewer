@@ -1,7 +1,9 @@
 package io.github.javiewer;
 
 import android.app.Application;
-import android.graphics.Bitmap;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
 
@@ -10,9 +12,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
 import com.google.gson.stream.JsonReader;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,13 +20,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cat.ereza.customactivityoncrash.CustomActivityOnCrash;
 import io.github.javiewer.adapter.item.DataSource;
 import io.github.javiewer.fragment.ActressesFragment;
-import io.github.javiewer.fragment.FavouriteFragment;
-import io.github.javiewer.fragment.GenreTabsFragment;
 import io.github.javiewer.fragment.HomeFragment;
 import io.github.javiewer.fragment.PopularFragment;
 import io.github.javiewer.fragment.ReleasedFragment;
+import io.github.javiewer.fragment.favourite.FavouriteTabsFragment;
+import io.github.javiewer.fragment.genre.GenreTabsFragment;
 import io.github.javiewer.network.BasicService;
 import okhttp3.Cookie;
 import okhttp3.CookieJar;
@@ -57,7 +57,7 @@ public class JAViewer extends Application {
     public static Configurations CONFIGURATIONS;
 
     public static final List<DataSource> DATA_SOURCES = new ArrayList<DataSource>() {{
-        add(new DataSource("AVMOO 日本", "https://avmo.pw"));
+        add(new DataSource("AVMOO 日本", "https://avmoo.com"));
         add(new DataSource("AVSOX 日本无码", "https://avso.pw"));
         add(new DataSource("AVMEMO 欧美", "https://avxo.pw"));
     }};
@@ -68,7 +68,7 @@ public class JAViewer extends Application {
         put(R.id.nav_released, ReleasedFragment.class);
         put(R.id.nav_actresses, ActressesFragment.class);
         put(R.id.nav_genre, GenreTabsFragment.class);
-        put(R.id.nav_favourite, FavouriteFragment.class);
+        put(R.id.nav_favourite, FavouriteTabsFragment.class);
     }};
 
     public static DataSource getDataSource() {
@@ -91,12 +91,23 @@ public class JAViewer extends Application {
         return dir;
     }
 
+    public static HttpUrl replaceUrl(HttpUrl url) {
+        HttpUrl.Builder builder = url.newBuilder();
+        if (url.url().getHost().equals("avmo.pw")) {
+            builder.host("avmoo.com");
+            return builder.build();
+        }
+
+        return url;
+    }
+
     public static final OkHttpClient HTTP_CLIENT = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
         @Override
         public Response intercept(Interceptor.Chain chain) throws IOException {
             Request original = chain.request();
 
             Request request = original.newBuilder()
+                    .url(replaceUrl(original.url()))
                     .header("User-Agent", USER_AGENT)
                     .build();
 
@@ -119,16 +130,6 @@ public class JAViewer extends Application {
             })
             .build();
 
-    public static final DisplayImageOptions DISPLAY_IMAGE_OPTIONS = new DisplayImageOptions.Builder()
-            .resetViewBeforeLoading(true)
-            .cacheInMemory(true)
-            .cacheOnDisk(true)
-            .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2) // default
-            .bitmapConfig(Bitmap.Config.ARGB_8888) // default
-            .delayBeforeLoading(1000)
-            .displayer(new FadeInBitmapDisplayer(500)) // default
-            .build();
-
     public static <T> T parseJson(Class<T> beanClass, JsonReader reader) throws JsonParseException {
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
@@ -143,5 +144,19 @@ public class JAViewer extends Application {
 
     public static boolean Objects_equals(Object a, Object b) {
         return (a == b) || (a != null && a.equals(b));
+    }
+
+    public static void a(Context context) {
+        String url = "https://qr.alipay.com/a6x05027ymf6n8kl0qkoa54";
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        context.startActivity(intent);
+        return;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        CustomActivityOnCrash.install(this);
     }
 }

@@ -15,12 +15,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,9 +26,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -41,9 +36,11 @@ import butterknife.ButterKnife;
 import io.github.javiewer.JAViewer;
 import io.github.javiewer.Properties;
 import io.github.javiewer.R;
+import io.github.javiewer.adapter.NavigationSpinnerAdapter;
 import io.github.javiewer.adapter.item.DataSource;
 import io.github.javiewer.fragment.ExtendedAppBarFragment;
 import io.github.javiewer.network.BasicService;
+import io.github.javiewer.view.SimpleSearchView;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Request;
@@ -61,6 +58,12 @@ public class MainActivity extends AppCompatActivity
 
     @BindView(R.id.app_bar)
     public AppBarLayout mAppBarLayout;
+
+    @BindView(R.id.search_view)
+    public SimpleSearchView mSearchView;
+
+    @BindView(R.id.drawer_layout)
+    public DrawerLayout mDrawerLayout;
 
     int positionOfSpinner = 0;
     int idOfMenuItem = R.id.nav_home;
@@ -96,7 +99,7 @@ public class MainActivity extends AppCompatActivity
         onNavigationItemSelected(selectedItem);
 
         final Spinner spinner = (Spinner) mNavigationView.getHeaderView(0).findViewById(R.id.nav_header_spinner);
-        ArrayAdapter<DataSource> adapter = new ArrayAdapter<>(this, R.layout.nav_spinner_item, JAViewer.DATA_SOURCES);
+        ArrayAdapter<DataSource> adapter = new NavigationSpinnerAdapter<>(this, R.layout.nav_spinner_item, JAViewer.DATA_SOURCES);
         adapter.setDropDownViewResource(R.layout.view_drop_down);
         spinner.setAdapter(adapter);
         spinner.setSelection(positionOfSpinner = JAViewer.DATA_SOURCES.indexOf(JAViewer.getDataSource()));
@@ -139,8 +142,6 @@ public class MainActivity extends AppCompatActivity
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-
-        ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
 
         Request request = new Request.Builder()
                 .url("https://raw.githubusercontent.com/SplashCodes/JAViewer/master/properties.json")
@@ -196,17 +197,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void initFragments(Bundle savedInstanceState) {
-        //FragmentTransaction transaction = this.fragmentManager.beginTransaction();
-
         if (savedInstanceState != null) {
             String tag = savedInstanceState.getString("CurrentFragment");
             this.currentFragment = fragmentManager.findFragmentByTag(tag);
-            /*for (Fragment fragment : fragmentManager.getFragments()) {
-                transaction.hide(fragment);
-            }
-
-            transaction.show(this.currentFragment);
-            transaction.commit();*/
             return;
         }
 
@@ -214,7 +207,7 @@ public class MainActivity extends AppCompatActivity
         for (int id : JAViewer.FRAGMENTS.keySet()) {
             Class<? extends Fragment> fragmentClass = JAViewer.FRAGMENTS.get(id);
             try {
-                Fragment fragment = (Fragment) fragmentClass.getConstructor(new Class[0]).newInstance();
+                Fragment fragment = fragmentClass.getConstructor(new Class[0]).newInstance();
                 transaction.add(R.id.content, fragment, fragmentClass.getSimpleName()).hide(fragment);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -280,12 +273,18 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            moveTaskToBack(false);
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+            return;
         }
+
+        if (mSearchView.isSearchOpen()) {
+            mSearchView.closeSearch();
+            return;
+        }
+
+        moveTaskToBack(false);
+
     }
 
     @Override
@@ -293,8 +292,8 @@ public class MainActivity extends AppCompatActivity
         getMenuInflater().inflate(R.menu.main, menu);
 
         MenuItem item = menu.findItem(R.id.action_search);
-        final SearchView mSearchView = (SearchView) MenuItemCompat.getActionView(item);
-        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        mSearchView.setMenuItem(item);
+        mSearchView.setOnQueryTextListener(new SimpleSearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 try {
@@ -321,11 +320,17 @@ public class MainActivity extends AppCompatActivity
         idOfMenuItem = id;
 
         switch (id) {
-            case R.id.nav_github:
+            case R.id.nav_github: {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/SplashCodes/JAViewer/releases"));
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 break;
+            }
+            case R.id.nav_favourite: {
+                Intent intent = new Intent(MainActivity.this, FavouriteActivity.class);
+                startActivity(intent);
+                break;
+            }
             default:
                 setFragment(id, item.getTitle());
                 break;
@@ -342,4 +347,5 @@ public class MainActivity extends AppCompatActivity
         startActivity(i);
         finish();
     }
+
 }

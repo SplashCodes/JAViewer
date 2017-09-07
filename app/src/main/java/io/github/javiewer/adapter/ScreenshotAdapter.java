@@ -9,15 +9,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.github.javiewer.JAViewer;
 import io.github.javiewer.R;
 import io.github.javiewer.activity.GalleryActivity;
+import io.github.javiewer.adapter.item.Movie;
 import io.github.javiewer.adapter.item.Screenshot;
 import io.github.javiewer.view.ViewUtil;
 
@@ -33,10 +33,13 @@ public class ScreenshotAdapter extends RecyclerView.Adapter<ScreenshotAdapter.Vi
 
     private ImageView mIcon;
 
-    public ScreenshotAdapter(List<Screenshot> screenshots, Activity mParentActivity, ImageView mIcon) {
+    private Movie movie;
+
+    public ScreenshotAdapter(List<Screenshot> screenshots, Activity mParentActivity, ImageView mIcon, Movie movie) {
         this.screenshots = screenshots;
         this.mParentActivity = mParentActivity;
         this.mIcon = mIcon;
+        this.movie = movie;
     }
 
     @Override
@@ -50,7 +53,10 @@ public class ScreenshotAdapter extends RecyclerView.Adapter<ScreenshotAdapter.Vi
     public void onBindViewHolder(final ViewHolder holder, int position) {
         Screenshot screenshot = screenshots.get(position);
 
-        ImageLoader.getInstance().displayImage(screenshot.getThumbnailUrl(), holder.mImage, JAViewer.DISPLAY_IMAGE_OPTIONS);
+        holder.mImage.setImageDrawable(null);
+        Glide.with(holder.mImage.getContext().getApplicationContext())
+                .load(screenshot.getThumbnailUrl())
+                .into(holder.mImage);
 
         holder.mImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,6 +69,7 @@ public class ScreenshotAdapter extends RecyclerView.Adapter<ScreenshotAdapter.Vi
                     urls[k] = screenshots.get(k).getImageUrl();
                 }
                 bundle.putStringArray("urls", urls);
+                bundle.putSerializable("movie", movie);
                 bundle.putInt("position", holder.getAdapterPosition());
                 i.putExtras(bundle);
                 mParentActivity.startActivity(i);

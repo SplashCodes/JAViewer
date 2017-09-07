@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_fav_movie"
+        android:icon="@drawable/ic_general_movie"
+        android:title="影片" />
+
+    <item
+        android:id="@+id/nav_fav_actresses"
+        android:icon="@drawable/ic_menu_actresses"
+        android:title="演员" />
+
+</menu>

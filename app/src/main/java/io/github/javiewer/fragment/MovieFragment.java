@@ -11,8 +11,9 @@ import java.util.List;
 
 import io.github.javiewer.adapter.MovieAdapter;
 import io.github.javiewer.adapter.item.Movie;
-import io.github.javiewer.listener.EndlessOnScrollListener;
 import io.github.javiewer.network.provider.AVMOProvider;
+import io.github.javiewer.view.decoration.MovieItemDecoration;
+import io.github.javiewer.view.listener.EndlessOnScrollListener;
 import jp.wasabeef.recyclerview.adapters.SlideInBottomAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import okhttp3.ResponseBody;
@@ -27,6 +28,7 @@ public abstract class MovieFragment extends RecyclerFragment<Movie, LinearLayout
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         this.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        mRecyclerView.addItemDecoration(new MovieItemDecoration());
         this.setAdapter(new SlideInBottomAnimationAdapter(new MovieAdapter(getItems(), this.getActivity())));
         RecyclerView.ItemAnimator animator = new SlideInUpAnimator();
         animator.setAddDuration(300);
@@ -61,18 +63,19 @@ public abstract class MovieFragment extends RecyclerFragment<Movie, LinearLayout
             }
 
             @Override
+            public RecyclerView.Adapter getAdapter() {
+                return MovieFragment.this.getAdapter();
+            }
+
+            @Override
             public void onResult(ResponseBody response) throws Exception {
                 super.onResult(response);
                 List<Movie> wrappers = AVMOProvider.parseMovies(response.string());
 
                 int pos = getItems().size();
 
-                if (pos > 0) {
-                    pos--;
-                }
-
                 getItems().addAll(wrappers);
-                getAdapter().notifyItemChanged(pos, wrappers.size());
+                getAdapter().notifyItemRangeInserted(pos, wrappers.size());
             }
         });
 

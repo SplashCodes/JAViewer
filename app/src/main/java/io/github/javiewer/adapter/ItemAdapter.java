@@ -21,18 +21,23 @@ public abstract class ItemAdapter<I, VH extends RecyclerView.ViewHolder> extends
     }
 
     public void setItems(List<I> items) {
-        int startPosition = 0;
-        int preSize = this.getItems().size();
-        if (preSize > 0) {
+        int size = this.getItems().size();
+        if (size > 0) {
             this.getItems().clear();
-            notifyItemRangeRemoved(startPosition, preSize);
+            notifyItemRangeRemoved(0, size);
         }
         this.getItems().addAll(items);
-        notifyItemRangeChanged(startPosition, items.size());
+        notifyItemRangeInserted(0, items.size());
     }
 
     @Override
     public int getItemCount() {
         return getItems().size();
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(VH holder) {
+        holder.itemView.clearAnimation();
+        super.onViewDetachedFromWindow(holder);
     }
 }

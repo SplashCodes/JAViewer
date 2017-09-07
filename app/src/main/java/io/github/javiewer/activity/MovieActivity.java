@@ -1,9 +1,16 @@
 package io.github.javiewer.activity;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,11 +22,17 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.bumptech.glide.Glide;
+import com.robertlevonyan.views.chip.Chip;
 import com.wefika.flowlayout.FlowLayout;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,7 +44,7 @@ import io.github.javiewer.adapter.ScreenshotAdapter;
 import io.github.javiewer.adapter.item.Genre;
 import io.github.javiewer.adapter.item.Movie;
 import io.github.javiewer.adapter.item.MovieDetail;
-import io.github.javiewer.fragment.FavouriteFragment;
+import io.github.javiewer.fragment.favourite.FavouriteTabsFragment;
 import io.github.javiewer.network.provider.AVMOProvider;
 import io.github.javiewer.view.ViewUtil;
 import okhttp3.ResponseBody;
@@ -47,7 +60,7 @@ public class MovieActivity extends AppCompatActivity {
     ImageView mToolbarLayoutBackground;
 
     @BindView(R.id.movie_content)
-    View mContent;
+    NestedScrollView mContent;
 
     @BindView(R.id.movie_progress_bar)
     ProgressBar mProgressBar;
@@ -57,6 +70,7 @@ public class MovieActivity extends AppCompatActivity {
 
     @BindView(R.id.genre_flow_layout)
     FlowLayout mFlowLayout;
+
 
     MenuItem mStarButton;
 
@@ -84,7 +98,6 @@ public class MovieActivity extends AppCompatActivity {
                 arguments.putString("keyword", movie.getCode());
                 intent.putExtras(arguments);
                 startActivity(intent);
-                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
         });
         mFab.bringToFront();
@@ -93,12 +106,18 @@ public class MovieActivity extends AppCompatActivity {
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (!response.isSuccessful()) {
+                    return;
+                }
+
                 MovieDetail detail;
                 try {
                     detail = AVMOProvider.parseMoviesDetail(response.body().string());
                     displayInfo(detail);
 
-                    ImageLoader.getInstance().displayImage(detail.coverUrl, mToolbarLayoutBackground, JAViewer.DISPLAY_IMAGE_OPTIONS);
+                    Glide.with(mToolbarLayoutBackground.getContext().getApplicationContext())
+                            .load(detail.coverUrl)
+                            .into(mToolbarLayoutBackground);
                 } catch (IOException e) {
                     onFailure(call, e);
                 }
@@ -140,7 +159,7 @@ public class MovieActivity extends AppCompatActivity {
                 mText.setVisibility(View.VISIBLE);
                 ViewUtil.alignIconToView(mIcon, mText);
             } else {
-                mRecyclerView.setAdapter(new ScreenshotAdapter(detail.screenshots, this, mIcon));
+                mRecyclerView.setAdapter(new ScreenshotAdapter(detail.screenshots, this, mIcon, movie));
                 mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL));
                 mRecyclerView.setNestedScrollingEnabled(false);
             }
@@ -175,8 +194,9 @@ public class MovieActivity extends AppCompatActivity {
             } else {
                 for (int i = 0; i < detail.genres.size(); i++) {
                     final Genre genre = detail.genres.get(i);
-                    View view = getLayoutInflater().inflate(R.layout.card_genre_movie, mFlowLayout, false);
-                    view.setOnClickListener(new View.OnClickListener() {
+                    View view = getLayoutInflater().inflate(R.layout.chip_genre, mFlowLayout, false);
+                    Chip chip = (Chip) view.findViewById(R.id.chip_genre);
+                    chip.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             if (genre.getLink() != null) {
@@ -184,8 +204,7 @@ public class MovieActivity extends AppCompatActivity {
                             }
                         }
                     });
-                    TextView textView = (TextView) view.findViewById(R.id.chip_genre_name);
-                    textView.setText(genre.getName());
+                    chip.setChipText(genre.getName());
                     mFlowLayout.addView(view);
 
                     if (i == 0) {
@@ -196,7 +215,13 @@ public class MovieActivity extends AppCompatActivity {
         }
 
         //Changing visibility
-        mProgressBar.animate().setDuration(200).alpha(0).start();
+        mProgressBar.animate().setDuration(200).alpha(0).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                mProgressBar.setVisibility(View.GONE);
+            }
+        }).start();
 
         //Slide Up Animation
         mContent.setVisibility(View.VISIBLE);
@@ -221,14 +246,12 @@ public class MovieActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.movie, menu);
 
         mStarButton = menu.findItem(R.id.action_star);
-
         {
             if (JAViewer.CONFIGURATIONS.getStarredMovies().contains(movie)) {
                 mStarButton.setIcon(R.drawable.ic_menu_star);
                 mStarButton.setTitle("取消收藏");
             }
         }
-
         mStarButton.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -238,18 +261,78 @@ public class MovieActivity extends AppCompatActivity {
                     Snackbar.make(mContent, "已取消收藏", Snackbar.LENGTH_LONG).show();
                     mStarButton.setTitle("收藏");
                 } else {
-                    JAViewer.CONFIGURATIONS.getStarredMovies().add(movie);
+                    List<Movie> movies = JAViewer.CONFIGURATIONS.getStarredMovies();
+                    Collections.reverse(movies);
+                    movies.add(movie);
+                    Collections.reverse(movies);
                     mStarButton.setIcon(R.drawable.ic_menu_star);
                     Snackbar.make(mContent, "已收藏", Snackbar.LENGTH_LONG).show();
                     mStarButton.setTitle("取消收藏");
                 }
                 JAViewer.CONFIGURATIONS.save();
-                FavouriteFragment.update();
-
+                FavouriteActivity.update();
                 return true;
             }
         });
 
+        final MenuItem mShareButton = menu.findItem(R.id.action_share);
+        mShareButton.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                try {
+                    File cache = new File(getExternalFilesDir("cache"), "screenshot");
+                    FileOutputStream os = new FileOutputStream(cache);
+                    Bitmap screenshot = getScreenBitmap();
+                    //Bitmap screenshot = ViewUtil.getBitmapByView(mContent);
+                    screenshot.compress(Bitmap.CompressFormat.JPEG, 100, os);
+                    os.flush();
+                    os.close();
+
+                    Uri uri = Uri.fromFile(cache);
+                    Intent intent = new Intent(Intent.ACTION_SEND)
+                            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            .setType("image/jpeg")
+                            .putExtra(Intent.EXTRA_STREAM, uri);
+                    startActivity(Intent.createChooser(intent, "分享此影片"));
+
+                    return true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(MovieActivity.this, "无法分享：" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+                return false;
+            }
+        });
+
         return super.onCreateOptionsMenu(menu);
+    }
+
+    public Bitmap getScreenBitmap() {
+        int imageHeight = mToolbarLayoutBackground.getHeight();
+        int scrollViewHeight = 0;
+        for (int i = 0; i < mContent.getChildCount(); i++) {
+            scrollViewHeight += mContent.getChildAt(i).getHeight();
+        }
+        Bitmap result = Bitmap.createBitmap(mContent.getWidth(), imageHeight + scrollViewHeight, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(result);
+        canvas.drawColor(Color.parseColor("#FAFAFA"));
+
+        //Image
+        {
+            Bitmap bitmap = Bitmap.createBitmap(mToolbarLayoutBackground.getWidth(), imageHeight, Bitmap.Config.ARGB_8888);
+            Canvas c = new Canvas(bitmap);
+            mToolbarLayoutBackground.draw(c);
+            canvas.drawBitmap(bitmap, 0, 0, null);
+        }
+
+        //ScrollView
+        {
+            Bitmap bitmap = Bitmap.createBitmap(mContent.getWidth(), scrollViewHeight, Bitmap.Config.ARGB_8888);
+            Canvas c = new Canvas(bitmap);
+            mContent.draw(c);
+            canvas.drawBitmap(bitmap, 0, imageHeight, null);
+        }
+
+        return result;
     }
 }

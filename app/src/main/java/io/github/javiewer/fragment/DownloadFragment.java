@@ -6,13 +6,16 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import java.util.List;
 
+import io.github.javiewer.JAViewer;
 import io.github.javiewer.adapter.DownloadLinkAdapter;
 import io.github.javiewer.adapter.item.DownloadLink;
-import io.github.javiewer.listener.BasicOnScrollListener;
 import io.github.javiewer.network.provider.DownloadLinkProvider;
+import io.github.javiewer.view.decoration.DownloadItemDecoration;
+import io.github.javiewer.view.listener.BasicOnScrollListener;
 import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import okhttp3.ResponseBody;
@@ -38,10 +41,17 @@ public class DownloadFragment extends RecyclerFragment<DownloadLink, LinearLayou
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        this.setRecyclerViewPadding(4);
+        /*if (JAViewer.CONFIGURATIONS.showAds()) {
+            mAdView.setVisibility(View.VISIBLE);
+            AdRequest adRequest = new AdRequest.Builder()
+                    .addTestDevice("52546C5153814CA9A9714647F5960AFE")
+                    .build();
+            mAdView.loadAd(adRequest);
+        }*/
 
         this.setLayoutManager(new LinearLayoutManager(this.getContext()));
         this.setAdapter(new ScaleInAnimationAdapter(new DownloadLinkAdapter(this.getItems(), this.getActivity(), this.provider)));
+        mRecyclerView.addItemDecoration(new DownloadItemDecoration());
 
         RecyclerView.ItemAnimator animator = new SlideInUpAnimator();
         animator.setAddDuration(300);
@@ -71,6 +81,11 @@ public class DownloadFragment extends RecyclerFragment<DownloadLink, LinearLayou
             }
 
             @Override
+            public RecyclerView.Adapter getAdapter() {
+                return DownloadFragment.this.getAdapter();
+            }
+
+            @Override
             public List<DownloadLink> getItems() {
                 return DownloadFragment.this.getItems();
             }
@@ -82,15 +97,11 @@ public class DownloadFragment extends RecyclerFragment<DownloadLink, LinearLayou
 
                 int pos = getItems().size();
 
-                if (pos > 0) {
-                    pos--;
-                }
-
                 if (downloads.isEmpty()) {
                     setEnd(true);
                 } else {
                     getItems().addAll(downloads);
-                    getAdapter().notifyItemChanged(pos, downloads.size());
+                    getAdapter().notifyItemRangeInserted(pos, downloads.size());
                 }
             }
         });

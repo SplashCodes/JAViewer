@@ -1,4 +1,4 @@
-package io.github.javiewer.listener;
+package io.github.javiewer.view.listener;
 
 /**
  * Project: JAViewer

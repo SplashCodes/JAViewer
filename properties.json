@@ -1,5 +1,5 @@
 {
-  "latest_version": "1.2.2",
-  "latest_version_code": "6",
-  "changelog": "**推荐更新**\n1. 修复无法切换数据源问题\n2. 对安卓N多窗口模式进行优化\n3. 修复Fragment重叠问题\n4. 调整部分动画\n5. 修复其他已知BUG"
+  "latest_version": "1.3.2",
+  "latest_version_code": "9",
+  "changelog": "**推荐更新**\n1.3.2 终于修复了少部分机型的收藏夹崩溃问题，刷新崩溃问题【抱歉】\n1. 修复日本源\n2. 大量界面重新设计，更符合MD规范\n3. 使用Glide加载图片，速度更快\n4. 新的搜索栏\n5. 收藏夹功能完善"
 }

@@ -1,4 +1,4 @@
-package io.github.javiewer.fragment;
+package io.github.javiewer.fragment.genre;
 
 
 import android.os.Bundle;
@@ -19,6 +19,7 @@ import io.github.javiewer.JAViewer;
 import io.github.javiewer.R;
 import io.github.javiewer.adapter.ViewPagerAdapter;
 import io.github.javiewer.adapter.item.Genre;
+import io.github.javiewer.fragment.ExtendedAppBarFragment;
 import io.github.javiewer.network.provider.AVMOProvider;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -54,13 +55,13 @@ public class GenreTabsFragment extends ExtendedAppBarFragment {
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                mProgressBar.setVisibility(View.INVISIBLE);
+                mProgressBar.setVisibility(View.GONE);
                 try {
                     LinkedHashMap<String, List<Genre>> genres = AVMOProvider.parseGenres(response.body().string());
 
-                    GenreListFragment fragment;
+                    GenreFragment fragment;
                     for (String title : genres.keySet()) {
-                        fragment = new GenreListFragment();
+                        fragment = new GenreFragment();
                         fragment.getGenres().addAll(genres.get(title));
                         mAdapter.addFragment(fragment, title);
                     }

@@ -11,7 +11,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <FrameLayout
+    <!--suppress AndroidDomInspection -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_gallery"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:theme="@style/AppTheme.AppBarOverlay" />
+    </LinearLayout>
+    <!--<FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
@@ -33,6 +45,6 @@
                 android:textColor="@android:color/white" />
 
         </LinearLayout>
-    </FrameLayout>
+    </FrameLayout>-->
 
 </FrameLayout>

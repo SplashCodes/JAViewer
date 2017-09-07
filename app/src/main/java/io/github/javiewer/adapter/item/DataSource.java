@@ -1,7 +1,5 @@
 package io.github.javiewer.adapter.item;
 
-import io.github.javiewer.JAViewer;
-
 /**
  * Project: JAViewer
  */
@@ -23,12 +21,4 @@ public class DataSource extends Linkable {
         return name;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof DataSource) {
-            return JAViewer.Objects_equals(((DataSource) obj).getLink(), getLink());
-        }
-
-        return false;
-    }
 }

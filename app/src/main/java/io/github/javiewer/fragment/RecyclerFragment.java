@@ -15,18 +15,21 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.javiewer.R;
-import io.github.javiewer.listener.BasicOnScrollListener;
 import io.github.javiewer.view.ViewUtil;
+import io.github.javiewer.view.listener.BasicOnScrollListener;
 
 /**
  * Project: JAViewer
  */
 public abstract class RecyclerFragment<I, LM extends RecyclerView.LayoutManager> extends Fragment {
     @BindView(R.id.recycler_view)
-    RecyclerView mRecyclerView;
+    protected RecyclerView mRecyclerView;
 
     @BindView(R.id.refresh_layout)
-    SwipeRefreshLayout mRefreshLayout;
+    protected SwipeRefreshLayout mRefreshLayout;
+
+    /*@BindView(R.id.adView)
+    protected AdView mAdView;*/
 
     private SwipeRefreshLayout.OnRefreshListener mRefreshListener;
 
@@ -61,6 +64,9 @@ public abstract class RecyclerFragment<I, LM extends RecyclerView.LayoutManager>
     }
 
     public RecyclerView.Adapter getAdapter() {
+        if (this.mRecyclerView == null) {
+            return null;
+        }
         return this.mRecyclerView.getAdapter();
     }
 
@@ -69,14 +75,13 @@ public abstract class RecyclerFragment<I, LM extends RecyclerView.LayoutManager>
     }
 
     public void setItems(ArrayList<I> items) {
-        if (this.getItems().size() > 0) {
-            this.getItems().clear();
+        int size = getItems().size();
+        if (size > 0) {
+            getItems().clear();
+            getAdapter().notifyDataSetChanged();
         }
 
-        this.getItems().addAll(items);
-
-        mRecyclerView.stopScroll();
-        mRecyclerView.getRecycledViewPool().clear();
+        getItems().addAll(items);
         getAdapter().notifyDataSetChanged();
     }
 

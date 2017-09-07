@@ -4,22 +4,21 @@ package io.github.javiewer.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 
 import java.util.List;
 
 import io.github.javiewer.JAViewer;
 import io.github.javiewer.adapter.ActressAdapter;
 import io.github.javiewer.adapter.item.Actress;
-import io.github.javiewer.listener.EndlessOnScrollListener;
 import io.github.javiewer.network.provider.AVMOProvider;
-import jp.wasabeef.recyclerview.adapters.SlideInBottomAnimationAdapter;
-import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
+import io.github.javiewer.view.decoration.ActressItemDecoration;
+import io.github.javiewer.view.listener.EndlessOnScrollListener;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
-public class ActressesFragment extends RecyclerFragment<Actress, StaggeredGridLayoutManager> {
+public class ActressesFragment extends RecyclerFragment<Actress, LinearLayoutManager> {
 
     public ActressesFragment() {
         // Required empty public constructor
@@ -27,14 +26,15 @@ public class ActressesFragment extends RecyclerFragment<Actress, StaggeredGridLa
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        this.setRecyclerViewPadding(4);
+        this.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        //this.setAdapter(new SlideInBottomAnimationAdapter(new ActressAdapter(getItems(), this.getActivity())));
+        this.setAdapter(new ActressAdapter(getItems(), this.getActivity()));
 
-        this.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));
-        this.setAdapter(new SlideInBottomAnimationAdapter(new ActressAdapter(getItems(), this.getActivity())));
+        mRecyclerView.addItemDecoration(new ActressItemDecoration());
 
-        RecyclerView.ItemAnimator animator = new SlideInUpAnimator();
+        /*RecyclerView.ItemAnimator animator = new SlideInUpAnimator();
         animator.setAddDuration(300);
-        mRecyclerView.setItemAnimator(animator);
+        mRecyclerView.setItemAnimator(animator);*/
 
         this.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -60,6 +60,11 @@ public class ActressesFragment extends RecyclerFragment<Actress, StaggeredGridLa
             }
 
             @Override
+            public RecyclerView.Adapter getAdapter() {
+                return ActressesFragment.this.getAdapter();
+            }
+
+            @Override
             public List<Actress> getItems() {
                 return ActressesFragment.this.getItems();
             }
@@ -71,12 +76,8 @@ public class ActressesFragment extends RecyclerFragment<Actress, StaggeredGridLa
 
                 int pos = getItems().size();
 
-                if (pos > 0) {
-                    pos--;
-                }
-
                 getItems().addAll(wrappers);
-                getAdapter().notifyItemChanged(pos, wrappers.size());
+                getAdapter().notifyItemRangeInserted(pos, wrappers.size());
             }
         });
 

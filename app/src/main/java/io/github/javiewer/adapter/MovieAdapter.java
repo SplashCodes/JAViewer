@@ -11,13 +11,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.github.javiewer.JAViewer;
 import io.github.javiewer.R;
 import io.github.javiewer.activity.MovieActivity;
 import io.github.javiewer.adapter.item.Movie;
@@ -59,9 +58,12 @@ public class MovieAdapter extends ItemAdapter<Movie, MovieAdapter.ViewHolder> {
             }
         });
 
-        ImageLoader.getInstance().displayImage(movie.getCoverUrl(), holder.mImageCover, JAViewer.DISPLAY_IMAGE_OPTIONS);
+        holder.mImageCover.setImageDrawable(null);
+        Glide.with(holder.mImageCover.getContext().getApplicationContext())
+                .load(movie.getCoverUrl())
+                .into(holder.mImageCover);
 
-        holder.mImageHot.setVisibility(movie.isHot() ? View.VISIBLE : View.INVISIBLE);
+        holder.mImageHot.setVisibility(movie.isHot() ? View.VISIBLE : View.GONE);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

@@ -1,7 +1,5 @@
 package io.github.javiewer.adapter.item;
 
-import static io.github.javiewer.JAViewer.Objects_equals;
-
 /**
  * Project: JAViewer
  */
@@ -24,20 +22,6 @@ public class Movie extends Linkable {
         return movie;
     }
 
-    @Override
-    public boolean equals(Object movie) {
-        if (!(movie instanceof Movie)) {
-            return false;
-        }
-
-        return Objects_equals(link, ((Movie) movie).link);
-    }
-
-    @Override
-    public String toString() {
-        return title + ";" + date + ";" + code + ";" + coverUrl + ";" + link + ";" + "hot:" + (hot ? "true" : "false");
-    }
-
     public String getTitle() {
         return title;
     }
@@ -56,5 +40,16 @@ public class Movie extends Linkable {
 
     public boolean isHot() {
         return hot;
+    }
+
+    @Override
+    public String toString() {
+        return "Movie{" +
+                "title='" + title + '\'' +
+                ", code='" + code + '\'' +
+                ", coverUrl='" + coverUrl + '\'' +
+                ", date='" + date + '\'' +
+                ", hot=" + hot +
+                '}';
     }
 }

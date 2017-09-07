@@ -6,4 +6,10 @@
         android:icon="@drawable/ic_menu_star_border"
         android:title="收藏"
         app:showAsAction="ifRoom|collapseActionView" />
+
+    <item
+        android:id="@+id/action_share"
+        android:icon="@drawable/ic_menu_share"
+        android:title="分享"
+        app:showAsAction="ifRoom|collapseActionView" />
 </menu>

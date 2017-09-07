@@ -2,7 +2,7 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_actress_palette"
-    android:layout_width="wrap_content"
+    android:layout_width="96dp"
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
     android:clickable="true"
@@ -14,17 +14,17 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <io.github.javiewer.view.ActressImageView
+        <ImageView
             android:id="@+id/actress_palette_img"
             android:layout_width="96dp"
             android:layout_height="96dp"
             android:adjustViewBounds="true"
-            android:scaleType="matrix"
+            android:scaleType="centerCrop"
             android:src="@drawable/ic_movie_actresses" />
 
         <TextView
             android:id="@+id/actress_palette_name"
-            android:layout_width="96dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="marquee"
             android:gravity="center"
@@ -33,6 +33,5 @@
             android:text="这里是名称"
             android:textSize="12sp" />
     </LinearLayout>
-
 
 </android.support.v7.widget.CardView>

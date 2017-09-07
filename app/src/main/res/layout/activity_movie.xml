@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FAFAFA"
     android:fitsSystemWindows="true"
     tools:context="io.github.javiewer.activity.MovieActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/app_bar_height"
+        android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
         android:theme="@style/AppTheme.AppBarOverlay">
 
@@ -22,19 +23,36 @@
             app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-            <ImageView
-                android:id="@+id/toolbar_layout_background"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fitsSystemWindows="true"
-                android:scaleType="centerCrop"
-                app:layout_collapseMode="parallax" />
 
-            <View
+            <android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/coll_toolbar_image_gradient"
-                android:fitsSystemWindows="true" />
+                android:layout_height="wrap_content"
+                android:fitsSystemWindows="true">
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:fitsSystemWindows="true"
+                    app:layout_aspectRatio="150%"
+                    app:layout_collapseMode="parallax"
+                    app:layout_widthPercent="100%">
+
+                    <ImageView
+                        android:id="@+id/toolbar_layout_background"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fitsSystemWindows="true"
+                        android:scaleType="centerCrop"
+                        app:layout_collapseMode="parallax" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/coll_toolbar_image_gradient"
+                        android:fitsSystemWindows="true" />
+                </RelativeLayout>
+            </android.support.percent.PercentRelativeLayout>
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"

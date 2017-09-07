@@ -110,8 +110,8 @@ public class AVMOProvider {
                 for (Element p : info.select("p:not([class*=header]):has(span:not([class=genre]))")) {
                     String[] strings = p.text().split(":");
                     movie.headers.add(MovieDetail.Header.create(
-                            strings[0],
-                            strings[1],
+                            strings[0].trim(),
+                            strings.length > 1 ? strings[1].trim() : "",
                             null
                     ));
                 }
@@ -132,8 +132,8 @@ public class AVMOProvider {
                         movie.headers.add(
                                 MovieDetail.Header.create(
                                         headerNames.get(i),
-                                        headerAttr.get(i)[0],
-                                        headerAttr.get(i)[1]
+                                        headerAttr.get(i)[0].trim(),
+                                        headerAttr.get(i)[1].trim()
                                 )
                         );
                     }

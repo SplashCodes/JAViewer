@@ -10,14 +10,12 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:src="@drawable/ic_general_movie"
-        android:tint="#89000000" />
+        android:tint="@color/colorPrimary" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="72dp"
-        android:orientation="vertical"
-        android:paddingRight="16dp">
+        android:orientation="vertical">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/headers_recycler_view"
@@ -27,19 +25,20 @@
         <TextView
             android:id="@+id/header_empty_text"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:paddingBottom="8dp"
-            android:paddingTop="8dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
             android:text="暂无详细信息"
             android:visibility="gone" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp"
-            android:background="#E6E6E6" />
+        <LinearLayout
+            android:paddingRight="16dp"
+            android:paddingLeft="72dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <include layout="@layout/layout_divider_margin" />
+        </LinearLayout>
+
     </LinearLayout>
 
 </RelativeLayout>

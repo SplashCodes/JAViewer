@@ -1,4 +1,4 @@
-package io.github.javiewer.listener;
+package io.github.javiewer.view.listener;
 
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -33,7 +33,11 @@ public abstract class BasicOnScrollListener<I> extends RecyclerView.OnScrollList
         loading = false;
         loadThreshold = 5;
         currentPage = 0;
-        getItems().clear();
+        int oldSize = getItems().size();
+        if (oldSize > 0) {
+            getItems().clear();
+            getAdapter().notifyItemRangeRemoved(0, oldSize);
+        }
     }
 
     public Bundle saveState() {
@@ -52,12 +56,13 @@ public abstract class BasicOnScrollListener<I> extends RecyclerView.OnScrollList
 
     public abstract List<I> getItems();
 
+    public abstract RecyclerView.Adapter getAdapter();
+
     public abstract Call<ResponseBody> newCall(int page);
 
     public void refresh() {
         setLoading(true);
         reset();
-        getItems().clear();
         onLoad(token = System.currentTimeMillis());
     }
 

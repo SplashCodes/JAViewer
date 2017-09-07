@@ -1,4 +1,4 @@
-package io.github.javiewer.fragment;
+package io.github.javiewer.fragment.genre;
 
 
 import android.os.Bundle;
@@ -24,7 +24,7 @@ import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
-public class GenreListFragment extends Fragment {
+public class GenreFragment extends Fragment {
 
     protected List<Genre> genres = new ArrayList<>();
 
@@ -34,7 +34,7 @@ public class GenreListFragment extends Fragment {
     private RecyclerView.Adapter mAdapter;
     private StaggeredGridLayoutManager mLayoutManager;
 
-    public GenreListFragment() {
+    public GenreFragment() {
         // Required empty public constructor
     }
 
@@ -64,7 +64,7 @@ public class GenreListFragment extends Fragment {
         animator.setAddDuration(300);
         mRecyclerView.setItemAnimator(animator);
 
-        this.mAdapter.notifyItemRangeChanged(0, this.mAdapter.getItemCount());
+        this.mAdapter.notifyItemRangeInserted(0, this.mAdapter.getItemCount());
     }
 
     public Call<ResponseBody> getCall(int page) {
