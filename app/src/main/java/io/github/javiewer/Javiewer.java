@@ -15,6 +15,8 @@ import com.google.gson.stream.JsonReader;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,9 +59,9 @@ public class JAViewer extends Application {
     public static Configurations CONFIGURATIONS;
 
     public static final List<DataSource> DATA_SOURCES = new ArrayList<DataSource>() {{
-        add(new DataSource("AVMOO 日本", "https://avmoo.com"));
-        add(new DataSource("AVSOX 日本无码", "https://avso.pw"));
-        add(new DataSource("AVMEMO 欧美", "https://avxo.pw"));
+        add(DataSource.AVMO);
+        add(DataSource.AVSO);
+        add(DataSource.AVXO);
     }};
 
     public static final Map<Integer, Class<? extends Fragment>> FRAGMENTS = new HashMap<Integer, Class<? extends Fragment>>() {{
@@ -93,13 +95,34 @@ public class JAViewer extends Application {
 
     public static HttpUrl replaceUrl(HttpUrl url) {
         HttpUrl.Builder builder = url.newBuilder();
-        if (url.url().getHost().equals("avmo.pw")) {
-            builder.host("avmoo.com");
+        String host = url.url().getHost();
+        if (hostReplacements.containsKey(host)) {
+            builder.host(hostReplacements.get(host));
             return builder.build();
         }
 
         return url;
     }
+
+    private static Map<String, String> hostReplacements = new HashMap<>();
+
+    static {
+        String host;
+        try {
+            host = new URI(DataSource.AVMO.getLink()).getHost();
+            hostReplacements.put("avmo.pw", host);
+            hostReplacements.put("avio.pw", host);
+
+            host = new URI(DataSource.AVSO.getLink()).getHost();
+            hostReplacements.put("avso.pw", host);
+
+            host = new URI(DataSource.AVXO.getLink()).getHost();
+            hostReplacements.put("avxo.pw", host);
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     public static final OkHttpClient HTTP_CLIENT = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
         @Override
