@@ -7,7 +7,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
 
-import com.google.firebase.crash.FirebaseCrash;
+import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import cat.ereza.customactivityoncrash.CustomActivityOnCrash;
+import io.fabric.sdk.android.Fabric;
 import io.github.javiewer.adapter.item.DataSource;
 import io.github.javiewer.fragment.ActressesFragment;
 import io.github.javiewer.fragment.HomeFragment;
@@ -45,14 +46,6 @@ import retrofit2.Retrofit;
  */
 
 public class JAViewer extends Application {
-    static {
-        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-            @Override
-            public void uncaughtException(Thread t, Throwable e) {
-                FirebaseCrash.report(e);
-            }
-        });
-    }
 
     public static final String USER_AGENT = "Mozilla/5.0 (Linux; Android 5.1.1; Nexus 5 Build/LMY48B; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/43.0.2357.65 Mobile Safari/537.36";
 
@@ -174,12 +167,12 @@ public class JAViewer extends Application {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(intent);
-        return;
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
         CustomActivityOnCrash.install(this);
+        Fabric.with(this, new Crashlytics());
     }
 }

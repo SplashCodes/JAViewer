@@ -1,6 +1,5 @@
 package io.github.javiewer.activity;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -15,7 +14,6 @@ import io.github.javiewer.adapter.ViewPagerAdapter;
 import io.github.javiewer.fragment.favourite.FavouriteActressFragment;
 import io.github.javiewer.fragment.favourite.FavouriteFragment;
 import io.github.javiewer.fragment.favourite.FavouriteMovieFragment;
-import io.github.javiewer.view.ViewUtil;
 
 public class FavouriteActivity extends AppCompatActivity {
 

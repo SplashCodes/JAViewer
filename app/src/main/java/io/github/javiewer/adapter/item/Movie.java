@@ -52,4 +52,17 @@ public class Movie extends Linkable {
                 ", hot=" + hot +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)) {
+            return true;
+        }
+
+        if (obj instanceof Movie) {
+            return this.code.equals(((Movie) obj).code);
+        }
+
+        return false;
+    }
 }

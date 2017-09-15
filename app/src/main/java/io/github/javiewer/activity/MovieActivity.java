@@ -44,7 +44,6 @@ import io.github.javiewer.adapter.ScreenshotAdapter;
 import io.github.javiewer.adapter.item.Genre;
 import io.github.javiewer.adapter.item.Movie;
 import io.github.javiewer.adapter.item.MovieDetail;
-import io.github.javiewer.fragment.favourite.FavouriteTabsFragment;
 import io.github.javiewer.network.provider.AVMOProvider;
 import io.github.javiewer.view.ViewUtil;
 import okhttp3.ResponseBody;

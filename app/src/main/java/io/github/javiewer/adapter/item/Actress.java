@@ -23,4 +23,17 @@ public class Actress extends Linkable {
     public String getImageUrl() {
         return imageUrl;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)) {
+            return true;
+        }
+
+        if (obj instanceof Actress) {
+            return this.name.equals(((Actress) obj).getName());
+        }
+
+        return false;
+    }
 }
