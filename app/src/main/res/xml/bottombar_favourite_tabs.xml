@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs>
+    <tab
+        icon="@drawable/ic_general_movie"
+        id="@+id/tab_fav_movie"
+        title="影片" />
+    <tab
+        icon="@drawable/ic_menu_actresses"
+        id="@+id/tab_fav_actress"
+        title="演员" />
+</tabs>
