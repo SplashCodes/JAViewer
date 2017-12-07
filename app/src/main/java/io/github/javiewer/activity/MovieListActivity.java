@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 
 import io.github.javiewer.R;
 import io.github.javiewer.fragment.MovieListFragment;
@@ -29,6 +30,7 @@ public class MovieListActivity extends AppCompatActivity {
 
         Bundle bundle = this.getIntent().getExtras();
 
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setTitle(bundle.getString("title"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setElevation(ViewUtil.dpToPx(4));

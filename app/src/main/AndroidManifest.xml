@@ -22,10 +22,12 @@
         <activity
             android:name=".activity.FavouriteActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|uiMode|orientation|screenSize|smallestScreenSize"
-            android:label="收藏夹" />
+            android:label="收藏夹"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.MovieListActivity"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|uiMode|orientation|screenSize|smallestScreenSize" />
+            android:configChanges="keyboard|keyboardHidden|screenLayout|uiMode|orientation|screenSize|smallestScreenSize"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.MovieActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|uiMode|orientation|screenSize|smallestScreenSize"
@@ -56,6 +58,10 @@
             android:name="io.fabric.ApiKey"
             android:value="257f3310de234d2ad14656c90871598a46c5b599" />
 
+        <activity
+            android:name=".activity.ScrollingActivity"
+            android:label="@string/title_activity_scrolling"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
