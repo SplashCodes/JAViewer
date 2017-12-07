@@ -58,10 +58,6 @@
             android:name="io.fabric.ApiKey"
             android:value="257f3310de234d2ad14656c90871598a46c5b599" />
 
-        <activity
-            android:name=".activity.ScrollingActivity"
-            android:label="@string/title_activity_scrolling"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
