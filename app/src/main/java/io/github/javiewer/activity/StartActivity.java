@@ -85,20 +85,36 @@ public class StartActivity extends AppCompatActivity {
                 message += "\n\n更新日志：\n\n" + properties.getChangelog() + "\n";
             }
 
-            AlertDialog dialog = new AlertDialog.Builder(this)
+            final boolean[] update = {false};
+            final AlertDialog dialog = new AlertDialog.Builder(this)
                     .setTitle("发现更新")
                     .setMessage(message)
                     .setNegativeButton("忽略更新", null)
                     .setPositiveButton("更新", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/SplashCodes/JAViewer/releases")));
+                            update[0] = true;
                         }
                     })
                     .create();
             dialog.show();
+
+            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialogInterface) {
+                    start();
+                    if (update[0]) {
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/SplashCodes/JAViewer/releases")));
+                    }
+                }
+            });
+        } else {
+            start();
         }
 
+    }
+
+    public void start() {
         startActivity(new Intent(StartActivity.this, MainActivity.class));
         finish();
     }

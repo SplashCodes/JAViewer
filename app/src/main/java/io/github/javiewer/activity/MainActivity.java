@@ -213,22 +213,7 @@ public class MainActivity extends AppCompatActivity
             return;
         }
 
-        /*
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-
-        if (old != null) {
-            transaction.hide(old);
-        }
-
-        if (!fragment.isAdded()) {
-            transaction.add(R.id.content, fragment);
-        } else {
-            transaction.show(fragment);
-        }*/
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        /*for (Fragment f : fragmentManager.getFragments()) {
-            transaction.hide(f);
-        }*/
         if (old != null) {
             transaction.hide(old);
         }
