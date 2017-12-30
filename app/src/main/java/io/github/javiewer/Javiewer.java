@@ -15,8 +15,6 @@ import com.google.gson.stream.JsonReader;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,11 +49,7 @@ public class JAViewer extends Application {
 
     public static Configurations CONFIGURATIONS;
 
-    public static final List<DataSource> DATA_SOURCES = new ArrayList<DataSource>() {{
-        add(DataSource.AVMO);
-        add(DataSource.AVSO);
-        add(DataSource.AVXO);
-    }};
+    public static final List<DataSource> DATA_SOURCES = new ArrayList<>();
 
     public static final Map<Integer, Class<? extends Fragment>> FRAGMENTS = new HashMap<Integer, Class<? extends Fragment>>() {{
         put(R.id.nav_home, HomeFragment.class);
@@ -97,9 +91,9 @@ public class JAViewer extends Application {
         return url;
     }
 
-    private static Map<String, String> hostReplacements = new HashMap<>();
+    public static Map<String, String> hostReplacements = new HashMap<>();
 
-    static {
+    /*static {
         String host;
         try {
             host = new URI(DataSource.AVMO.getLink()).getHost();
@@ -115,7 +109,7 @@ public class JAViewer extends Application {
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
-    }
+    }*/
 
 
     public static final OkHttpClient HTTP_CLIENT = new OkHttpClient.Builder().addInterceptor(new Interceptor() {

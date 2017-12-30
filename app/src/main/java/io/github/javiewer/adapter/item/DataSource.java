@@ -1,5 +1,7 @@
 package io.github.javiewer.adapter.item;
 
+import java.util.List;
+
 /**
  * Project: JAViewer
  */
@@ -12,6 +14,7 @@ public class DataSource extends Linkable {
 
 
     public String name;
+    public List<String> legacies;
 
     public DataSource(String name, String baseUrl) {
         this.name = name;

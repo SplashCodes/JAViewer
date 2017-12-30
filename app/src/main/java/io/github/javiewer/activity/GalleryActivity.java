@@ -32,6 +32,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.github.chrisbanes.photoview.OnPhotoTapListener;
+import com.github.chrisbanes.photoview.PhotoView;
+import com.github.chrisbanes.photoview.PhotoViewAttacher;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -151,7 +154,7 @@ public class GalleryActivity extends AppCompatActivity {
 
         Bundle bundle = this.getIntent().getExtras();
 
-        mPager.setAdapter(new ImageAdapter(this, imageUrls = bundle.getStringArray("urls")));
+        mPager.setAdapter(new ImageAdapter(this, imageUrls = bundle.getStringArray("urls"), this));
         mPager.setCurrentItem(bundle.getInt("position"));
         mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -178,7 +181,7 @@ public class GalleryActivity extends AppCompatActivity {
         //mTextIndicator.setText((mPager.getCurrentItem() + 1) + " / " + (imageUrls.length));
     }
 
-    private void toggle() {
+    public void toggle() {
         if (mVisible) {
             hide();
         } else {
@@ -273,13 +276,14 @@ public class GalleryActivity extends AppCompatActivity {
 
     private static class ImageAdapter extends PagerAdapter {
 
+        private GalleryActivity mActivity;
         private final String[] imageUrls;
         private LayoutInflater inflater;
         //private DisplayImageOptions options;
 
-        ImageAdapter(Context context, String[] imageUrls) {
+        ImageAdapter(Context context, String[] imageUrls, GalleryActivity mActivity) {
             inflater = LayoutInflater.from(context);
-
+            this.mActivity = mActivity;
             this.imageUrls = imageUrls;
         }
 
@@ -296,10 +300,24 @@ public class GalleryActivity extends AppCompatActivity {
         @Override
         public Object instantiateItem(ViewGroup view, int position) {
             View imageLayout = inflater.inflate(R.layout.content_gallery, view, false);
-            final ImageView imageView = (ImageView) imageLayout.findViewById(R.id.image);
-            final ProgressBar progressBar = (ProgressBar) imageLayout.findViewById(R.id.progress_bar);
-            final TextView textView = (TextView) imageLayout.findViewById(R.id.gallery_text_error);
+            final PhotoView imageView = imageLayout.findViewById(R.id.image);
+            final ProgressBar progressBar = imageLayout.findViewById(R.id.progress_bar);
+            final TextView textView = imageLayout.findViewById(R.id.gallery_text_error);
 
+            PhotoViewAttacher attacher = new PhotoViewAttacher(imageView);
+            /*attacher.setOnViewTapListener(new OnViewTapListener() {
+                @Override
+                public void onViewTap(View view, float x, float y) {
+                    mActivity.toggle();
+                }
+            });
+*/
+            attacher.setOnPhotoTapListener(new OnPhotoTapListener() {
+                @Override
+                public void onPhotoTap(ImageView view, float x, float y) {
+                    mActivity.toggle();
+                }
+            });
             Glide.with(imageView.getContext().getApplicationContext())
                     .load(imageUrls[position])
                     .into(new SimpleTarget<GlideDrawable>() {

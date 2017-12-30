@@ -6,8 +6,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
@@ -27,8 +25,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
 
 import butterknife.BindView;
@@ -41,10 +40,6 @@ import io.github.javiewer.adapter.item.DataSource;
 import io.github.javiewer.fragment.ExtendedAppBarFragment;
 import io.github.javiewer.network.BasicService;
 import io.github.javiewer.view.SimpleSearchView;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -143,31 +138,21 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        Request request = new Request.Builder()
-                .url("https://raw.githubusercontent.com/SplashCodes/JAViewer/master/properties.json")
-                .build();
-        JAViewer.HTTP_CLIENT.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                final Properties properties = JAViewer.parseJson(Properties.class, response.body().string());
-                if (properties != null) {
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        @Override
-                        public void run() {
-                            handleProperties(properties);
-                        }
-                    });
-                }
-            }
-        });
 
     }
 
-    public void handleProperties(Properties properties) {
+    public void handleProperties(Properties properties) throws URISyntaxException {
+        JAViewer.DATA_SOURCES.clear();
+        JAViewer.DATA_SOURCES.addAll(properties.getDataSources());
+
+        JAViewer.hostReplacements.clear();
+        for (DataSource source : JAViewer.DATA_SOURCES) {
+            String host = new URI(source.getLink()).getHost();
+            for (String h : source.legacies) {
+                JAViewer.hostReplacements.put(h, host);
+            }
+        }
+
         int currentVersion;
         try {
             currentVersion = this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionCode;
@@ -343,10 +328,13 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void restart() {
-        Intent i = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName());
+        /*Intent i = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName());
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
+        finish();*/
+        Intent intent = getIntent();
         finish();
+        startActivity(intent);
     }
 
 }
