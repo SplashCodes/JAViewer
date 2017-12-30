@@ -141,47 +141,6 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    public void handleProperties(Properties properties) throws URISyntaxException {
-        JAViewer.DATA_SOURCES.clear();
-        JAViewer.DATA_SOURCES.addAll(properties.getDataSources());
-
-        JAViewer.hostReplacements.clear();
-        for (DataSource source : JAViewer.DATA_SOURCES) {
-            String host = new URI(source.getLink()).getHost();
-            for (String h : source.legacies) {
-                JAViewer.hostReplacements.put(h, host);
-            }
-        }
-
-        int currentVersion;
-        try {
-            currentVersion = this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            throw new RuntimeException("Hacked???");
-        }
-
-        if (properties.getLatestVersionCode() > 0 && currentVersion < properties.getLatestVersionCode()) {
-
-            String message = "新版本：" + properties.getLatestVersion();
-            if (properties.getChangelog() != null) {
-                message += "\n\n更新日志：\n\n" + properties.getChangelog() + "\n";
-            }
-
-            AlertDialog dialog = new AlertDialog.Builder(this)
-                    .setTitle("发现更新")
-                    .setMessage(message)
-                    .setNegativeButton("忽略更新", null)
-                    .setPositiveButton("更新", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/SplashCodes/JAViewer/releases")));
-                        }
-                    })
-                    .create();
-            dialog.show();
-        }
-    }
-
     public void initFragments(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             String tag = savedInstanceState.getString("CurrentFragment");
@@ -313,10 +272,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void restart() {
-        /*Intent i = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName());
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
-        finish();*/
         Intent intent = getIntent();
         finish();
         startActivity(intent);

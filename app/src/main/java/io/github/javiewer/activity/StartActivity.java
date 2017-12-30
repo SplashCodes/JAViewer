@@ -21,11 +21,14 @@ import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import io.github.javiewer.Configurations;
 import io.github.javiewer.JAViewer;
 import io.github.javiewer.Properties;
 import io.github.javiewer.R;
+import io.github.javiewer.adapter.item.DataSource;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Request;
@@ -58,7 +61,11 @@ public class StartActivity extends AppCompatActivity {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
-                            handleProperties(properties);
+                            try {
+                                handleProperties(properties);
+                            } catch (URISyntaxException e) {
+                                e.printStackTrace();
+                            }
                         }
                     });
                 }
@@ -66,10 +73,17 @@ public class StartActivity extends AppCompatActivity {
         });
     }
 
-    public void handleProperties(Properties properties) {
+    public void handleProperties(Properties properties) throws URISyntaxException {
         JAViewer.DATA_SOURCES.clear();
         JAViewer.DATA_SOURCES.addAll(properties.getDataSources());
 
+        JAViewer.hostReplacements.clear();
+        for (DataSource source : JAViewer.DATA_SOURCES) {
+            String host = new URI(source.getLink()).getHost();
+            for (String h : source.legacies) {
+                JAViewer.hostReplacements.put(h, host);
+            }
+        }
 
         int currentVersion;
         try {
