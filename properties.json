@@ -5,12 +5,13 @@
   "data_sources": [
     {
       "name": "AVMOO 日本",
-      "link": "https://javdog.com",
+      "link": "https://javhip.com",
       "legacies":[
         "avos.pw",
         "avmo.pw",
         "avmo.club",
-        "avio.pw"
+        "avio.pw",
+        "javdog.com"
       ]
     },
     {
