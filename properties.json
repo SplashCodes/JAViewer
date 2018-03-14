@@ -1,5 +1,34 @@
 {
-  "latest_version": "1.3.3",
-  "latest_version_code": "10",
-  "changelog": "**推荐更新**\n1.3.3 \n1. 修复多个被墙源\n2. 新的收藏夹"
+  "latest_version": "1.3.5",
+  "latest_version_code": "12",
+  "changelog": "**推荐更新**\n1.3.5 \n1. 数据源云端化\n2. 修复截图无法保存问题\n3. 增加复制影片名功能\n\n下个版本将添加更多实用功能",
+  "data_sources": [
+    {
+      "name": "AVMOO 日本",
+      "link": "https://javmoo.net",
+      "legacies":[
+        "javtag.com",
+        "javhip.com",
+        "avos.pw",
+        "avmo.pw",
+        "avmo.club",
+        "avio.pw",
+        "javdog.com"
+      ]
+    },
+    {
+      "name": "AVMOO 日本无码",
+      "link": "https://javfee.com",
+      "legacies":[
+        "javpee.com",
+        "avso.pw",
+        "avso.club"
+      ]
+    },
+    {
+      "name": "AVMOO 欧美",
+      "link": "https://avxo.pw",
+      "legacies":[]
+    }
+  ]
 }

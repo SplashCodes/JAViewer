@@ -112,6 +112,7 @@ public class MovieActivity extends AppCompatActivity {
                 MovieDetail detail;
                 try {
                     detail = AVMOProvider.parseMoviesDetail(response.body().string());
+                    detail.headers.add(0, MovieDetail.Header.create("影片名", movie.getTitle(), null));
                     displayInfo(detail);
 
                     Glide.with(mToolbarLayoutBackground.getContext().getApplicationContext())

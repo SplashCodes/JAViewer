@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
@@ -24,9 +25,6 @@ public class FavouriteActivity extends AppCompatActivity {
 
     @BindView(R.id.favourite_view_pager)
     public ViewPager mViewPager;
-
-    /*@BindView(R.id.bottom_nav_favourite)
-    BottomNavigationView mNav;*/
 
     @BindView(R.id.favourite_bottom_bar)
     BottomBar mBottomBar;
@@ -89,6 +87,8 @@ public class FavouriteActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mAdapter = new ViewPagerAdapter(getSupportFragmentManager());

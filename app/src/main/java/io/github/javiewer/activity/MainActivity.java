@@ -6,8 +6,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
@@ -27,8 +25,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
 
 import butterknife.BindView;
@@ -41,10 +40,6 @@ import io.github.javiewer.adapter.item.DataSource;
 import io.github.javiewer.fragment.ExtendedAppBarFragment;
 import io.github.javiewer.network.BasicService;
 import io.github.javiewer.view.SimpleSearchView;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -143,58 +138,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        Request request = new Request.Builder()
-                .url("https://raw.githubusercontent.com/SplashCodes/JAViewer/master/properties.json")
-                .build();
-        JAViewer.HTTP_CLIENT.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-            }
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                final Properties properties = JAViewer.parseJson(Properties.class, response.body().string());
-                if (properties != null) {
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        @Override
-                        public void run() {
-                            handleProperties(properties);
-                        }
-                    });
-                }
-            }
-        });
-
-    }
-
-    public void handleProperties(Properties properties) {
-        int currentVersion;
-        try {
-            currentVersion = this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            throw new RuntimeException("Hacked???");
-        }
-
-        if (properties.getLatestVersionCode() > 0 && currentVersion < properties.getLatestVersionCode()) {
-
-            String message = "新版本：" + properties.getLatestVersion();
-            if (properties.getChangelog() != null) {
-                message += "\n\n更新日志：\n\n" + properties.getChangelog() + "\n";
-            }
-
-            AlertDialog dialog = new AlertDialog.Builder(this)
-                    .setTitle("发现更新")
-                    .setMessage(message)
-                    .setNegativeButton("忽略更新", null)
-                    .setPositiveButton("更新", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/SplashCodes/JAViewer/releases")));
-                        }
-                    })
-                    .create();
-            dialog.show();
-        }
     }
 
     public void initFragments(Bundle savedInstanceState) {
@@ -228,22 +172,7 @@ public class MainActivity extends AppCompatActivity
             return;
         }
 
-        /*
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-
-        if (old != null) {
-            transaction.hide(old);
-        }
-
-        if (!fragment.isAdded()) {
-            transaction.add(R.id.content, fragment);
-        } else {
-            transaction.show(fragment);
-        }*/
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        /*for (Fragment f : fragmentManager.getFragments()) {
-            transaction.hide(f);
-        }*/
         if (old != null) {
             transaction.hide(old);
         }
@@ -343,10 +272,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void restart() {
-        Intent i = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName());
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
+        Intent intent = getIntent();
         finish();
+        startActivity(intent);
     }
 
 }

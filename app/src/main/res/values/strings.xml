@@ -17,5 +17,7 @@
     <string name="customactivityoncrash_error_activity_error_details_copy">复制到剪贴板</string>
     <string name="customactivityoncrash_error_activity_error_details_copied">已复制到剪贴板</string>
     <string name="customactivityoncrash_error_activity_error_details_clipboard_label">错误信息</string>
+    <string name="title_activity_scrolling">ScrollingActivity</string>
+    <string name="action_settings">Settings</string>
 
 </resources>

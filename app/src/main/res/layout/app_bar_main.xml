@@ -15,7 +15,8 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:layout_scrollFlags="scroll|enterAlways|snap">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -23,6 +24,7 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
                 android:weightSum="1"
+
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
 
             <!--<com.miguelcatalan.materialsearchview.MaterialSearchView
