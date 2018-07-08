@@ -32,9 +32,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.github.chrisbanes.photoview.OnPhotoTapListener;
-import com.github.chrisbanes.photoview.PhotoView;
-import com.github.chrisbanes.photoview.PhotoViewAttacher;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -300,24 +297,17 @@ public class GalleryActivity extends AppCompatActivity {
         @Override
         public Object instantiateItem(ViewGroup view, int position) {
             View imageLayout = inflater.inflate(R.layout.content_gallery, view, false);
-            final PhotoView imageView = imageLayout.findViewById(R.id.image);
+            final ImageView imageView = imageLayout.findViewById(R.id.image);
             final ProgressBar progressBar = imageLayout.findViewById(R.id.progress_bar);
             final TextView textView = imageLayout.findViewById(R.id.gallery_text_error);
 
-            PhotoViewAttacher attacher = new PhotoViewAttacher(imageView);
-            /*attacher.setOnViewTapListener(new OnViewTapListener() {
+            imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onViewTap(View view, float x, float y) {
+                public void onClick(View view) {
                     mActivity.toggle();
                 }
             });
-*/
-            attacher.setOnPhotoTapListener(new OnPhotoTapListener() {
-                @Override
-                public void onPhotoTap(ImageView view, float x, float y) {
-                    mActivity.toggle();
-                }
-            });
+
             Glide.with(imageView.getContext().getApplicationContext())
                     .load(imageUrls[position])
                     .into(new SimpleTarget<GlideDrawable>() {
