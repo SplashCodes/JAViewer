@@ -14,7 +14,6 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

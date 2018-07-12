@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.FileProvider;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -112,7 +113,7 @@ public class MovieActivity extends AppCompatActivity {
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                
+
                 if (!response.isSuccessful()) {
                     return;
                 }
@@ -288,17 +289,21 @@ public class MovieActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 try {
+
                     File cache = new File(getExternalFilesDir("cache"), "screenshot");
+
+                    //Generate screenshot
                     FileOutputStream os = new FileOutputStream(cache);
                     Bitmap screenshot = getScreenBitmap();
-                    //Bitmap screenshot = ViewUtil.getBitmapByView(mContent);
                     screenshot.compress(Bitmap.CompressFormat.JPEG, 100, os);
                     os.flush();
                     os.close();
 
-                    Uri uri = Uri.fromFile(cache);
+                    Uri uri = FileProvider.getUriForFile(getApplicationContext(), "io.github.javiewer.fileprovider", cache);
+                    // Uri uri = Uri.fromFile(cache);
                     Intent intent = new Intent(Intent.ACTION_SEND)
-                            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                             .setType("image/jpeg")
                             .putExtra(Intent.EXTRA_STREAM, uri);
                     startActivity(Intent.createChooser(intent, "分享此影片"));

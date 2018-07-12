@@ -2,7 +2,6 @@ package io.github.javiewer.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,14 +25,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URLEncoder;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.javiewer.JAViewer;
-import io.github.javiewer.Properties;
 import io.github.javiewer.R;
 import io.github.javiewer.adapter.NavigationSpinnerAdapter;
 import io.github.javiewer.adapter.item.DataSource;

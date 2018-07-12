@@ -1,8 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.MovieFragment">
+    android:fitsSystemWindows="true">
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/refresh_layout"
@@ -16,12 +15,4 @@
             android:scrollbars="vertical" />
     </android.support.v4.widget.SwipeRefreshLayout>
 
-    <!--<com.google.android.gms.ads.AdView
-        android:id="@+id/adView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:visibility="gone"
-        app:adSize="BANNER"
-        app:adUnitId="ca-app-pub-3531010190175990/7017100668" />-->
 </RelativeLayout>
