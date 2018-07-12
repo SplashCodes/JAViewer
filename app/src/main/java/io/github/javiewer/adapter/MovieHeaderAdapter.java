@@ -57,12 +57,14 @@ public class MovieHeaderAdapter extends RecyclerView.Adapter<MovieHeaderAdapter.
         final MovieDetail.Header header = headers.get(position);
 
         if (header.name != null && header.value != null) {
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
-                public void onClick(View v) {
+                public boolean onLongClick(View v) {
                     ClipboardManager clip = (ClipboardManager) mParentActivity.getSystemService(Context.CLIPBOARD_SERVICE);
                     clip.setPrimaryClip(ClipData.newPlainText(header.name, header.value));
                     Toast.makeText(mParentActivity, "已复制到剪贴板", Toast.LENGTH_SHORT).show();
+
+                    return true;
                 }
             });
 
