@@ -2,6 +2,7 @@ package io.github.javiewer.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -38,6 +39,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import cn.jzvd.JZVideoPlayer;
+import cn.jzvd.JZVideoPlayerStandard;
 import io.github.javiewer.JAViewer;
 import io.github.javiewer.R;
 import io.github.javiewer.adapter.ActressPaletteAdapter;
@@ -46,7 +50,10 @@ import io.github.javiewer.adapter.ScreenshotAdapter;
 import io.github.javiewer.adapter.item.Genre;
 import io.github.javiewer.adapter.item.Movie;
 import io.github.javiewer.adapter.item.MovieDetail;
+import io.github.javiewer.network.Avgle;
+import io.github.javiewer.network.item.AvgleSearchResult;
 import io.github.javiewer.network.provider.AVMOProvider;
+import io.github.javiewer.util.SimpleVideoPlayer;
 import io.github.javiewer.view.ViewUtil;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -56,6 +63,7 @@ import retrofit2.Response;
 public class MovieActivity extends AppCompatActivity {
 
     public Movie movie;
+    public String previewUrl = null;
 
     @BindView(R.id.toolbar_layout)
     CollapsingToolbarLayout mToolbarLayout;
@@ -78,6 +86,8 @@ public class MovieActivity extends AppCompatActivity {
     @BindView(R.id.genre_flow_layout)
     FlowLayout mFlowLayout;
 
+    @BindView(R.id.text_preview)
+    TextView mTextPreview;
 
     MenuItem mStarButton;
 
@@ -223,6 +233,19 @@ public class MovieActivity extends AppCompatActivity {
             }
         }
 
+        //Preview
+        {
+            /*mTextPreview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    JZVideoPlayerStandard.startFullscreen(MovieActivity.this,
+                            JZVideoPlayerStandard.class,
+                            "https://static-clst.avgle.com/videos/tmb5/185025/preview.mp4",
+                            movie.title);
+                }
+            });*/
+        }
+
         //Changing visibility
         mProgressBar.animate().setDuration(200).alpha(0).setListener(new AnimatorListenerAdapter() {
             @Override
@@ -347,5 +370,65 @@ public class MovieActivity extends AppCompatActivity {
         }
 
         return result;
+    }
+
+    @OnClick(R.id.text_preview)
+    public void onClickPreview(TextView view) {
+        //TODO: Deprecated
+        final ProgressDialog dialog = ProgressDialog.show(this, "请稍后", "正在搜索该影片的预览视频", true, false);
+
+        /*final AlertDialog dialog = new AlertDialog.Builder(MovieActivity.this)
+                .setTitle("请稍后")
+                .setMessage("正在搜索该影片的预览视频")
+                .setCancelable(false)
+                .show();*/
+
+        if (previewUrl != null) {
+            JZVideoPlayerStandard.startFullscreen(MovieActivity.this, SimpleVideoPlayer.class, previewUrl, movie.title);
+            dialog.dismiss();
+            return;
+        }
+
+        Call<AvgleSearchResult> call = Avgle.INSTANCE.search(movie.code);
+        call.enqueue(new Callback<AvgleSearchResult>() {
+            @Override
+            public void onResponse(Call<AvgleSearchResult> call, Response<AvgleSearchResult> response) {
+                if (response.isSuccessful()) {
+                    AvgleSearchResult result = response.body();
+                    if (result.success && result.response.videos.size() > 0) {
+                        AvgleSearchResult.Response.Video video = result.response.videos.get(0);
+                        previewUrl = video.preview_video_url;
+                        dialog.dismiss();
+                        JZVideoPlayerStandard.startFullscreen(MovieActivity.this, SimpleVideoPlayer.class, previewUrl, movie.title);
+                        return;
+                    }
+                }
+
+                Toast.makeText(MovieActivity.this, "该影片暂无预览", Toast.LENGTH_LONG).show();
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(Call<AvgleSearchResult> call, Throwable t) {
+                t.printStackTrace();
+                Toast.makeText(MovieActivity.this, "获取失败", Toast.LENGTH_LONG).show();
+                dialog.dismiss();
+            }
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (JZVideoPlayer.backPress()) {
+            return;
+        }
+
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        JZVideoPlayer.releaseAllVideos();
     }
 }

@@ -93,24 +93,6 @@ public class JAViewer extends Application {
 
     public static Map<String, String> hostReplacements = new HashMap<>();
 
-    /*static {
-        String host;
-        try {
-            host = new URI(DataSource.AVMO.getLink()).getHost();
-            hostReplacements.put("avmo.club", host);
-            hostReplacements.put("avmo.pw", host);
-            hostReplacements.put("avio.pw", host);
-
-            host = new URI(DataSource.AVSO.getLink()).getHost();
-            hostReplacements.put("avso.pw", host);
-
-            host = new URI(DataSource.AVXO.getLink()).getHost();
-            hostReplacements.put("avxo.pw", host);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
-    }*/
-
 
     public static final OkHttpClient HTTP_CLIENT = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
         @Override

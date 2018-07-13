@@ -17,6 +17,21 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/text_preview"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:clickable="true"
+            android:drawableLeft="@drawable/ic_movie_preview"
+            android:drawablePadding="8dp"
+            android:drawableTint="@color/colorAccent"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:gravity="center_vertical"
+            android:paddingLeft="72dp"
+            android:text="播放影片预览"
+            android:textColor="@color/colorAccent"
+            android:textSize="13sp" />
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/headers_recycler_view"
             android:layout_width="match_parent"
@@ -31,10 +46,10 @@
             android:visibility="gone" />
 
         <LinearLayout
-            android:paddingRight="16dp"
-            android:paddingLeft="72dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingLeft="72dp"
+            android:paddingRight="16dp">
 
             <include layout="@layout/layout_divider_margin" />
         </LinearLayout>
