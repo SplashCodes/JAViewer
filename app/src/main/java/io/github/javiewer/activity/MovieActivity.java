@@ -63,7 +63,7 @@ import retrofit2.Response;
 public class MovieActivity extends AppCompatActivity {
 
     public Movie movie;
-    public String previewUrl = null;
+    public AvgleSearchResult.Response.Video video = null;
 
     @BindView(R.id.toolbar_layout)
     CollapsingToolbarLayout mToolbarLayout;
@@ -373,18 +373,12 @@ public class MovieActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.text_preview)
-    public void onClickPreview(TextView view) {
+    public void onClickPreview() {
         //TODO: Deprecated
         final ProgressDialog dialog = ProgressDialog.show(this, "请稍后", "正在搜索该影片的预览视频", true, false);
 
-        /*final AlertDialog dialog = new AlertDialog.Builder(MovieActivity.this)
-                .setTitle("请稍后")
-                .setMessage("正在搜索该影片的预览视频")
-                .setCancelable(false)
-                .show();*/
-
-        if (previewUrl != null) {
-            JZVideoPlayerStandard.startFullscreen(MovieActivity.this, SimpleVideoPlayer.class, previewUrl, movie.title);
+        if (video != null) {
+            JZVideoPlayerStandard.startFullscreen(MovieActivity.this, SimpleVideoPlayer.class, video.preview_video_url, movie.title);
             dialog.dismiss();
             return;
         }
@@ -396,10 +390,9 @@ public class MovieActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     AvgleSearchResult result = response.body();
                     if (result.success && result.response.videos.size() > 0) {
-                        AvgleSearchResult.Response.Video video = result.response.videos.get(0);
-                        previewUrl = video.preview_video_url;
+                        video = result.response.videos.get(0);
+                        JZVideoPlayerStandard.startFullscreen(MovieActivity.this, SimpleVideoPlayer.class, video.preview_video_url, movie.title);
                         dialog.dismiss();
-                        JZVideoPlayerStandard.startFullscreen(MovieActivity.this, SimpleVideoPlayer.class, previewUrl, movie.title);
                         return;
                     }
                 }
@@ -411,11 +404,59 @@ public class MovieActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<AvgleSearchResult> call, Throwable t) {
                 t.printStackTrace();
-                Toast.makeText(MovieActivity.this, "获取失败", Toast.LENGTH_LONG).show();
+                Toast.makeText(MovieActivity.this, "获取预览失败", Toast.LENGTH_LONG).show();
                 dialog.dismiss();
             }
         });
     }
+
+    @OnClick(R.id.button_play)
+    public void onPlay() {
+        //TODO: Deprecated
+        final ProgressDialog dialog = ProgressDialog.show(this, "请稍后", "正在搜索该影片的在线视频源", true, false);
+
+        if (video != null) {
+            startActivityForResult(WebViewActivity.newIntent(MovieActivity.this, video.embedded_url), 0x0000eeff);
+            dialog.dismiss();
+            return;
+        }
+
+        Call<AvgleSearchResult> call = Avgle.INSTANCE.search(movie.code);
+        call.enqueue(new Callback<AvgleSearchResult>() {
+            @Override
+            public void onResponse(Call<AvgleSearchResult> call, Response<AvgleSearchResult> response) {
+                if (response.isSuccessful()) {
+                    AvgleSearchResult result = response.body();
+                    if (result.success && result.response.videos.size() > 0) {
+                        video = result.response.videos.get(0);
+                        startActivityForResult(WebViewActivity.newIntent(MovieActivity.this, video.embedded_url), 0x0000eeff);
+                        dialog.dismiss();
+                        return;
+                    }
+                }
+
+                Toast.makeText(MovieActivity.this, "该影片暂无在线视频源", Toast.LENGTH_LONG).show();
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(Call<AvgleSearchResult> call, Throwable t) {
+                t.printStackTrace();
+                Toast.makeText(MovieActivity.this, "获取视频源失败", Toast.LENGTH_LONG).show();
+                dialog.dismiss();
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 0x0000eeff && resultCode == RESULT_OK) {
+            JZVideoPlayerStandard.startFullscreen(MovieActivity.this, SimpleVideoPlayer.class, data.getStringExtra("m3u8"), movie.title);
+        }
+    }
+
 
     @Override
     public void onBackPressed() {

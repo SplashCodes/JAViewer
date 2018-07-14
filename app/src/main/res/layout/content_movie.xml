@@ -16,6 +16,12 @@
         android:paddingBottom="8dp"
         android:paddingTop="36dp">
 
+        <Button
+            android:id="@+id/button_play"
+            android:text="Play this shit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
         <include
             android:id="@+id/movie_headers"
             layout="@layout/content_movie_headers" />

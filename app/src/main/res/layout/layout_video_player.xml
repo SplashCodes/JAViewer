@@ -46,13 +46,13 @@
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
             android:layout_weight="1.0"
-            android:background="@null"
             android:max="100"
             android:maxHeight="1dp"
             android:minHeight="1dp"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            android:progressDrawable="@android:color/white" />
+            android:progress="50"
+            android:progressDrawable="@drawable/progress_seek_bar" />
 
         <TextView
             android:id="@+id/total"
@@ -143,7 +143,7 @@
 
             <ImageView
                 android:id="@+id/battery_level"
-                android:layout_width="2dp"
+                android:layout_width="23dp"
                 android:layout_height="10dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginRight="8dp"

@@ -19,5 +19,6 @@
     <string name="customactivityoncrash_error_activity_error_details_clipboard_label">错误信息</string>
     <string name="title_activity_scrolling">ScrollingActivity</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_web_view">WebViewActivity</string>
 
 </resources>
