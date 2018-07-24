@@ -2,6 +2,7 @@ package io.github.javiewer.network;
 
 import io.github.javiewer.JAViewer;
 import io.github.javiewer.network.item.AvgleSearchResult;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -26,4 +27,7 @@ public interface Avgle {
     @GET("/v1/search/{keyword}/0?limit=1")
     @Headers("Accept-Language: zh-CN,zh;q=0.8,en;q=0.6")
     Call<AvgleSearchResult> search(@Path(value = "keyword") String keyword);
+
+    @GET("/{path}")
+    Call<ResponseBody> get(@Path("path") String path);
 }

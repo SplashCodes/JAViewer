@@ -5,9 +5,9 @@
     android:layout_height="wrap_content"
     android:clickable="true"
     android:foreground="?android:attr/selectableItemBackground"
+    android:minHeight="?android:attr/listPreferredItemHeight"
     android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
-    android:paddingRight="?android:attr/listPreferredItemPaddingRight"
-    android:minHeight="?android:attr/listPreferredItemHeight">
+    android:paddingRight="?android:attr/listPreferredItemPaddingRight">
 
     <LinearLayout
         android:layout_width="match_parent"

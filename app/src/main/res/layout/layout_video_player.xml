@@ -146,6 +146,7 @@
                 android:layout_width="23dp"
                 android:layout_height="10dp"
                 android:layout_gravity="center_vertical"
+                android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:background="@drawable/jz_battery_level_10" />
 
@@ -182,7 +183,7 @@
             android:id="@+id/start"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:src="@drawable/ic_movie_preview"
+            android:src="@drawable/ic_movie_play"
             android:tint="@android:color/white" />
     </LinearLayout>
 

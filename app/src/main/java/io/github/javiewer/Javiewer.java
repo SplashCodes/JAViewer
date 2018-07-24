@@ -46,11 +46,7 @@ import retrofit2.Retrofit;
 public class JAViewer extends Application {
 
     public static final String USER_AGENT = "Mozilla/5.0 (Linux; Android 5.1.1; Nexus 5 Build/LMY48B; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/43.0.2357.65 Mobile Safari/537.36";
-
-    public static Configurations CONFIGURATIONS;
-
     public static final List<DataSource> DATA_SOURCES = new ArrayList<>();
-
     public static final Map<Integer, Class<? extends Fragment>> FRAGMENTS = new HashMap<Integer, Class<? extends Fragment>>() {{
         put(R.id.nav_home, HomeFragment.class);
         put(R.id.nav_popular, PopularFragment.class);
@@ -59,41 +55,9 @@ public class JAViewer extends Application {
         put(R.id.nav_genre, GenreTabsFragment.class);
         put(R.id.nav_favourite, FavouriteTabsFragment.class);
     }};
-
-    public static DataSource getDataSource() {
-        return JAViewer.CONFIGURATIONS.getDataSource();
-    }
-
+    public static Configurations CONFIGURATIONS;
     public static BasicService SERVICE;
-
-    public static void recreateService() {
-        SERVICE = new Retrofit.Builder()
-                .baseUrl(JAViewer.getDataSource().getLink())
-                .client(JAViewer.HTTP_CLIENT)
-                .build()
-                .create(BasicService.class);
-    }
-
-    public static File getStorageDir() {
-        File dir = new File(Environment.getExternalStorageDirectory(), "JAViewer/");
-        dir.mkdirs();
-        return dir;
-    }
-
-    public static HttpUrl replaceUrl(HttpUrl url) {
-        HttpUrl.Builder builder = url.newBuilder();
-        String host = url.url().getHost();
-        if (hostReplacements.containsKey(host)) {
-            builder.host(hostReplacements.get(host));
-            return builder.build();
-        }
-
-        return url;
-    }
-
     public static Map<String, String> hostReplacements = new HashMap<>();
-
-
     public static final OkHttpClient HTTP_CLIENT = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
         @Override
         public Response intercept(Interceptor.Chain chain) throws IOException {
@@ -122,6 +86,35 @@ public class JAViewer extends Application {
                 }
             })
             .build();
+
+    public static DataSource getDataSource() {
+        return JAViewer.CONFIGURATIONS.getDataSource();
+    }
+
+    public static void recreateService() {
+        SERVICE = new Retrofit.Builder()
+                .baseUrl(JAViewer.getDataSource().getLink())
+                .client(JAViewer.HTTP_CLIENT)
+                .build()
+                .create(BasicService.class);
+    }
+
+    public static File getStorageDir() {
+        File dir = new File(Environment.getExternalStorageDirectory(), "JAViewer/");
+        dir.mkdirs();
+        return dir;
+    }
+
+    public static HttpUrl replaceUrl(HttpUrl url) {
+        HttpUrl.Builder builder = url.newBuilder();
+        String host = url.url().getHost();
+        if (hostReplacements.containsKey(host)) {
+            builder.host(hostReplacements.get(host));
+            return builder.build();
+        }
+
+        return url;
+    }
 
     public static <T> T parseJson(Class<T> beanClass, JsonReader reader) throws JsonParseException {
         GsonBuilder builder = new GsonBuilder();

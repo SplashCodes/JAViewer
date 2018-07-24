@@ -47,7 +47,7 @@ public class StartActivity extends AppCompatActivity {
 
     public void readProperties() {
         Request request = new Request.Builder()
-                .url("https://raw.githubusercontent.com/SplashCodes/JAViewer/master/properties.json")
+                .url("https://raw.githubusercontent.com/SplashCodes/JAViewer/master/properties.json?t=" + System.currentTimeMillis() / 1000)
                 .build();
         JAViewer.HTTP_CLIENT.newCall(request).enqueue(new Callback() {
             @Override
@@ -61,11 +61,7 @@ public class StartActivity extends AppCompatActivity {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
-                            try {
-                                handleProperties(properties);
-                            } catch (URISyntaxException e) {
-                                e.printStackTrace();
-                            }
+                            handleProperties(properties);
                         }
                     });
                 }
@@ -73,15 +69,19 @@ public class StartActivity extends AppCompatActivity {
         });
     }
 
-    public void handleProperties(Properties properties) throws URISyntaxException {
+    public void handleProperties(Properties properties) {
         JAViewer.DATA_SOURCES.clear();
         JAViewer.DATA_SOURCES.addAll(properties.getDataSources());
 
         JAViewer.hostReplacements.clear();
         for (DataSource source : JAViewer.DATA_SOURCES) {
-            String host = new URI(source.getLink()).getHost();
-            for (String h : source.legacies) {
-                JAViewer.hostReplacements.put(h, host);
+            try {
+                String host = new URI(source.getLink()).getHost();
+                for (String h : source.legacies) {
+                    JAViewer.hostReplacements.put(h, host);
+                }
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
             }
         }
 
@@ -99,29 +99,24 @@ public class StartActivity extends AppCompatActivity {
                 message += "\n\n更新日志：\n\n" + properties.getChangelog() + "\n";
             }
 
-            final boolean[] update = {false};
             final AlertDialog dialog = new AlertDialog.Builder(this)
                     .setTitle("发现更新")
                     .setMessage(message)
-                    .setNegativeButton("忽略更新", null)
+                    .setNegativeButton("忽略更新", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            start();
+                        }
+                    })
                     .setPositiveButton("更新", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            update[0] = true;
+                            start();
+                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/SplashCodes/JAViewer/releases")));
                         }
                     })
                     .create();
             dialog.show();
-
-            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                @Override
-                public void onDismiss(DialogInterface dialogInterface) {
-                    start();
-                    if (update[0]) {
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/SplashCodes/JAViewer/releases")));
-                    }
-                }
-            });
         } else {
             start();
         }

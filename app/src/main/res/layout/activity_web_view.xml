@@ -33,10 +33,10 @@
             android:id="@+id/web_view"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintDimensionRatio="H,4:3"
+            app:layout_constraintDimensionRatio="H,16:10"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"></WebView>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -57,33 +57,32 @@
                 android:gravity="center"
                 android:paddingBottom="16dp"
                 android:paddingTop="16dp"
-                android:text="在读取播放信息，请耐心等待"
+                android:text="正在读取播放信息，请耐心等待"
                 android:textColor="?android:textColorPrimary"
                 android:textSize="16sp" />
 
             <ProgressBar
                 style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="240dp"
+                android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:indeterminate="true" />
-
-
-            <TextView
-                android:layout_width="240dp"
-                android:layout_height="wrap_content"
-                android:paddingBottom="16dp"
-                android:paddingTop="32dp"
-                android:text="如果出现验证码，请按解除锁定按钮，并完成验证码，继续等待播放。如果长期无反应，请尝试科学上网"
-                android:textAllCaps="false"
-                android:textSize="13sp" />
 
             <Button
                 android:id="@+id/button_unlock"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:text="解除锁定" />
-        </LinearLayout>
 
+            <TextView
+                android:layout_width="240dp"
+                android:layout_height="wrap_content"
+                android:paddingTop="16dp"
+
+                android:text="如果出现验证码，请按[解除锁定]按钮，并完成验证码，继续等待播放。如果长期无反应，请尝试科学上网"
+                android:textAllCaps="false"
+                android:textSize="13sp" />
+        </LinearLayout>
     </android.support.constraint.ConstraintLayout>
 
 </android.support.design.widget.CoordinatorLayout>

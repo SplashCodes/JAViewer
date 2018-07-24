@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.CookieManager;
@@ -86,13 +85,8 @@ public class WebViewActivity extends AppCompatActivity {
             cookieManager.setAcceptThirdPartyCookies(mWebView, true);
         }
 
-        mWebView.loadDataWithBaseURL(
-                "http://javiewer.github.io/player.html",
-                "<iframe width=\"100%\" height=\"100%\" src=\"" + embeddedUrl + "\" frameborder=\"0\" allowfullscreen></iframe>",
-                "text/html",
-                null,
-                null
-        );
+        WebSettings webSettings = mWebView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
 
         mWebView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -100,9 +94,6 @@ public class WebViewActivity extends AppCompatActivity {
                 return locked;
             }
         });
-
-        WebSettings webSettings = mWebView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
 
         mWebView.setWebViewClient(new WebViewClient() {
 
@@ -115,7 +106,7 @@ public class WebViewActivity extends AppCompatActivity {
 
                     final Request request = new Request.Builder()
                             .url(url)
-                            .header("Referer", "https://javiewer.github.com/player.html")
+                            .header("Referer", "https://javiewer.github.io/")
                             .header("Cookie", cookie)
                             .get()
                             .build();
@@ -144,6 +135,14 @@ public class WebViewActivity extends AppCompatActivity {
                 return super.shouldInterceptRequest(view, url);
             }
         });
+
+        mWebView.loadDataWithBaseURL(
+                "http://javiewer.github.io/",
+                "<iframe width=\"100%\" height=\"100%\" src=\"" + embeddedUrl + "\" frameborder=\"0\" allowfullscreen></iframe>",
+                "text/html",
+                null,
+                null
+        );
     }
 
     void testVideoPlayBack(String url) {
