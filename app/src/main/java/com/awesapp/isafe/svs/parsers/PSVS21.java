@@ -45,7 +45,6 @@ public class PSVS21 {
 
     static class StubPackageManager extends PackageManagerWrapper {
 
-
         StubPackageManager(PackageManager manager) {
             super(manager);
         }
