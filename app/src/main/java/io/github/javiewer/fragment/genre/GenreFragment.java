@@ -26,11 +26,9 @@ import retrofit2.Call;
 
 public class GenreFragment extends Fragment {
 
-    protected List<Genre> genres = new ArrayList<>();
-
     @BindView(R.id.genre_recycler_view)
     public RecyclerView mRecyclerView;
-
+    protected List<Genre> genres = new ArrayList<>();
     private RecyclerView.Adapter mAdapter;
     private StaggeredGridLayoutManager mLayoutManager;
 
@@ -57,7 +55,7 @@ public class GenreFragment extends Fragment {
                 ViewUtil.dpToPx(1)
         );
 
-        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        mRecyclerView.setLayoutManager(mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         mRecyclerView.setAdapter(this.mAdapter = new GenreAdapter(genres, this.getActivity()));
 
         RecyclerView.ItemAnimator animator = new SlideInUpAnimator();

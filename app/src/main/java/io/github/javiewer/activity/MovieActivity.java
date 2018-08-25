@@ -16,7 +16,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
 import android.support.v4.widget.NestedScrollView;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -29,7 +28,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.awesapp.isafe.svs.parsers.PSVS21;
 import com.bumptech.glide.Glide;
 import com.robertlevonyan.views.chip.Chip;
 import com.wefika.flowlayout.FlowLayout;
@@ -53,18 +51,17 @@ import io.github.javiewer.adapter.ScreenshotAdapter;
 import io.github.javiewer.adapter.item.Genre;
 import io.github.javiewer.adapter.item.Movie;
 import io.github.javiewer.adapter.item.MovieDetail;
-import io.github.javiewer.network.Avgle;
+import io.github.javiewer.network.PSVS;
 import io.github.javiewer.network.item.AvgleSearchResult;
 import io.github.javiewer.network.provider.AVMOProvider;
 import io.github.javiewer.util.SimpleVideoPlayer;
 import io.github.javiewer.view.ViewUtil;
-import okhttp3.Request;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MovieActivity extends AppCompatActivity {
+public class MovieActivity extends SecureActivity {
 
     public Movie movie;
     public AvgleSearchResult.Response.Video video = null;
@@ -234,19 +231,6 @@ public class MovieActivity extends AppCompatActivity {
             }
         }
 
-        //Preview
-        {
-            /*mViewPreview.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    JZVideoPlayerStandard.startFullscreen(MovieActivity.this,
-                            JZVideoPlayerStandard.class,
-                            "https://static-clst.avgle.com/videos/tmb5/185025/preview.mp4",
-                            movie.title);
-                }
-            });*/
-        }
-
         //Changing visibility
         mProgressBar.animate().setDuration(200).alpha(0).setListener(new AnimatorListenerAdapter() {
             @Override
@@ -383,7 +367,7 @@ public class MovieActivity extends AppCompatActivity {
 
         final ProgressDialog dialog = ProgressDialog.show(this, "请稍后", "正在搜索该影片的预览视频", true, false);
 
-        Call<AvgleSearchResult> call = Avgle.INSTANCE.search(movie.code);
+        Call<AvgleSearchResult> call = PSVS.INSTANCE.search(movie.code);
         call.enqueue(new Callback<AvgleSearchResult>() {
             @Override
             public void onResponse(Call<AvgleSearchResult> call, Response<AvgleSearchResult> response) {
@@ -392,6 +376,7 @@ public class MovieActivity extends AppCompatActivity {
                     if (result.success && result.response.videos.size() > 0) {
                         video = result.response.videos.get(0);
                         JZVideoPlayerStandard.startFullscreen(MovieActivity.this, SimpleVideoPlayer.class, video.preview_video_url, movie.title);
+                        Toast.makeText(MovieActivity.this, "提示：预览视频可能需要科学上网", Toast.LENGTH_LONG).show();
                         dialog.dismiss();
                         return;
                     }
@@ -404,13 +389,61 @@ public class MovieActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<AvgleSearchResult> call, Throwable t) {
                 t.printStackTrace();
-                Toast.makeText(MovieActivity.this, "获取预览失败", Toast.LENGTH_LONG).show();
+                Toast.makeText(MovieActivity.this, "获取预览失败，请重试，或使用科学上网", Toast.LENGTH_LONG).show();
                 dialog.dismiss();
             }
         });
     }
 
     @OnClick(R.id.view_play)
+    public void onPlay() {
+        //TODO: Deprecated
+        final String ts = String.valueOf(System.currentTimeMillis() / 1000);
+        if (video != null) {
+            JZVideoPlayerStandard.startFullscreen(
+                    MovieActivity.this,
+                    SimpleVideoPlayer.class,
+                    String.format("http://api.rekonquer.com/psvs/mp4.php?vid=%s&ts=%s&sign=%s", video.vid, ts, JAViewer.b(video.vid, ts)),
+                    movie.title
+            );
+            return;
+        }
+
+        final ProgressDialog dialog = ProgressDialog.show(this, "请稍后", "正在搜索该影片的在线视频源", true, false);
+
+        Call<AvgleSearchResult> call = PSVS.INSTANCE.search(movie.code);
+        call.enqueue(new Callback<AvgleSearchResult>() {
+            @Override
+            public void onResponse(Call<AvgleSearchResult> call, Response<AvgleSearchResult> response) {
+                if (response.isSuccessful()) {
+                    AvgleSearchResult result = response.body();
+                    if (result.success && result.response.videos.size() > 0) {
+                        video = result.response.videos.get(0);
+                        JZVideoPlayerStandard.startFullscreen(
+                                MovieActivity.this,
+                                SimpleVideoPlayer.class,
+                                String.format("http://api.rekonquer.com/psvs/mp4.php?vid=%s&ts=%s&sign=%s", video.vid, ts, JAViewer.b(video.vid, ts)),
+                                movie.title
+                        );
+                        dialog.dismiss();
+                        return;
+                    }
+                }
+
+                Toast.makeText(MovieActivity.this, "该影片暂无在线视频源", Toast.LENGTH_LONG).show();
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(Call<AvgleSearchResult> call, Throwable t) {
+                t.printStackTrace();
+                Toast.makeText(MovieActivity.this, "获取在线视频源失败，请重试，或使用科学上网", Toast.LENGTH_LONG).show();
+                dialog.dismiss();
+            }
+        });
+    }
+
+    /*@OnClick(R.id.view_play)
     public void onPlay() {
         //TODO: Deprecated
         final ProgressDialog dialog = ProgressDialog.show(this, "请稍后", "正在搜索该影片的在线视频源", true, false);
@@ -430,7 +463,7 @@ public class MovieActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(okhttp3.Call call, IOException e) {
                     dialog.dismiss();
-                    Toast.makeText(MovieActivity.this, "获取播放地址失败", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MovieActivity.this, "获取播放地址失败，请尝试科学上网", Toast.LENGTH_LONG).show();
                 }
 
                 @Override
@@ -467,7 +500,7 @@ public class MovieActivity extends AppCompatActivity {
                             @Override
                             public void onFailure(okhttp3.Call call, IOException e) {
                                 dialog.dismiss();
-                                Toast.makeText(MovieActivity.this, "获取播放地址失败", Toast.LENGTH_LONG).show();
+                                Toast.makeText(MovieActivity.this, "获取播放地址失败，请尝试科学上网", Toast.LENGTH_LONG).show();
                             }
 
                             @Override
@@ -487,11 +520,11 @@ public class MovieActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<AvgleSearchResult> call, Throwable t) {
                 t.printStackTrace();
-                Toast.makeText(MovieActivity.this, "获取视频源失败", Toast.LENGTH_LONG).show();
+                Toast.makeText(MovieActivity.this, "获取视频源失败，请尝试科学上网", Toast.LENGTH_LONG).show();
                 dialog.dismiss();
             }
         });
-    }
+    }*/
 
     /*@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

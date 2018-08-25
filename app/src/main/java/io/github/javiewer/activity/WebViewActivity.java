@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MotionEvent;
 import android.view.View;
@@ -33,15 +32,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class WebViewActivity extends AppCompatActivity {
-
-    public static Intent newIntent(Context context, String embeddedUrl) {
-        Intent intent = new Intent(context, WebViewActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("embedded_url", embeddedUrl);
-        intent.putExtras(bundle);
-        return intent;
-    }
+public class WebViewActivity extends SecureActivity {
 
     public static OkHttpClient httpClient = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
         @Override
@@ -59,12 +50,18 @@ public class WebViewActivity extends AppCompatActivity {
             return chain.proceed(request);
         }
     }).build();
-
     @BindView(R.id.web_view)
     WebView mWebView;
-
     String embeddedUrl;
     boolean locked = true;
+
+    public static Intent newIntent(Context context, String embeddedUrl) {
+        Intent intent = new Intent(context, WebViewActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("embedded_url", embeddedUrl);
+        intent.putExtras(bundle);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

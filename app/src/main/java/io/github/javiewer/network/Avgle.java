@@ -15,14 +15,13 @@ import retrofit2.http.Path;
  */
 public interface Avgle {
 
+    String BASE_URL = "https://api.avgle.com";
     Avgle INSTANCE = new Retrofit.Builder()
             .baseUrl(Avgle.BASE_URL)
             .client(JAViewer.HTTP_CLIENT)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(Avgle.class);
-
-    String BASE_URL = "https://api.avgle.com";
 
     @GET("/v1/search/{keyword}/0?limit=1")
     @Headers("Accept-Language: zh-CN,zh;q=0.8,en;q=0.6")

@@ -59,6 +59,7 @@ dependencies {
 
     //Player
     implementation 'cn.jzvd:jiaozivideoplayer:6.2.12'
+    implementation 'com.google.android.exoplayer:exoplayer:2.8.2'
     //Firebase
     implementation 'com.google.firebase:firebase-auth:16.0.2'
 

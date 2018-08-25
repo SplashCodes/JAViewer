@@ -8,12 +8,9 @@ import java.util.List;
  */
 public class MovieDetail {
 
-    public String title;
-
-    public String coverUrl;
-
     public final List<Screenshot> screenshots = new ArrayList<>();
-
+    public String title;
+    public String coverUrl;
     public List<Header> headers = new ArrayList<>();
 
     public List<Genre> genres = new ArrayList<>();
@@ -24,20 +21,20 @@ public class MovieDetail {
         public String name;
         public String value;
 
-        public String getName() {
-            return name;
-        }
-
-        public String getValue() {
-            return value;
-        }
-
         public static Header create(String name, String value, String link) {
             Header header = new Header();
             header.name = name;
             header.value = value;
             header.link = link;
             return header;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getValue() {
+            return value;
         }
 
         @Override

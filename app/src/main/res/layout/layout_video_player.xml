@@ -8,9 +8,35 @@
     <FrameLayout
         android:id="@+id/surface_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"></FrameLayout>
 
-    </FrameLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:alpha="0.3"
+        android:elevation="4dp"
+        android:orientation="horizontal"
+        android:padding="24dp">
+
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_javiewer" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:shadowColor="#000"
+            android:shadowRadius="10"
+            android:text="JAViewer"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/thumb"
@@ -177,14 +203,15 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_gravity="center_vertical">
+        android:layout_gravity="center"
+        android:gravity="center">
 
         <ImageView
             android:id="@+id/start"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:src="@drawable/ic_movie_play"
-            android:tint="@android:color/white" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/selector_play" />
     </LinearLayout>
 
 

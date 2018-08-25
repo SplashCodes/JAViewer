@@ -39,15 +39,31 @@ public class PinchImageView extends android.support.v7.widget.AppCompatImageView
      * 惯性动画衰减参数
      */
     public static final float FLING_DAMPING_FACTOR = 0.9f;
+    /**
+     * 手势状态：自由状态
+     *
+     * @see #getPinchMode()
+     */
+    public static final int PINCH_MODE_FREE = 0;
 
+
+    ////////////////////////////////监听器////////////////////////////////
+    /**
+     * 手势状态：单指滚动状态
+     *
+     * @see #getPinchMode()
+     */
+    public static final int PINCH_MODE_SCROLL = 1;
+    /**
+     * 手势状态：双指缩放状态
+     *
+     * @see #getPinchMode()
+     */
+    public static final int PINCH_MODE_SCALE = 2;
     /**
      * 图片最大放大比例
      */
     private static final float MAX_SCALE = 4f;
-
-
-    ////////////////////////////////监听器////////////////////////////////
-
     /**
      * 外界点击事件
      *
@@ -55,12 +71,180 @@ public class PinchImageView extends android.support.v7.widget.AppCompatImageView
      */
     private OnClickListener mOnClickListener;
 
+
+    ////////////////////////////////公共状态获取////////////////////////////////
     /**
      * 外界长按事件
      *
      * @see #setOnLongClickListener(OnLongClickListener)
      */
     private OnLongClickListener mOnLongClickListener;
+    /**
+     * 外层变换矩阵，如果是单位矩阵，那么图片是fit center状态
+     *
+     * @see #getOuterMatrix(Matrix)
+     * @see #outerMatrixTo(Matrix, long)
+     */
+    private Matrix mOuterMatrix = new Matrix();
+    /**
+     * 矩形遮罩
+     *
+     * @see #getMask()
+     * @see #zoomMaskTo(RectF, long)
+     */
+    private RectF mMask;
+    /**
+     * 当前手势状态
+     *
+     * @see #getPinchMode()
+     * @see #PINCH_MODE_FREE
+     * @see #PINCH_MODE_SCROLL
+     * @see #PINCH_MODE_SCALE
+     */
+    private int mPinchMode = PINCH_MODE_FREE;
+    /**
+     * 所有OuterMatrixChangedListener监听列表
+     *
+     * @see #addOuterMatrixChangedListener(OuterMatrixChangedListener)
+     * @see #removeOuterMatrixChangedListener(OuterMatrixChangedListener)
+     */
+    private List<OuterMatrixChangedListener> mOuterMatrixChangedListeners;
+    /**
+     * 当mOuterMatrixChangedListeners被锁定不允许修改时,临时将修改写到这个副本中
+     *
+     * @see #mOuterMatrixChangedListeners
+     */
+    private List<OuterMatrixChangedListener> mOuterMatrixChangedListenersCopy;
+    /**
+     * mOuterMatrixChangedListeners的修改锁定
+     * <p>
+     * 当进入dispatchOuterMatrixChanged方法时,被加1,退出前被减1
+     *
+     * @see #dispatchOuterMatrixChanged()
+     * @see #addOuterMatrixChangedListener(OuterMatrixChangedListener)
+     * @see #removeOuterMatrixChangedListener(OuterMatrixChangedListener)
+     */
+    private int mDispatchOuterMatrixChangedLock;
+    /**
+     * mask修改的动画
+     * <p>
+     * 和图片的动画相互独立.
+     *
+     * @see #zoomMaskTo(RectF, long)
+     */
+    private MaskAnimator mMaskAnimator;
+    /**
+     * 在单指模式下:
+     * 记录上一次手指的位置,用于计算新的位置和上一次位置的差值.
+     * <p>
+     * 双指模式下:
+     * 记录两个手指的中点,作为和mScaleCenter绑定的点.
+     * 这个绑定可以保证mScaleCenter无论如何都会跟随这个中点.
+     *
+     * @see #mScaleCenter
+     * @see #scale(PointF, float, float, PointF)
+     * @see #scaleEnd()
+     */
+    private PointF mLastMovePoint = new PointF();
+    /**
+     * 缩放模式下图片的缩放中点.
+     * <p>
+     * 为其指代的点经过innerMatrix变换之后的值.
+     * 其指代的点在手势过程中始终跟随mLastMovePoint.
+     * 通过双指缩放时,其为缩放中心点.
+     *
+     * @see #saveScaleContext(float, float, float, float)
+     * @see #mLastMovePoint
+     * @see #scale(PointF, float, float, PointF)
+     */
+    private PointF mScaleCenter = new PointF();
+    /**
+     * 缩放模式下的基础缩放比例
+     * <p>
+     * 为外层缩放值除以开始缩放时两指距离.
+     * 其值乘上最新的两指之间距离为最新的图片缩放比例.
+     *
+     * @see #saveScaleContext(float, float, float, float)
+     * @see #scale(PointF, float, float, PointF)
+     */
+    private float mScaleBase = 0;
+    /**
+     * 图片缩放动画
+     * <p>
+     * 缩放模式把图片的位置大小超出限制之后触发.
+     * 双击图片放大或缩小时触发.
+     * 手动调用outerMatrixTo触发.
+     *
+     * @see #scaleEnd()
+     * @see #doubleTap(float, float)
+     * @see #outerMatrixTo(Matrix, long)
+     */
+    private ScaleAnimator mScaleAnimator;
+    /**
+     * 滑动产生的惯性动画
+     *
+     * @see #fling(float, float)
+     */
+    private FlingAnimator mFlingAnimator;
+    /**
+     * 常用手势处理
+     * <p>
+     * 在onTouchEvent末尾被执行.
+     */
+    private GestureDetector mGestureDetector = new GestureDetector(PinchImageView.this.getContext(), new GestureDetector.SimpleOnGestureListener() {
+
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            //只有在单指模式结束之后才允许执行fling
+            if (mPinchMode == PINCH_MODE_FREE && !(mScaleAnimator != null && mScaleAnimator.isRunning())) {
+                fling(velocityX, velocityY);
+            }
+            return true;
+        }
+
+        public void onLongPress(MotionEvent e) {
+            //触发长按
+            if (mOnLongClickListener != null) {
+                mOnLongClickListener.onLongClick(PinchImageView.this);
+            }
+        }
+
+        public boolean onDoubleTap(MotionEvent e) {
+            //当手指快速第二次按下触发,此时必须是单指模式才允许执行doubleTap
+            if (mPinchMode == PINCH_MODE_SCROLL && !(mScaleAnimator != null && mScaleAnimator.isRunning())) {
+                doubleTap(e.getX(), e.getY());
+            }
+            return true;
+        }
+
+        public boolean onSingleTapConfirmed(MotionEvent e) {
+            //触发点击
+            if (mOnClickListener != null) {
+                mOnClickListener.onClick(PinchImageView.this);
+            }
+            return true;
+        }
+    });
+
+
+    ////////////////////////////////公共状态设置////////////////////////////////
+
+    public PinchImageView(Context context) {
+        super(context);
+        initView();
+    }
+
+    public PinchImageView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        initView();
+    }
+
+    public PinchImageView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        initView();
+    }
+
+
+    ////////////////////////////////对外广播事件////////////////////////////////
 
     @Override
     public void setOnClickListener(OnClickListener l) {
@@ -73,56 +257,6 @@ public class PinchImageView extends android.support.v7.widget.AppCompatImageView
         //默认的long click会在任何长按情况下都会触发，所以搞成自己的
         mOnLongClickListener = l;
     }
-
-
-    ////////////////////////////////公共状态获取////////////////////////////////
-
-    /**
-     * 手势状态：自由状态
-     *
-     * @see #getPinchMode()
-     */
-    public static final int PINCH_MODE_FREE = 0;
-
-    /**
-     * 手势状态：单指滚动状态
-     *
-     * @see #getPinchMode()
-     */
-    public static final int PINCH_MODE_SCROLL = 1;
-
-    /**
-     * 手势状态：双指缩放状态
-     *
-     * @see #getPinchMode()
-     */
-    public static final int PINCH_MODE_SCALE = 2;
-
-    /**
-     * 外层变换矩阵，如果是单位矩阵，那么图片是fit center状态
-     *
-     * @see #getOuterMatrix(Matrix)
-     * @see #outerMatrixTo(Matrix, long)
-     */
-    private Matrix mOuterMatrix = new Matrix();
-
-    /**
-     * 矩形遮罩
-     *
-     * @see #getMask()
-     * @see #zoomMaskTo(RectF, long)
-     */
-    private RectF mMask;
-
-    /**
-     * 当前手势状态
-     *
-     * @see #getPinchMode()
-     * @see #PINCH_MODE_FREE
-     * @see #PINCH_MODE_SCROLL
-     * @see #PINCH_MODE_SCALE
-     */
-    private int mPinchMode = PINCH_MODE_FREE;
 
     /**
      * 获取外部变换矩阵.
@@ -234,6 +368,9 @@ public class PinchImageView extends android.support.v7.widget.AppCompatImageView
         }
     }
 
+
+    ////////////////////////////////用于重载定制////////////////////////////////
+
     /**
      * 获取当前手势状态
      *
@@ -270,6 +407,9 @@ public class PinchImageView extends android.support.v7.widget.AppCompatImageView
         }
     }
 
+
+    ////////////////////////////////初始化////////////////////////////////
+
     /**
      * 与ViewPager结合的时候使用
      *
@@ -294,9 +434,6 @@ public class PinchImageView extends android.support.v7.widget.AppCompatImageView
             return bound.top < 0;
         }
     }
-
-
-    ////////////////////////////////公共状态设置////////////////////////////////
 
     /**
      * 执行当前outerMatrix到指定outerMatrix渐变的动画
@@ -389,54 +526,6 @@ public class PinchImageView extends android.support.v7.widget.AppCompatImageView
         invalidate();
     }
 
-
-    ////////////////////////////////对外广播事件////////////////////////////////
-
-    /**
-     * 外部矩阵变化事件通知监听器
-     */
-    public interface OuterMatrixChangedListener {
-
-        /**
-         * 外部矩阵变化回调
-         * <p>
-         * 外部矩阵的任何变化后都收到此回调.
-         * 外部矩阵变化后,总变化矩阵,图片的展示位置都将发生变化.
-         *
-         * @param pinchImageView
-         * @see #getOuterMatrix(Matrix)
-         * @see #getCurrentImageMatrix(Matrix)
-         * @see #getImageBound(RectF)
-         */
-        void onOuterMatrixChanged(PinchImageView pinchImageView);
-    }
-
-    /**
-     * 所有OuterMatrixChangedListener监听列表
-     *
-     * @see #addOuterMatrixChangedListener(OuterMatrixChangedListener)
-     * @see #removeOuterMatrixChangedListener(OuterMatrixChangedListener)
-     */
-    private List<OuterMatrixChangedListener> mOuterMatrixChangedListeners;
-
-    /**
-     * 当mOuterMatrixChangedListeners被锁定不允许修改时,临时将修改写到这个副本中
-     *
-     * @see #mOuterMatrixChangedListeners
-     */
-    private List<OuterMatrixChangedListener> mOuterMatrixChangedListenersCopy;
-
-    /**
-     * mOuterMatrixChangedListeners的修改锁定
-     * <p>
-     * 当进入dispatchOuterMatrixChanged方法时,被加1,退出前被减1
-     *
-     * @see #dispatchOuterMatrixChanged()
-     * @see #addOuterMatrixChangedListener(OuterMatrixChangedListener)
-     * @see #removeOuterMatrixChangedListener(OuterMatrixChangedListener)
-     */
-    private int mDispatchOuterMatrixChangedLock;
-
     /**
      * 添加外部矩阵变化监听
      *
@@ -466,6 +555,9 @@ public class PinchImageView extends android.support.v7.widget.AppCompatImageView
         }
     }
 
+
+    ////////////////////////////////绘制////////////////////////////////
+
     /**
      * 删除外部矩阵变化监听
      *
@@ -493,6 +585,9 @@ public class PinchImageView extends android.support.v7.widget.AppCompatImageView
             }
         }
     }
+
+
+    ////////////////////////////////有效性判断////////////////////////////////
 
     /**
      * 触发外部矩阵修改事件
@@ -528,7 +623,7 @@ public class PinchImageView extends android.support.v7.widget.AppCompatImageView
     }
 
 
-    ////////////////////////////////用于重载定制////////////////////////////////
+    ////////////////////////////////mask动画处理////////////////////////////////
 
     /**
      * 获取图片最大可放大的比例
@@ -568,22 +663,7 @@ public class PinchImageView extends android.support.v7.widget.AppCompatImageView
     }
 
 
-    ////////////////////////////////初始化////////////////////////////////
-
-    public PinchImageView(Context context) {
-        super(context);
-        initView();
-    }
-
-    public PinchImageView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        initView();
-    }
-
-    public PinchImageView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        initView();
-    }
+    ////////////////////////////////手势动画处理////////////////////////////////
 
     private void initView() {
         //强制设置图片scaleType为matrix
@@ -594,9 +674,6 @@ public class PinchImageView extends android.support.v7.widget.AppCompatImageView
     @Override
     public void setScaleType(ScaleType scaleType) {
     }
-
-
-    ////////////////////////////////绘制////////////////////////////////
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -617,9 +694,6 @@ public class PinchImageView extends android.support.v7.widget.AppCompatImageView
         }
     }
 
-
-    ////////////////////////////////有效性判断////////////////////////////////
-
     /**
      * 判断当前情况是否能执行手势相关计算
      * <p>
@@ -631,181 +705,6 @@ public class PinchImageView extends android.support.v7.widget.AppCompatImageView
         return getDrawable() != null && getDrawable().getIntrinsicWidth() > 0 && getDrawable().getIntrinsicHeight() > 0
                 && getWidth() > 0 && getHeight() > 0;
     }
-
-
-    ////////////////////////////////mask动画处理////////////////////////////////
-
-    /**
-     * mask修改的动画
-     * <p>
-     * 和图片的动画相互独立.
-     *
-     * @see #zoomMaskTo(RectF, long)
-     */
-    private MaskAnimator mMaskAnimator;
-
-    /**
-     * mask变换动画
-     * <p>
-     * 将mask从一个rect动画到另外一个rect
-     */
-    private class MaskAnimator extends ValueAnimator implements ValueAnimator.AnimatorUpdateListener {
-
-        /**
-         * 开始mask
-         */
-        private float[] mStart = new float[4];
-
-        /**
-         * 结束mask
-         */
-        private float[] mEnd = new float[4];
-
-        /**
-         * 中间结果mask
-         */
-        private float[] mResult = new float[4];
-
-        /**
-         * 创建mask变换动画
-         *
-         * @param start    动画起始状态
-         * @param end      动画终点状态
-         * @param duration 动画持续时间
-         */
-        public MaskAnimator(RectF start, RectF end, long duration) {
-            super();
-            setFloatValues(0, 1f);
-            setDuration(duration);
-            addUpdateListener(this);
-            //将起点终点拷贝到数组方便计算
-            mStart[0] = start.left;
-            mStart[1] = start.top;
-            mStart[2] = start.right;
-            mStart[3] = start.bottom;
-            mEnd[0] = end.left;
-            mEnd[1] = end.top;
-            mEnd[2] = end.right;
-            mEnd[3] = end.bottom;
-        }
-
-        @Override
-        public void onAnimationUpdate(ValueAnimator animation) {
-            //获取动画进度,0-1范围
-            float value = (Float) animation.getAnimatedValue();
-            //根据进度对起点终点之间做插值
-            for (int i = 0; i < 4; i++) {
-                mResult[i] = mStart[i] + (mEnd[i] - mStart[i]) * value;
-            }
-            //期间mask有可能被置空了,所以判断一下
-            if (mMask == null) {
-                mMask = new RectF();
-            }
-            //设置新的mask并绘制
-            mMask.set(mResult[0], mResult[1], mResult[2], mResult[3]);
-            invalidate();
-        }
-    }
-
-
-    ////////////////////////////////手势动画处理////////////////////////////////
-
-    /**
-     * 在单指模式下:
-     * 记录上一次手指的位置,用于计算新的位置和上一次位置的差值.
-     * <p>
-     * 双指模式下:
-     * 记录两个手指的中点,作为和mScaleCenter绑定的点.
-     * 这个绑定可以保证mScaleCenter无论如何都会跟随这个中点.
-     *
-     * @see #mScaleCenter
-     * @see #scale(PointF, float, float, PointF)
-     * @see #scaleEnd()
-     */
-    private PointF mLastMovePoint = new PointF();
-
-    /**
-     * 缩放模式下图片的缩放中点.
-     * <p>
-     * 为其指代的点经过innerMatrix变换之后的值.
-     * 其指代的点在手势过程中始终跟随mLastMovePoint.
-     * 通过双指缩放时,其为缩放中心点.
-     *
-     * @see #saveScaleContext(float, float, float, float)
-     * @see #mLastMovePoint
-     * @see #scale(PointF, float, float, PointF)
-     */
-    private PointF mScaleCenter = new PointF();
-
-    /**
-     * 缩放模式下的基础缩放比例
-     * <p>
-     * 为外层缩放值除以开始缩放时两指距离.
-     * 其值乘上最新的两指之间距离为最新的图片缩放比例.
-     *
-     * @see #saveScaleContext(float, float, float, float)
-     * @see #scale(PointF, float, float, PointF)
-     */
-    private float mScaleBase = 0;
-
-    /**
-     * 图片缩放动画
-     * <p>
-     * 缩放模式把图片的位置大小超出限制之后触发.
-     * 双击图片放大或缩小时触发.
-     * 手动调用outerMatrixTo触发.
-     *
-     * @see #scaleEnd()
-     * @see #doubleTap(float, float)
-     * @see #outerMatrixTo(Matrix, long)
-     */
-    private ScaleAnimator mScaleAnimator;
-
-    /**
-     * 滑动产生的惯性动画
-     *
-     * @see #fling(float, float)
-     */
-    private FlingAnimator mFlingAnimator;
-
-    /**
-     * 常用手势处理
-     * <p>
-     * 在onTouchEvent末尾被执行.
-     */
-    private GestureDetector mGestureDetector = new GestureDetector(PinchImageView.this.getContext(), new GestureDetector.SimpleOnGestureListener() {
-
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            //只有在单指模式结束之后才允许执行fling
-            if (mPinchMode == PINCH_MODE_FREE && !(mScaleAnimator != null && mScaleAnimator.isRunning())) {
-                fling(velocityX, velocityY);
-            }
-            return true;
-        }
-
-        public void onLongPress(MotionEvent e) {
-            //触发长按
-            if (mOnLongClickListener != null) {
-                mOnLongClickListener.onLongClick(PinchImageView.this);
-            }
-        }
-
-        public boolean onDoubleTap(MotionEvent e) {
-            //当手指快速第二次按下触发,此时必须是单指模式才允许执行doubleTap
-            if (mPinchMode == PINCH_MODE_SCROLL && !(mScaleAnimator != null && mScaleAnimator.isRunning())) {
-                doubleTap(e.getX(), e.getY());
-            }
-            return true;
-        }
-
-        public boolean onSingleTapConfirmed(MotionEvent e) {
-            //触发点击
-            if (mOnClickListener != null) {
-                mOnClickListener.onClick(PinchImageView.this);
-            }
-            return true;
-        }
-    });
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -1205,117 +1104,23 @@ public class PinchImageView extends android.support.v7.widget.AppCompatImageView
     }
 
     /**
-     * 惯性动画
-     * <p>
-     * 速度逐渐衰减,每帧速度衰减为原来的FLING_DAMPING_FACTOR,当速度衰减到小于1时停止.
-     * 当图片不能移动时,动画停止.
+     * 外部矩阵变化事件通知监听器
      */
-    private class FlingAnimator extends ValueAnimator implements ValueAnimator.AnimatorUpdateListener {
+    public interface OuterMatrixChangedListener {
 
         /**
-         * 速度向量
-         */
-        private float[] mVector;
-
-        /**
-         * 创建惯性动画
+         * 外部矩阵变化回调
          * <p>
-         * 参数单位为 像素/帧
+         * 外部矩阵的任何变化后都收到此回调.
+         * 外部矩阵变化后,总变化矩阵,图片的展示位置都将发生变化.
          *
-         * @param vectorX 速度向量
-         * @param vectorY 速度向量
+         * @param pinchImageView
+         * @see #getOuterMatrix(Matrix)
+         * @see #getCurrentImageMatrix(Matrix)
+         * @see #getImageBound(RectF)
          */
-        public FlingAnimator(float vectorX, float vectorY) {
-            super();
-            setFloatValues(0, 1f);
-            setDuration(1000000);
-            addUpdateListener(this);
-            mVector = new float[]{vectorX, vectorY};
-        }
-
-        @Override
-        public void onAnimationUpdate(ValueAnimator animation) {
-            //移动图像并给出结果
-            boolean result = scrollBy(mVector[0], mVector[1]);
-            //衰减速度
-            mVector[0] *= FLING_DAMPING_FACTOR;
-            mVector[1] *= FLING_DAMPING_FACTOR;
-            //速度太小或者不能移动了就结束
-            if (!result || MathUtils.getDistance(0, 0, mVector[0], mVector[1]) < 1f) {
-                animation.cancel();
-            }
-        }
+        void onOuterMatrixChanged(PinchImageView pinchImageView);
     }
-
-    /**
-     * 缩放动画
-     * <p>
-     * 在给定时间内从一个矩阵的变化逐渐动画到另一个矩阵的变化
-     */
-    private class ScaleAnimator extends ValueAnimator implements ValueAnimator.AnimatorUpdateListener {
-
-        /**
-         * 开始矩阵
-         */
-        private float[] mStart = new float[9];
-
-        /**
-         * 结束矩阵
-         */
-        private float[] mEnd = new float[9];
-
-        /**
-         * 中间结果矩阵
-         */
-        private float[] mResult = new float[9];
-
-        /**
-         * 构建一个缩放动画
-         * <p>
-         * 从一个矩阵变换到另外一个矩阵
-         *
-         * @param start 开始矩阵
-         * @param end   结束矩阵
-         */
-        public ScaleAnimator(Matrix start, Matrix end) {
-            this(start, end, SCALE_ANIMATOR_DURATION);
-        }
-
-        /**
-         * 构建一个缩放动画
-         * <p>
-         * 从一个矩阵变换到另外一个矩阵
-         *
-         * @param start    开始矩阵
-         * @param end      结束矩阵
-         * @param duration 动画时间
-         */
-        public ScaleAnimator(Matrix start, Matrix end, long duration) {
-            super();
-            setFloatValues(0, 1f);
-            setDuration(duration);
-            addUpdateListener(this);
-            start.getValues(mStart);
-            end.getValues(mEnd);
-        }
-
-        @Override
-        public void onAnimationUpdate(ValueAnimator animation) {
-            //获取动画进度
-            float value = (Float) animation.getAnimatedValue();
-            //根据动画进度计算矩阵中间插值
-            for (int i = 0; i < 9; i++) {
-                mResult[i] = mStart[i] + (mEnd[i] - mStart[i]) * value;
-            }
-            //设置矩阵并重绘
-            mOuterMatrix.setValues(mResult);
-            dispatchOuterMatrixChanged();
-            invalidate();
-        }
-    }
-
-
-    ////////////////////////////////防止内存抖动复用对象////////////////////////////////
 
     /**
      * 对象池
@@ -1445,7 +1250,7 @@ public class PinchImageView extends android.support.v7.widget.AppCompatImageView
     }
 
 
-    ////////////////////////////////数学计算工具类////////////////////////////////
+    ////////////////////////////////防止内存抖动复用对象////////////////////////////////
 
     /**
      * 数学计算工具类
@@ -1456,6 +1261,10 @@ public class PinchImageView extends android.support.v7.widget.AppCompatImageView
          * 矩阵对象池
          */
         private static MatrixPool mMatrixPool = new MatrixPool(16);
+        /**
+         * 矩形对象池
+         */
+        private static RectFPool mRectFPool = new RectFPool(16);
 
         /**
          * 获取矩阵对象
@@ -1481,11 +1290,6 @@ public class PinchImageView extends android.support.v7.widget.AppCompatImageView
         public static void matrixGiven(Matrix matrix) {
             mMatrixPool.given(matrix);
         }
-
-        /**
-         * 矩形对象池
-         */
-        private static RectFPool mRectFPool = new RectFPool(16);
 
         /**
          * 获取矩形对象
@@ -1740,6 +1544,182 @@ public class PinchImageView extends android.support.v7.widget.AppCompatImageView
             } else {
                 result.set(container);
             }
+        }
+    }
+
+    /**
+     * mask变换动画
+     * <p>
+     * 将mask从一个rect动画到另外一个rect
+     */
+    private class MaskAnimator extends ValueAnimator implements ValueAnimator.AnimatorUpdateListener {
+
+        /**
+         * 开始mask
+         */
+        private float[] mStart = new float[4];
+
+        /**
+         * 结束mask
+         */
+        private float[] mEnd = new float[4];
+
+        /**
+         * 中间结果mask
+         */
+        private float[] mResult = new float[4];
+
+        /**
+         * 创建mask变换动画
+         *
+         * @param start    动画起始状态
+         * @param end      动画终点状态
+         * @param duration 动画持续时间
+         */
+        public MaskAnimator(RectF start, RectF end, long duration) {
+            super();
+            setFloatValues(0, 1f);
+            setDuration(duration);
+            addUpdateListener(this);
+            //将起点终点拷贝到数组方便计算
+            mStart[0] = start.left;
+            mStart[1] = start.top;
+            mStart[2] = start.right;
+            mStart[3] = start.bottom;
+            mEnd[0] = end.left;
+            mEnd[1] = end.top;
+            mEnd[2] = end.right;
+            mEnd[3] = end.bottom;
+        }
+
+        @Override
+        public void onAnimationUpdate(ValueAnimator animation) {
+            //获取动画进度,0-1范围
+            float value = (Float) animation.getAnimatedValue();
+            //根据进度对起点终点之间做插值
+            for (int i = 0; i < 4; i++) {
+                mResult[i] = mStart[i] + (mEnd[i] - mStart[i]) * value;
+            }
+            //期间mask有可能被置空了,所以判断一下
+            if (mMask == null) {
+                mMask = new RectF();
+            }
+            //设置新的mask并绘制
+            mMask.set(mResult[0], mResult[1], mResult[2], mResult[3]);
+            invalidate();
+        }
+    }
+
+    /**
+     * 惯性动画
+     * <p>
+     * 速度逐渐衰减,每帧速度衰减为原来的FLING_DAMPING_FACTOR,当速度衰减到小于1时停止.
+     * 当图片不能移动时,动画停止.
+     */
+    private class FlingAnimator extends ValueAnimator implements ValueAnimator.AnimatorUpdateListener {
+
+        /**
+         * 速度向量
+         */
+        private float[] mVector;
+
+        /**
+         * 创建惯性动画
+         * <p>
+         * 参数单位为 像素/帧
+         *
+         * @param vectorX 速度向量
+         * @param vectorY 速度向量
+         */
+        public FlingAnimator(float vectorX, float vectorY) {
+            super();
+            setFloatValues(0, 1f);
+            setDuration(1000000);
+            addUpdateListener(this);
+            mVector = new float[]{vectorX, vectorY};
+        }
+
+        @Override
+        public void onAnimationUpdate(ValueAnimator animation) {
+            //移动图像并给出结果
+            boolean result = scrollBy(mVector[0], mVector[1]);
+            //衰减速度
+            mVector[0] *= FLING_DAMPING_FACTOR;
+            mVector[1] *= FLING_DAMPING_FACTOR;
+            //速度太小或者不能移动了就结束
+            if (!result || MathUtils.getDistance(0, 0, mVector[0], mVector[1]) < 1f) {
+                animation.cancel();
+            }
+        }
+    }
+
+
+    ////////////////////////////////数学计算工具类////////////////////////////////
+
+    /**
+     * 缩放动画
+     * <p>
+     * 在给定时间内从一个矩阵的变化逐渐动画到另一个矩阵的变化
+     */
+    private class ScaleAnimator extends ValueAnimator implements ValueAnimator.AnimatorUpdateListener {
+
+        /**
+         * 开始矩阵
+         */
+        private float[] mStart = new float[9];
+
+        /**
+         * 结束矩阵
+         */
+        private float[] mEnd = new float[9];
+
+        /**
+         * 中间结果矩阵
+         */
+        private float[] mResult = new float[9];
+
+        /**
+         * 构建一个缩放动画
+         * <p>
+         * 从一个矩阵变换到另外一个矩阵
+         *
+         * @param start 开始矩阵
+         * @param end   结束矩阵
+         */
+        public ScaleAnimator(Matrix start, Matrix end) {
+            this(start, end, SCALE_ANIMATOR_DURATION);
+        }
+
+        /**
+         * 构建一个缩放动画
+         * <p>
+         * 从一个矩阵变换到另外一个矩阵
+         *
+         * @param start    开始矩阵
+         * @param end      结束矩阵
+         * @param duration 动画时间
+         */
+        public ScaleAnimator(Matrix start, Matrix end, long duration) {
+            super();
+            setFloatValues(0, 1f);
+            setDuration(duration);
+            addUpdateListener(this);
+            start.getValues(mStart);
+            end.getValues(mEnd);
+        }
+
+        @Override
+        public void onAnimationUpdate(ValueAnimator animation) {
+            //获取动画进度
+            float value = (Float) animation.getAnimatedValue();
+            //根据动画进度计算矩阵中间插值
+            for (int i = 0; i < 9; i++) {
+                mResult[i] = mStart[i] + (mEnd[i] - mStart[i]) * value;
+            }
+            //设置矩阵并重绘
+            mOuterMatrix.setValues(mResult);
+            dispatchOuterMatrixChanged();
+            invalidate();
         }
     }
 }

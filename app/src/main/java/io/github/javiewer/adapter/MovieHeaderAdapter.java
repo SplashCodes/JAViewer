@@ -31,13 +31,10 @@ import io.github.javiewer.view.ViewUtil;
 
 public class MovieHeaderAdapter extends RecyclerView.Adapter<MovieHeaderAdapter.ViewHolder> {
 
-    private List<MovieDetail.Header> headers;
-
-    private Activity mParentActivity;
-
-    private ImageView mIcon;
-
     public boolean first = true;
+    private List<MovieDetail.Header> headers;
+    private Activity mParentActivity;
+    private ImageView mIcon;
 
     public MovieHeaderAdapter(List<MovieDetail.Header> headers, Activity mParentActivity, ImageView mIcon) {
         this.headers = headers;

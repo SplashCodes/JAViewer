@@ -17,16 +17,22 @@ import io.github.javiewer.fragment.ExtendedAppBarFragment;
 
 public class FavouriteTabsFragment extends ExtendedAppBarFragment {
 
+    public static ViewPagerAdapter mAdapter;
     @BindView(R.id.favourite_tabs)
     public TabLayout mTabLayout;
-
     @BindView(R.id.favourite_view_pager)
     public ViewPager mViewPager;
 
-    public static ViewPagerAdapter mAdapter;
-
     public FavouriteTabsFragment() {
         // Required empty public constructor
+    }
+
+    public static void update() {
+        if (mAdapter != null) {
+            for (int i = 0; i < mAdapter.getCount(); i++) {
+                ((FavouriteFragment) mAdapter.getItem(i)).update();
+            }
+        }
     }
 
     @Override
@@ -50,13 +56,5 @@ public class FavouriteTabsFragment extends ExtendedAppBarFragment {
         View view = inflater.inflate(R.layout.fragment_favourite, container, false);
         ButterKnife.bind(this, view);
         return view;
-    }
-
-    public static void update() {
-        if (mAdapter != null) {
-            for (int i = 0; i < mAdapter.getCount(); i++) {
-                ((FavouriteFragment) mAdapter.getItem(i)).update();
-            }
-        }
     }
 }

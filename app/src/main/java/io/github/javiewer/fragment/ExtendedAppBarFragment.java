@@ -9,11 +9,11 @@ import android.support.v4.app.Fragment;
 public class ExtendedAppBarFragment extends Fragment {
     private AppBarLayout mAppBarLayout;
 
-    public void setAppBarLayout(AppBarLayout mAppBarLayout) {
-        this.mAppBarLayout = mAppBarLayout;
-    }
-
     public AppBarLayout getAppBarLayout() {
         return mAppBarLayout;
+    }
+
+    public void setAppBarLayout(AppBarLayout mAppBarLayout) {
+        this.mAppBarLayout = mAppBarLayout;
     }
 }

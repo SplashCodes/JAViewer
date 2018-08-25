@@ -11,14 +11,6 @@ import retrofit2.Call;
  * Project: JAViewer
  */
 public abstract class DownloadLinkProvider {
-    public abstract Call<ResponseBody> search(String keyword, int page);
-
-    public abstract List<DownloadLink> parseDownloadLinks(String htmlContent);
-
-    public abstract Call<ResponseBody> get(String url);
-
-    public abstract MagnetLink parseMagnetLink(String htmlContent);
-
     public static DownloadLinkProvider getProvider(String name) {
         switch (name.toLowerCase().trim()) {
             case "btso":
@@ -29,4 +21,12 @@ public abstract class DownloadLinkProvider {
                 return null;
         }
     }
+
+    public abstract Call<ResponseBody> search(String keyword, int page);
+
+    public abstract List<DownloadLink> parseDownloadLinks(String htmlContent);
+
+    public abstract Call<ResponseBody> get(String url);
+
+    public abstract MagnetLink parseMagnetLink(String htmlContent);
 }

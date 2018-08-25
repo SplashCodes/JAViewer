@@ -3,7 +3,6 @@ package io.github.javiewer.activity;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
@@ -19,25 +18,19 @@ import io.github.javiewer.fragment.favourite.FavouriteActressFragment;
 import io.github.javiewer.fragment.favourite.FavouriteFragment;
 import io.github.javiewer.fragment.favourite.FavouriteMovieFragment;
 
-public class FavouriteActivity extends AppCompatActivity {
-
-    @BindView(R.id.favourite_view_pager)
-    AHBottomNavigationViewPager mViewPager;
-
-    @BindView(R.id.app_bar_fav)
-    AppBarLayout mAppBarLayout;
-
-    @BindView(R.id.bottom_navigation)
-    AHBottomNavigation mBottomNav;
-
-    @BindView(R.id.toolbar_fav)
-    Toolbar mToolbar;
-
-    @BindColor(R.color.colorPrimary)
-    int mColorPrimary;
+public class FavouriteActivity extends SecureActivity {
 
     public static ViewPagerAdapter mAdapter;
-
+    @BindView(R.id.favourite_view_pager)
+    AHBottomNavigationViewPager mViewPager;
+    @BindView(R.id.app_bar_fav)
+    AppBarLayout mAppBarLayout;
+    @BindView(R.id.bottom_navigation)
+    AHBottomNavigation mBottomNav;
+    @BindView(R.id.toolbar_fav)
+    Toolbar mToolbar;
+    @BindColor(R.color.colorPrimary)
+    int mColorPrimary;
     private ViewPager.OnPageChangeListener mOnPageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
         @Override
         public void onPageSelected(int position) {
@@ -45,6 +38,14 @@ public class FavouriteActivity extends AppCompatActivity {
             mBottomNav.restoreBottomNavigation();
         }
     };
+
+    public static void update() {
+        if (mAdapter != null) {
+            for (int i = 0; i < mAdapter.getCount(); i++) {
+                ((FavouriteFragment) mAdapter.getItem(i)).update();
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,14 +85,6 @@ public class FavouriteActivity extends AppCompatActivity {
                 return false;
             }
         });
-    }
-
-    public static void update() {
-        if (mAdapter != null) {
-            for (int i = 0; i < mAdapter.getCount(); i++) {
-                ((FavouriteFragment) mAdapter.getItem(i)).update();
-            }
-        }
     }
 
     @Override

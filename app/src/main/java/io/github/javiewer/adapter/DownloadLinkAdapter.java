@@ -137,15 +137,15 @@ public class DownloadLinkAdapter extends ItemAdapter<DownloadLink, DownloadLinkA
         @BindView(R.id.layout_download)
         public View mView;
 
+        public ViewHolder(View view) {
+            super(view);
+            ButterKnife.bind(this, view);
+        }
+
         public void parse(DownloadLink link) {
             mTextSize.setText(link.getSize());
             mTextTitle.setText(link.getTitle());
             mTextDate.setText(link.getDate());
-        }
-
-        public ViewHolder(View view) {
-            super(view);
-            ButterKnife.bind(this, view);
         }
     }
 }
