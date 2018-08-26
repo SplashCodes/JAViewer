@@ -31,10 +31,10 @@
             android:visibility="gone" />
 
         <LinearLayout
-            android:paddingRight="16dp"
-            android:paddingLeft="72dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingLeft="72dp"
+            android:paddingRight="16dp">
 
             <include layout="@layout/layout_divider_margin" />
         </LinearLayout>

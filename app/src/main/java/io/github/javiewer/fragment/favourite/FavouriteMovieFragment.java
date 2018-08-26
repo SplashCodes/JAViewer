@@ -14,7 +14,9 @@ import io.github.javiewer.view.decoration.MovieItemDecoration;
 public class FavouriteMovieFragment extends FavouriteFragment {
     @Override
     public ItemAdapter adapter() {
-        return new MovieAdapter(JAViewer.CONFIGURATIONS.getStarredMovies(), this.getActivity());
+        return new MovieAdapter(JAViewer.CONFIGURATIONS.getStarredMovies(), this.getActivity()) {{
+            showIfHot = false;
+        }};
     }
 
     @Override

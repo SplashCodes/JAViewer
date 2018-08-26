@@ -73,15 +73,15 @@ public class ActressAdapter extends ItemAdapter<Actress, ActressAdapter.ViewHold
         @BindView(R.id.layout_actress)
         public View mLayout;
 
-        public void parse(Actress actress) {
-            mTextName.setText(actress.getName());
-            mTextName.setSelected(true);
-        }
-
         public ViewHolder(View view) {
             super(view);
 
             ButterKnife.bind(this, view);
+        }
+
+        public void parse(Actress actress) {
+            mTextName.setText(actress.getName());
+            mTextName.setSelected(true);
         }
     }
 }

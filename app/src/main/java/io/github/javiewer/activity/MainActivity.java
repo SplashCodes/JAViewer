@@ -2,7 +2,6 @@ package io.github.javiewer.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,7 +15,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,14 +24,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URLEncoder;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.javiewer.JAViewer;
-import io.github.javiewer.Properties;
 import io.github.javiewer.R;
 import io.github.javiewer.adapter.NavigationSpinnerAdapter;
 import io.github.javiewer.adapter.item.DataSource;
@@ -41,27 +36,21 @@ import io.github.javiewer.fragment.ExtendedAppBarFragment;
 import io.github.javiewer.network.BasicService;
 import io.github.javiewer.view.SimpleSearchView;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends SecureActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private FragmentManager fragmentManager;
-
     public Fragment currentFragment;
-
     @BindView(R.id.nav_view)
     public NavigationView mNavigationView;
-
     @BindView(R.id.app_bar)
     public AppBarLayout mAppBarLayout;
-
     @BindView(R.id.search_view)
     public SimpleSearchView mSearchView;
-
     @BindView(R.id.drawer_layout)
     public DrawerLayout mDrawerLayout;
-
     int positionOfSpinner = 0;
     int idOfMenuItem = R.id.nav_home;
+    private FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

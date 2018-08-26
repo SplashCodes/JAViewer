@@ -15,7 +15,7 @@
         android:fitsSystemWindows="true"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <android.support.design.widget.CollapsingToolbarLayout
+        <android.support.design.widget.CompactCollapsingToolbarLayout
             android:id="@+id/toolbar_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -24,8 +24,7 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:toolbarId="@+id/toolbar">
 
-
-            <android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -34,9 +33,10 @@
                 <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    app:layout_aspectRatio="150%"
-                    app:layout_collapseMode="parallax"
-                    app:layout_widthPercent="100%">
+                    app:layout_constraintDimensionRatio="H,3:2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <ImageView
                         android:id="@+id/toolbar_layout_background"
@@ -50,7 +50,7 @@
                         android:layout_height="match_parent"
                         android:background="@drawable/coll_toolbar_image_gradient" />
                 </RelativeLayout>
-            </android.support.percent.PercentRelativeLayout>
+            </android.support.constraint.ConstraintLayout>
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -59,7 +59,7 @@
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-        </android.support.design.widget.CollapsingToolbarLayout>
+        </android.support.design.widget.CompactCollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
     <android.support.design.widget.FloatingActionButton
@@ -67,7 +67,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_fab_download"
+        android:src="@drawable/ic_menu_download"
+        app:fabSize="normal"
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|end" />
 

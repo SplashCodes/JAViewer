@@ -10,7 +10,6 @@ import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -32,9 +31,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.github.chrisbanes.photoview.OnPhotoTapListener;
-import com.github.chrisbanes.photoview.PhotoView;
-import com.github.chrisbanes.photoview.PhotoViewAttacher;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -48,27 +44,14 @@ import io.github.javiewer.JAViewer;
 import io.github.javiewer.R;
 import io.github.javiewer.adapter.item.Movie;
 
-public class GalleryActivity extends AppCompatActivity {
+public class GalleryActivity extends SecureActivity {
 
     private static final boolean AUTO_HIDE = true;
     private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
     private static final int UI_ANIMATION_DELAY = 300;
-
-    Animation fadeIn = new AlphaAnimation(0, 1);
-
-    {
-        fadeIn.setInterpolator(new DecelerateInterpolator()); //add this
-        fadeIn.setDuration(150);
-    }
-
-    Animation fadeOut = new AlphaAnimation(1, 0);
-
-    {
-        fadeOut.setInterpolator(new AccelerateInterpolator()); //and this
-        fadeOut.setDuration(150);
-    }
-
     private final Handler mHideHandler = new Handler();
+    @BindView(R.id.gallery_pager)
+    public ViewPager mPager;
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
         @Override
@@ -81,6 +64,9 @@ public class GalleryActivity extends AppCompatActivity {
                     | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         }
     };
+    @BindView(R.id.toolbar_gallery)
+    public Toolbar mToolbar;
+    Animation fadeIn = new AlphaAnimation(0, 1);
     private final Runnable mShowPart2Runnable = new Runnable() {
         @Override
         public void run() {
@@ -94,7 +80,8 @@ public class GalleryActivity extends AppCompatActivity {
             //mControlsView.setVisibility(View.VISIBLE);
         }
     };
-
+    Animation fadeOut = new AlphaAnimation(1, 0);
+    GestureDetector detector;
     private boolean mVisible;
     private final Runnable mHideRunnable = new Runnable() {
         @Override
@@ -102,17 +89,18 @@ public class GalleryActivity extends AppCompatActivity {
             hide();
         }
     };
-
-    GestureDetector detector;
-
-    @BindView(R.id.gallery_pager)
-    public ViewPager mPager;
-
-    @BindView(R.id.toolbar_gallery)
-    public Toolbar mToolbar;
-
     private String[] imageUrls;
     private Movie movie;
+
+    {
+        fadeIn.setInterpolator(new DecelerateInterpolator()); //add this
+        fadeIn.setDuration(150);
+    }
+
+    {
+        fadeOut.setInterpolator(new AccelerateInterpolator()); //and this
+        fadeOut.setDuration(150);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -276,8 +264,8 @@ public class GalleryActivity extends AppCompatActivity {
 
     private static class ImageAdapter extends PagerAdapter {
 
-        private GalleryActivity mActivity;
         private final String[] imageUrls;
+        private GalleryActivity mActivity;
         private LayoutInflater inflater;
         //private DisplayImageOptions options;
 
@@ -300,24 +288,17 @@ public class GalleryActivity extends AppCompatActivity {
         @Override
         public Object instantiateItem(ViewGroup view, int position) {
             View imageLayout = inflater.inflate(R.layout.content_gallery, view, false);
-            final PhotoView imageView = imageLayout.findViewById(R.id.image);
+            final ImageView imageView = imageLayout.findViewById(R.id.image);
             final ProgressBar progressBar = imageLayout.findViewById(R.id.progress_bar);
             final TextView textView = imageLayout.findViewById(R.id.gallery_text_error);
 
-            PhotoViewAttacher attacher = new PhotoViewAttacher(imageView);
-            /*attacher.setOnViewTapListener(new OnViewTapListener() {
+            imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onViewTap(View view, float x, float y) {
+                public void onClick(View view) {
                     mActivity.toggle();
                 }
             });
-*/
-            attacher.setOnPhotoTapListener(new OnPhotoTapListener() {
-                @Override
-                public void onPhotoTap(ImageView view, float x, float y) {
-                    mActivity.toggle();
-                }
-            });
+
             Glide.with(imageView.getContext().getApplicationContext())
                     .load(imageUrls[position])
                     .into(new SimpleTarget<GlideDrawable>() {

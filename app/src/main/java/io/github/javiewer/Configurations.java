@@ -31,6 +31,21 @@ public class Configurations {
 
     private long download_counter;
 
+    public static Configurations load(File file) {
+        Configurations.file = file;
+        Configurations config = null;
+        try {
+            config = JAViewer.parseJson(Configurations.class, new JsonReader(new FileReader(file)));
+        } catch (Exception ignored) {
+        }
+
+        if (config == null) {
+            config = new Configurations();
+        }
+
+        return config;
+    }
+
     public ArrayList<Movie> getStarredMovies() {
         if (starred_movies == null) {
             starred_movies = new ArrayList<>();
@@ -54,21 +69,6 @@ public class Configurations {
 
     public void setDataSource(DataSource source) {
         this.data_source = source;
-    }
-
-    public static Configurations load(File file) {
-        Configurations.file = file;
-        Configurations config = null;
-        try {
-            config = JAViewer.parseJson(Configurations.class, new JsonReader(new FileReader(file)));
-        } catch (Exception ignored) {
-        }
-
-        if (config == null) {
-            config = new Configurations();
-        }
-
-        return config;
     }
 
     public void save() {

@@ -60,6 +60,8 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> 
                 }
             }
         });
+
+
     }
 
     @Override
@@ -75,14 +77,23 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> 
         @BindView(R.id.card_genre)
         public CardView mCard;
 
-        public void parse(Genre genre) {
-            mTextName.setText(genre.getName());
-        }
-
         public ViewHolder(View view) {
             super(view);
 
             ButterKnife.bind(this, view);
+        }
+
+        public void parse(Genre genre) {
+            mTextName.setText(genre.getName());
+            /*int lineCount = mTextName.getLineCount();
+
+            if (lineCount > 1) {
+                mTextName.setSingleLine(true);
+                StaggeredGridLayoutManager.LayoutParams layoutParams = new StaggeredGridLayoutManager.LayoutParams(itemView.getLayoutParams());
+                layoutParams.setFullSpan(true);
+                itemView.setLayoutParams(layoutParams);
+            }*/
+
         }
     }
 }

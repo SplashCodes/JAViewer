@@ -26,6 +26,7 @@ import io.github.javiewer.adapter.item.Movie;
  */
 public class MovieAdapter extends ItemAdapter<Movie, MovieAdapter.ViewHolder> {
 
+    protected boolean showIfHot = true;
     private Activity mParentActivity;
 
     public MovieAdapter(List<Movie> movies, Activity mParentActivity) {
@@ -63,7 +64,7 @@ public class MovieAdapter extends ItemAdapter<Movie, MovieAdapter.ViewHolder> {
                 .load(movie.getCoverUrl())
                 .into(holder.mImageCover);
 
-        holder.mImageHot.setVisibility(movie.isHot() ? View.VISIBLE : View.GONE);
+        holder.mImageHot.setVisibility(movie.isHot() && showIfHot ? View.VISIBLE : View.GONE);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -86,16 +87,16 @@ public class MovieAdapter extends ItemAdapter<Movie, MovieAdapter.ViewHolder> {
         @BindView(R.id.card_movie)
         public CardView mCard;
 
-        public void parse(Movie movie) {
-            mTextCode.setText(movie.getCode());
-            mTextTitle.setText(movie.getTitle());
-            mTextDate.setText(movie.getDate());
-        }
-
         public ViewHolder(View view) {
             super(view);
 
             ButterKnife.bind(this, view);
+        }
+
+        public void parse(Movie movie) {
+            mTextCode.setText(movie.getCode());
+            mTextTitle.setText(movie.getTitle());
+            mTextDate.setText(movie.getDate());
         }
     }
 }

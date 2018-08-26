@@ -11,8 +11,8 @@
 
         <item
             android:id="@+id/nav_favourite"
-            android:icon="@drawable/ic_menu_star"
             android:checkable="false"
+            android:icon="@drawable/ic_menu_star"
             android:title="收藏夹" />
     </group>
 

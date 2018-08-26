@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scroll_movie"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="io.github.javiewer.activity.MovieActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="8dp">
+
+        <Button
+            android:id="@+id/button_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Play this shit" />
+
+        <include
+            android:id="@+id/movie_headers"
+            layout="@layout/content_movie_headers" />
+
+        <include
+            android:id="@+id/movie_screenshots"
+            layout="@layout/content_movie_screenshots" />
+
+        <include
+            android:id="@+id/movie_actress"
+            layout="@layout/content_movie_actresses" />
+
+        <include
+            android:id="@+id/movie_genre"
+            layout="@layout/content_movie_genre" />
+    </LinearLayout>
+
+
+</LinearLayout>

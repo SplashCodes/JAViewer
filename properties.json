@@ -5,30 +5,28 @@
   "data_sources": [
     {
       "name": "AVMOO 日本",
-      "link": "https://javmoo.net",
+      "link": "https://javmoo.com",
       "legacies":[
+        "javlog.com",
         "javtag.com",
         "javhip.com",
         "avos.pw",
         "avmo.pw",
         "avmo.club",
         "avio.pw",
-        "javdog.com"
+        "javdog.com",
+        "javmoo.net"
       ]
     },
     {
       "name": "AVMOO 日本无码",
-      "link": "https://javfee.com",
+      "link": "https://javkey.com",
       "legacies":[
+        "javfee.com",
         "javpee.com",
         "avso.pw",
         "avso.club"
       ]
-    },
-    {
-      "name": "AVMOO 欧美",
-      "link": "https://avxo.pw",
-      "legacies":[]
     }
   ]
 }

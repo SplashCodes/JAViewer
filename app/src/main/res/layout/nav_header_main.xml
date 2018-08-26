@@ -23,8 +23,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/nav_header_vertical_spacing"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
     <!-- android:theme="@style/SpinnerStyle"  app:popupTheme="@style/ThemeOverlay.AppCompat.Light" -->
 
 </LinearLayout>

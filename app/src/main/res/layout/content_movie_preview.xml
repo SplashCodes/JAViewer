@@ -1,0 +1,67 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".fragment.MovieFragment">
+
+    <ImageView
+        android:id="@+id/movie_icon_genre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:src="@drawable/ic_movie_play"
+        android:tint="@color/colorPrimary" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="72dp"
+        android:paddingRight="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <ProgressBar
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:indeterminate="true" />
+
+            <TextView
+                android:id="@+id/genre_preview_loading_text"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:gravity="center_vertical"
+                android:paddingLeft="8dp"
+                android:text="正在加载预览" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/button_preview"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:background="@color/colorPrimary"
+            android:text="播放预览"
+            android:textColor="@android:color/background_light" />
+
+        <TextView
+            android:id="@+id/genre_empty_text"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
+            android:text="暂无预览视频"
+            android:visibility="gone" />
+
+        <include layout="@layout/layout_divider_margin" />
+
+
+    </LinearLayout>
+
+</RelativeLayout>
+
