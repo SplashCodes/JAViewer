@@ -5,8 +5,9 @@
   "data_sources": [
     {
       "name": "AVMOO 日本",
-      "link": "https://javmoo.com",
+      "link": "https://avmoo.pw",
       "legacies":[
+        "javmoo.com",
         "javlog.com",
         "javtag.com",
         "javhip.com",
