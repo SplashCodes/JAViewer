@@ -1,7 +1,7 @@
 package io.github.javiewer.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import io.github.javiewer.JAViewer;
 import okhttp3.ResponseBody;

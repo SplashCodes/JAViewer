@@ -25,7 +25,7 @@ import java.util.Queue;
  *
  * @author clifford
  */
-public class PinchImageView extends android.support.v7.widget.AppCompatImageView {
+public class PinchImageView extends androidx.appcompat.widget.AppCompatImageView {
 
 
     ////////////////////////////////配置参数////////////////////////////////

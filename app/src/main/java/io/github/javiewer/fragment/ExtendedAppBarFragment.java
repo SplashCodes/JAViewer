@@ -1,7 +1,7 @@
 package io.github.javiewer.fragment;
 
-import android.support.design.widget.AppBarLayout;
-import android.support.v4.app.Fragment;
+import com.google.android.material.appbar.AppBarLayout;
+import androidx.fragment.app.Fragment;
 
 /**
  * Project: JAViewer
