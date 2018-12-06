@@ -5,42 +5,66 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
+import android.widget.TextView;
+
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.navigation.NavigationView;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.AbstractBadgeableDrawerItem;
+import com.mikepenz.materialdrawer.model.DividerDrawerItem;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.mikepenz.materialize.util.UIUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.Guideline;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.javiewer.JAViewer;
 import io.github.javiewer.R;
-import io.github.javiewer.adapter.NavigationSpinnerAdapter;
 import io.github.javiewer.adapter.item.DataSource;
+import io.github.javiewer.fragment.ActressesFragment;
 import io.github.javiewer.fragment.ExtendedAppBarFragment;
+import io.github.javiewer.fragment.HomeFragment;
+import io.github.javiewer.fragment.PopularFragment;
+import io.github.javiewer.fragment.ReleasedFragment;
+import io.github.javiewer.fragment.genre.GenreTabsFragment;
 import io.github.javiewer.network.BasicService;
 import io.github.javiewer.view.SimpleSearchView;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends SecureActivity {
 
-    private FragmentManager fragmentManager;
+    public static final int ID_HOME = 1;
+    public static final int ID_FAV = 2;
+    public static final int ID_POPULAR = 3;
+    public static final int ID_RELEASED = 4;
+    public static final int ID_ACTRESSES = 5;
+    public static final int ID_GENRE = 6;
+    public static final int ID_GITHUB = 7;
+
+    public static final Map<Integer, Class<? extends Fragment>> FRAGMENTS = new HashMap<Integer, Class<? extends Fragment>>() {{
+        put(ID_HOME, HomeFragment.class);
+        put(ID_POPULAR, PopularFragment.class);
+        put(ID_RELEASED, ReleasedFragment.class);
+        put(ID_ACTRESSES, ActressesFragment.class);
+        put(ID_GENRE, GenreTabsFragment.class);
+    }};
 
     public Fragment currentFragment;
 
@@ -56,8 +80,15 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.drawer_layout)
     public DrawerLayout mDrawerLayout;
 
-    int positionOfSpinner = 0;
-    int idOfMenuItem = R.id.nav_home;
+    @BindView(R.id.toolbar)
+    public Toolbar mToolbar;
+
+
+    int idOfDrawerItem = ID_HOME;
+    private FragmentManager fragmentManager;
+    private Bundle savedInstanceState;
+
+    private Drawer mDrawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,84 +100,99 @@ public class MainActivity extends AppCompatActivity
 
         JAViewer.recreateService();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        this.savedInstanceState = savedInstanceState;
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
+        setSupportActionBar(mToolbar);
 
-        this.fragmentManager = getSupportFragmentManager();
-        initFragments(savedInstanceState);
+        initFragments();
 
-        if (savedInstanceState != null) {
-            idOfMenuItem = savedInstanceState.getInt("MenuSelectedItemId", R.id.nav_home);
-        }
-        mNavigationView.setNavigationItemSelectedListener(this);
-        MenuItem selectedItem = mNavigationView.getMenu().findItem(idOfMenuItem);
-        mNavigationView.setCheckedItem(selectedItem.getItemId());
-        onNavigationItemSelected(selectedItem);
-
-        final Spinner spinner = (Spinner) mNavigationView.getHeaderView(0).findViewById(R.id.nav_header_spinner);
-        ArrayAdapter<DataSource> adapter = new NavigationSpinnerAdapter<>(this, R.layout.nav_spinner_item, JAViewer.DATA_SOURCES);
-        adapter.setDropDownViewResource(R.layout.view_drop_down);
-        spinner.setAdapter(adapter);
-        spinner.setSelection(positionOfSpinner = JAViewer.DATA_SOURCES.indexOf(JAViewer.getDataSource()));
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
-                final DataSource newSource = JAViewer.DATA_SOURCES.get(position);
-                if (newSource.equals(JAViewer.getDataSource())) {
-                    return;
-                }
-
-                new AlertDialog.Builder(MainActivity.this)
-                        .setMessage("是否切换到" + newSource.getName() + "数据源？")
-                        .setOnCancelListener(new DialogInterface.OnCancelListener() {
-                            @Override
-                            public void onCancel(DialogInterface dialogInterface) {
-                                spinner.setSelection(positionOfSpinner);
-                            }
-                        })
-                        .setPositiveButton("确认", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                positionOfSpinner = position;
-                                JAViewer.CONFIGURATIONS.setDataSource(newSource);
-                                JAViewer.CONFIGURATIONS.save();
-                                restart();
-                            }
-                        })
-                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                spinner.setSelection(positionOfSpinner);
-                            }
-                        })
-                        .show();
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
+        buildDrawer();
 
     }
 
-    public void initFragments(Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            String tag = savedInstanceState.getString("CurrentFragment");
+    public void buildDrawer() {
+
+        Drawer result = new DrawerBuilder()
+                .withActivity(this)
+                .withToolbar(mToolbar)
+                .withHeader(R.layout.drawer_header)
+                .addDrawerItems(
+                        new PrimaryDrawerItem().withIdentifier(ID_HOME).withName("主页").withIcon(R.drawable.ic_menu_home).withIconTintingEnabled(true),
+                        new PrimaryDrawerItem().withIdentifier(ID_FAV).withName("收藏夹").withTag("Fav").withIcon(R.drawable.ic_menu_star).withIconTintingEnabled(true).withSelectable(false),
+                        new DividerDrawerItem(),
+                        new PrimaryDrawerItem().withIdentifier(ID_RELEASED).withName("已发布").withIcon(R.drawable.ic_menu_released).withIconTintingEnabled(true),
+                        new PrimaryDrawerItem().withIdentifier(ID_POPULAR).withName("热门").withIcon(R.drawable.ic_menu_popular).withIconTintingEnabled(true),
+                        new PrimaryDrawerItem().withIdentifier(ID_ACTRESSES).withName("女优").withIcon(R.drawable.ic_menu_actresses).withIconTintingEnabled(true),
+                        new PrimaryDrawerItem().withIdentifier(ID_GENRE).withName("类别").withIcon(R.drawable.ic_menu_genre).withIconTintingEnabled(true),
+                        new DividerDrawerItem(),
+                        new PrimaryDrawerItem().withIdentifier(ID_GITHUB).withName("GitHub").withTag("Github").withIcon(R.drawable.ic_menu_github).withIconTintingEnabled(true).withSelectable(false)
+                )
+                .withSelectedItem(ID_HOME)
+                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                        idOfDrawerItem = (int) drawerItem.getIdentifier();
+
+                        switch ((int) drawerItem.getIdentifier()) {
+                            case ID_GITHUB: {
+                                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/SplashCodes/JAViewer/releases"));
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                                break;
+                            }
+                            case ID_FAV: {
+                                Intent intent = new Intent(MainActivity.this, FavouriteActivity.class);
+                                startActivity(intent);
+                                break;
+                            }
+                            default:
+                                if (drawerItem instanceof AbstractBadgeableDrawerItem) {
+                                    setFragment(((int) drawerItem.getIdentifier()), ((AbstractBadgeableDrawerItem) drawerItem).getName().getText());
+                                }
+
+                                break;
+                        }
+                        return false;
+                    }
+                })
+                .build();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Guideline guideline = result.getHeader().findViewById(R.id.guideline_status_bar);
+            guideline.setGuidelineBegin(UIUtils.getStatusBarHeight(this, true));
+        }
+
+        this.mDrawer = result;
+
+        TextView mTextSource = mDrawer.getHeader().findViewById(R.id.text_view_source);
+        mTextSource.setText(JAViewer.CONFIGURATIONS.getDataSource().toString());
+
+        MaterialButton mButtonSwitch = mDrawer.getHeader().findViewById(R.id.btn_switch_source);
+        mButtonSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onSwitchSource();
+            }
+        });
+
+        if (this.savedInstanceState != null) {
+            mDrawer.setSelection(savedInstanceState.getInt("SelectedDrawerItemId", ID_HOME));
+        } else {
+            mDrawer.setSelection(ID_HOME);
+        }
+    }
+
+    public void initFragments() {
+        this.fragmentManager = getSupportFragmentManager();
+
+        if (this.savedInstanceState != null) {
+            String tag = this.savedInstanceState.getString("CurrentFragment");
             this.currentFragment = fragmentManager.findFragmentByTag(tag);
             return;
         }
 
         FragmentTransaction transaction = this.fragmentManager.beginTransaction();
-        for (int id : JAViewer.FRAGMENTS.keySet()) {
-            Class<? extends Fragment> fragmentClass = JAViewer.FRAGMENTS.get(id);
+        for (Class<? extends Fragment> fragmentClass : FRAGMENTS.values()) {
             try {
                 Fragment fragment = fragmentClass.getConstructor(new Class[0]).newInstance();
                 transaction.add(R.id.content, fragment, fragmentClass.getSimpleName()).hide(fragment);
@@ -187,13 +233,13 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setFragment(int id, CharSequence title) {
-        this.setFragment(fragmentManager.findFragmentByTag(JAViewer.FRAGMENTS.get(id).getSimpleName()), title);
+        this.setFragment(fragmentManager.findFragmentByTag(FRAGMENTS.get(id).getSimpleName()), title);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putString("CurrentFragment", this.currentFragment.getClass().getSimpleName());
-        outState.putInt("MenuSelectedItemId", this.idOfMenuItem);
+        outState.putInt("SelectedDrawerItemId", this.idOfDrawerItem);
         super.onSaveInstanceState(outState);
     }
 
@@ -210,7 +256,6 @@ public class MainActivity extends AppCompatActivity
         }
 
         moveTaskToBack(false);
-
     }
 
     @Override
@@ -239,38 +284,34 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-        idOfMenuItem = id;
-
-        switch (id) {
-            case R.id.nav_github: {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/SplashCodes/JAViewer/releases"));
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                break;
-            }
-            case R.id.nav_favourite: {
-                Intent intent = new Intent(MainActivity.this, FavouriteActivity.class);
-                startActivity(intent);
-                break;
-            }
-            default:
-                setFragment(id, item.getTitle());
-                break;
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
     public void restart() {
         Intent intent = getIntent();
         finish();
         startActivity(intent);
+    }
+
+    public void onSwitchSource() {
+        DataSource[] ds = JAViewer.DATA_SOURCES.toArray(new DataSource[0]);
+        String[] items = new String[ds.length];
+        for (int i = 0; i < ds.length; i++) {
+            items[i] = ds[i].toString();
+        }
+        AlertDialog dialog = new AlertDialog.Builder(this).setTitle("选择数据源")
+                .setItems(items, new AlertDialog.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        DataSource newSource = JAViewer.DATA_SOURCES.get(which);
+                        if (newSource.equals(JAViewer.getDataSource())) {
+                            return;
+                        }
+
+                        JAViewer.CONFIGURATIONS.setDataSource(newSource);
+                        JAViewer.CONFIGURATIONS.save();
+                        restart();
+                    }
+                }).create();
+        dialog.show();
+
     }
 
 }

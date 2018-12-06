@@ -6,7 +6,7 @@
     android:background="#212121"
     tools:context="io.github.javiewer.activity.GalleryActivity">
 
-    <android.support.v4.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/gallery_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
@@ -17,35 +17,11 @@
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar_gallery"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:animateLayoutChanges="true"
             android:theme="@style/AppTheme.AppBarOverlay" />
     </LinearLayout>
-    <!--<FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
-
-        <LinearLayout
-            android:id="@+id/fullscreen_content_controls"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:orientation="horizontal"
-            tools:ignore="UselessParent">
-
-            <TextView
-                android:id="@+id/gallery_page_indicator"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:gravity="center"
-                android:text="0/0"
-                android:textColor="@android:color/white" />
-
-        </LinearLayout>
-    </FrameLayout>-->
-
 </FrameLayout>

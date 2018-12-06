@@ -3,8 +3,8 @@ package io.github.javiewer.adapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,6 +60,8 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> 
                 }
             }
         });
+
+
     }
 
     @Override
@@ -75,14 +77,23 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> 
         @BindView(R.id.card_genre)
         public CardView mCard;
 
-        public void parse(Genre genre) {
-            mTextName.setText(genre.getName());
-        }
-
         public ViewHolder(View view) {
             super(view);
 
             ButterKnife.bind(this, view);
+        }
+
+        public void parse(Genre genre) {
+            mTextName.setText(genre.getName());
+            /*int lineCount = mTextName.getLineCount();
+
+            if (lineCount > 1) {
+                mTextName.setSingleLine(true);
+                StaggeredGridLayoutManager.LayoutParams layoutParams = new StaggeredGridLayoutManager.LayoutParams(itemView.getLayoutParams());
+                layoutParams.setFullSpan(true);
+                itemView.setLayoutParams(layoutParams);
+            }*/
+
         }
     }
 }

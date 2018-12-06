@@ -1,7 +1,7 @@
 package io.github.javiewer.adapter;
 
 import android.app.Activity;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,15 +73,15 @@ public class ActressAdapter extends ItemAdapter<Actress, ActressAdapter.ViewHold
         @BindView(R.id.layout_actress)
         public View mLayout;
 
-        public void parse(Actress actress) {
-            mTextName.setText(actress.getName());
-            mTextName.setSelected(true);
-        }
-
         public ViewHolder(View view) {
             super(view);
 
             ButterKnife.bind(this, view);
+        }
+
+        public void parse(Actress actress) {
+            mTextName.setText(actress.getName());
+            mTextName.setSelected(true);
         }
     }
 }

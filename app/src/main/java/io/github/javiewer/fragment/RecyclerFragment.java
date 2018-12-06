@@ -1,11 +1,11 @@
 package io.github.javiewer.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +37,10 @@ public abstract class RecyclerFragment<I, LM extends RecyclerView.LayoutManager>
 
     private ArrayList<I> items = new ArrayList<>();
 
+    public RecyclerFragment() {
+        // Required empty public constructor
+    }
+
     protected void setRecyclerViewPadding(int dp) {
         this.mRecyclerView.setPadding(
                 ViewUtil.dpToPx(dp),
@@ -46,21 +50,13 @@ public abstract class RecyclerFragment<I, LM extends RecyclerView.LayoutManager>
         );
     }
 
-    public RecyclerFragment() {
-        // Required empty public constructor
-    }
-
-    public void setLayoutManager(LM mLayoutManager) {
-        this.mRecyclerView.setLayoutManager(mLayoutManager);
-    }
-
     @SuppressWarnings("unchecked")
     public LM getLayoutManager() {
         return (LM) this.mRecyclerView.getLayoutManager();
     }
 
-    public void setAdapter(RecyclerView.Adapter mAdapter) {
-        this.mRecyclerView.setAdapter(mAdapter);
+    public void setLayoutManager(LM mLayoutManager) {
+        this.mRecyclerView.setLayoutManager(mLayoutManager);
     }
 
     public RecyclerView.Adapter getAdapter() {
@@ -68,6 +64,10 @@ public abstract class RecyclerFragment<I, LM extends RecyclerView.LayoutManager>
             return null;
         }
         return this.mRecyclerView.getAdapter();
+    }
+
+    public void setAdapter(RecyclerView.Adapter mAdapter) {
+        this.mRecyclerView.setAdapter(mAdapter);
     }
 
     public ArrayList<I> getItems() {
@@ -122,12 +122,12 @@ public abstract class RecyclerFragment<I, LM extends RecyclerView.LayoutManager>
         return mScrollListener;
     }
 
-    public void setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener listener) {
-        mRefreshLayout.setOnRefreshListener(mRefreshListener = listener);
-    }
-
     public SwipeRefreshLayout.OnRefreshListener getOnRefreshListener() {
         return mRefreshListener;
+    }
+
+    public void setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener listener) {
+        mRefreshLayout.setOnRefreshListener(mRefreshListener = listener);
     }
 
     @Override

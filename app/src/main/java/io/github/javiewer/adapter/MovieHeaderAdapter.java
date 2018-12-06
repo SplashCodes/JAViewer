@@ -7,8 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.widget.RecyclerView;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,13 +31,10 @@ import io.github.javiewer.view.ViewUtil;
 
 public class MovieHeaderAdapter extends RecyclerView.Adapter<MovieHeaderAdapter.ViewHolder> {
 
-    private List<MovieDetail.Header> headers;
-
-    private Activity mParentActivity;
-
-    private ImageView mIcon;
-
     public boolean first = true;
+    private List<MovieDetail.Header> headers;
+    private Activity mParentActivity;
+    private ImageView mIcon;
 
     public MovieHeaderAdapter(List<MovieDetail.Header> headers, Activity mParentActivity, ImageView mIcon) {
         this.headers = headers;

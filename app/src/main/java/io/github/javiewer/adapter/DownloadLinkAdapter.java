@@ -9,7 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -137,15 +137,15 @@ public class DownloadLinkAdapter extends ItemAdapter<DownloadLink, DownloadLinkA
         @BindView(R.id.layout_download)
         public View mView;
 
+        public ViewHolder(View view) {
+            super(view);
+            ButterKnife.bind(this, view);
+        }
+
         public void parse(DownloadLink link) {
             mTextSize.setText(link.getSize());
             mTextTitle.setText(link.getTitle());
             mTextDate.setText(link.getDate());
-        }
-
-        public ViewHolder(View view) {
-            super(view);
-            ButterKnife.bind(this, view);
         }
     }
 }

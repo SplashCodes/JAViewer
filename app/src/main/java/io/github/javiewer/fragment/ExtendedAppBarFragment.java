@@ -1,7 +1,7 @@
 package io.github.javiewer.fragment;
 
-import android.support.design.widget.AppBarLayout;
-import android.support.v4.app.Fragment;
+import com.google.android.material.appbar.AppBarLayout;
+import androidx.fragment.app.Fragment;
 
 /**
  * Project: JAViewer
@@ -9,11 +9,11 @@ import android.support.v4.app.Fragment;
 public class ExtendedAppBarFragment extends Fragment {
     private AppBarLayout mAppBarLayout;
 
-    public void setAppBarLayout(AppBarLayout mAppBarLayout) {
-        this.mAppBarLayout = mAppBarLayout;
-    }
-
     public AppBarLayout getAppBarLayout() {
         return mAppBarLayout;
+    }
+
+    public void setAppBarLayout(AppBarLayout mAppBarLayout) {
+        this.mAppBarLayout = mAppBarLayout;
     }
 }

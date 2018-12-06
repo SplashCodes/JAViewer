@@ -14,13 +14,12 @@ import retrofit2.http.Url;
  */
 public interface BTSO {
 
+    String BASE_URL = "https://btsow.pw";
     BTSO INSTANCE = new Retrofit.Builder()
             .baseUrl(BTSO.BASE_URL)
             .client(JAViewer.HTTP_CLIENT)
             .build()
             .create(BTSO.class);
-
-    String BASE_URL = "https://btso.pw";
 
     @GET("/search/{keyword}/page/{page}")
     @Headers("Accept-Language: zh-CN,zh;q=0.8,en;q=0.6")

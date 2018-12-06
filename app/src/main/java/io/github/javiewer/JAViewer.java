@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
@@ -15,12 +15,14 @@ import com.google.gson.stream.JsonReader;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cat.ereza.customactivityoncrash.CustomActivityOnCrash;
+import cn.jzvd.JZVideoPlayer;
 import io.fabric.sdk.android.Fabric;
 import io.github.javiewer.adapter.item.DataSource;
 import io.github.javiewer.fragment.ActressesFragment;
@@ -30,6 +32,7 @@ import io.github.javiewer.fragment.ReleasedFragment;
 import io.github.javiewer.fragment.favourite.FavouriteTabsFragment;
 import io.github.javiewer.fragment.genre.GenreTabsFragment;
 import io.github.javiewer.network.BasicService;
+import io.github.javiewer.util.ExoPlayerImpl;
 import okhttp3.Cookie;
 import okhttp3.CookieJar;
 import okhttp3.HttpUrl;
@@ -87,6 +90,10 @@ public class JAViewer extends Application {
             })
             .build();
 
+    static {
+        JZVideoPlayer.setMediaInterface(new ExoPlayerImpl());
+    }
+
     public static DataSource getDataSource() {
         return JAViewer.CONFIGURATIONS.getDataSource();
     }
@@ -128,6 +135,18 @@ public class JAViewer extends Application {
         return gson.fromJson(json, beanClass);
     }
 
+    public static String bytesToHex(byte[] bytes) {
+        final char[] hexArray = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+        char[] hexChars = new char[bytes.length * 2];
+        int v;
+        for (int j = 0; j < bytes.length; j++) {
+            v = bytes[j] & 0xFF;
+            hexChars[j * 2] = hexArray[v >>> 4];
+            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+        }
+        return new String(hexChars);
+    }
+
     public static boolean Objects_equals(Object a, Object b) {
         return (a == b) || (a != null && a.equals(b));
     }
@@ -139,10 +158,19 @@ public class JAViewer extends Application {
         context.startActivity(intent);
     }
 
+    public static String b(String s1, String s2) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] bytes = md.digest(String.format("%s%sBrynhildr", s1, s2).getBytes());
+            return bytesToHex(bytes);
+        } catch (NoSuchAlgorithmException e) {
+            return null;
+        }
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
-        CustomActivityOnCrash.install(this);
         Fabric.with(this, new Crashlytics());
     }
 }

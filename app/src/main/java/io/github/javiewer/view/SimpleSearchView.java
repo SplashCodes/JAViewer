@@ -84,6 +84,22 @@ public class SimpleSearchView extends FrameLayout implements Filter.FilterListen
     private Drawable suggestionIcon;
 
     private Context mContext;
+    private final OnClickListener mOnClickListener = new OnClickListener() {
+
+        public void onClick(View v) {
+            if (v == mBackBtn) {
+                closeSearch();
+            } else if (v == mVoiceBtn) {
+                onVoiceClicked();
+            } else if (v == mEmptyBtn) {
+                mSearchSrcTextView.setText(null);
+            } else if (v == mSearchSrcTextView) {
+                showSuggestions();
+            } else if (v == mTintView) {
+                closeSearch();
+            }
+        }
+    };
 
     public SimpleSearchView(Context context) {
         this(context, null);
@@ -101,6 +117,39 @@ public class SimpleSearchView extends FrameLayout implements Filter.FilterListen
         initiateView();
 
         initStyle(attrs, defStyleAttr);
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public static void hide(final View view, final AnimationUtil.AnimationListener listener) {
+        int cx = view.getWidth() - (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, 24, view.getResources().getDisplayMetrics());
+        int cy = view.getHeight() / 2;
+        int finalRadius = Math.max(view.getWidth(), view.getHeight());
+
+        Animator anim = ViewAnimationUtils.createCircularReveal(view, cx, cy, finalRadius, 0);
+        view.setVisibility(View.VISIBLE);
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                listener.onAnimationStart(view);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                listener.onAnimationEnd(view);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                listener.onAnimationCancel(view);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        anim.start();
     }
 
     private void initStyle(AttributeSet attrs, int defStyleAttr) {
@@ -220,23 +269,6 @@ public class SimpleSearchView extends FrameLayout implements Filter.FilterListen
         }
     }
 
-    private final OnClickListener mOnClickListener = new OnClickListener() {
-
-        public void onClick(View v) {
-            if (v == mBackBtn) {
-                closeSearch();
-            } else if (v == mVoiceBtn) {
-                onVoiceClicked();
-            } else if (v == mEmptyBtn) {
-                mSearchSrcTextView.setText(null);
-            } else if (v == mSearchSrcTextView) {
-                showSuggestions();
-            } else if (v == mTintView) {
-                closeSearch();
-            }
-        }
-    };
-
     private void onVoiceClicked() {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         //intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak an item name or number");    // user hint
@@ -290,6 +322,8 @@ public class SimpleSearchView extends FrameLayout implements Filter.FilterListen
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
+    //Public Attributes
+
     public void showKeyboard(View view) {
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1 && view.hasFocus()) {
             view.clearFocus();
@@ -298,8 +332,6 @@ public class SimpleSearchView extends FrameLayout implements Filter.FilterListen
         InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(view, 0);
     }
-
-    //Public Attributes
 
     @Override
     public void setBackground(Drawable background) {
@@ -362,11 +394,11 @@ public class SimpleSearchView extends FrameLayout implements Filter.FilterListen
         }
     }
 
+    //Public Methods
+
     public void setVoiceSearch(boolean voiceSearch) {
         allowVoiceSearch = voiceSearch;
     }
-
-    //Public Methods
 
     /**
      * Call this method to show suggestions list. This shows up when adapter is set. Call {@link #setAdapter(ListAdapter)} before calling this.
@@ -436,7 +468,6 @@ public class SimpleSearchView extends FrameLayout implements Filter.FilterListen
             mSuggestionsListView.setVisibility(GONE);
         }
     }
-
 
     /**
      * Calling this will set the query to search text box. if submit is true, it'll submit the query.
@@ -612,39 +643,6 @@ public class SimpleSearchView extends FrameLayout implements Filter.FilterListen
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public static void hide(final View view, final AnimationUtil.AnimationListener listener) {
-        int cx = view.getWidth() - (int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, 24, view.getResources().getDisplayMetrics());
-        int cy = view.getHeight() / 2;
-        int finalRadius = Math.max(view.getWidth(), view.getHeight());
-
-        Animator anim = ViewAnimationUtils.createCircularReveal(view, cx, cy, finalRadius, 0);
-        view.setVisibility(View.VISIBLE);
-        anim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                listener.onAnimationStart(view);
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                listener.onAnimationEnd(view);
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-                listener.onAnimationCancel(view);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-        });
-        anim.start();
-    }
-
     /**
      * Set this listener to listen to Query Change events.
      *
@@ -727,40 +725,6 @@ public class SimpleSearchView extends FrameLayout implements Filter.FilterListen
         super.onRestoreInstanceState(mSavedState.getSuperState());
     }
 
-    static class SavedState extends BaseSavedState {
-        String query;
-        boolean isSearchOpen;
-
-        SavedState(Parcelable superState) {
-            super(superState);
-        }
-
-        private SavedState(Parcel in) {
-            super(in);
-            this.query = in.readString();
-            this.isSearchOpen = in.readInt() == 1;
-        }
-
-        @Override
-        public void writeToParcel(Parcel out, int flags) {
-            super.writeToParcel(out, flags);
-            out.writeString(query);
-            out.writeInt(isSearchOpen ? 1 : 0);
-        }
-
-        //required field that makes Parcelables from a Parcel
-        public static final Creator<SavedState> CREATOR =
-                new Creator<SavedState>() {
-                    public SavedState createFromParcel(Parcel in) {
-                        return new SavedState(in);
-                    }
-
-                    public SavedState[] newArray(int size) {
-                        return new SavedState[size];
-                    }
-                };
-    }
-
     public interface OnQueryTextListener {
 
         /**
@@ -790,6 +754,39 @@ public class SimpleSearchView extends FrameLayout implements Filter.FilterListen
         void onSearchViewShown();
 
         void onSearchViewClosed();
+    }
+
+    static class SavedState extends BaseSavedState {
+        //required field that makes Parcelables from a Parcel
+        public static final Creator<SavedState> CREATOR =
+                new Creator<SavedState>() {
+                    public SavedState createFromParcel(Parcel in) {
+                        return new SavedState(in);
+                    }
+
+                    public SavedState[] newArray(int size) {
+                        return new SavedState[size];
+                    }
+                };
+        String query;
+        boolean isSearchOpen;
+
+        SavedState(Parcelable superState) {
+            super(superState);
+        }
+
+        private SavedState(Parcel in) {
+            super(in);
+            this.query = in.readString();
+            this.isSearchOpen = in.readInt() == 1;
+        }
+
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            super.writeToParcel(out, flags);
+            out.writeString(query);
+            out.writeInt(isSearchOpen ? 1 : 0);
+        }
     }
 
 
