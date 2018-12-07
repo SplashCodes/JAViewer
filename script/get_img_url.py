@@ -57,9 +57,39 @@ def downimg(url):
             print(iurl + " error")
 
 
+def saveImgUrl(url):
+    session = requests.Session()
+    session.trust_env = False
+    db_data = session.get(str('http://www.zi2345.com' + url), headers=header)
+    soup = BeautifulSoup(db_data.text, 'lxml')
+    filer = str(url).split('/')[-1].replace(".html", "")
+    imgurl = soup.select('#view1 > img')
+    '''建表语句
+     create table `t_img`(
+     `url` varchar(200) not null primary key,
+     `index` varchar(200) not null
+     )ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    '''
+    for i in imgurl:
+        iurl = re.findall(re.compile(r"src=\"(.*)\""), str(i))[0]
+        print(iurl)
+        db = pymysql.connect(host='127.0.0.1', user='root', password='root', port=3306, db='imgDb', charset='gbk')
+        cursor = db.cursor()
+        sql_str = "\'" + str(iurl) + "\'," + "\'" + str(filer) + "\'"
+        sql = 'INSERT INTO t_img(`url`,`index`) VALUES (' + sql_str + ')'
+        print(sql)
+        try:
+            cursor.execute(sql)
+            print("Successful")
+            db.commit()
+        except:
+            print('Failed')
+            db.rollback()
+        db.close()
+
 
 def find_mysql():
-    db = pymysql.connect(host="127.0.0.1", user="root", password="root", db="imgc", port=3306)
+    db = pymysql.connect(host="127.0.0.1", user="root", password="root", db="imgDb", port=3306)
     cur = db.cursor()
     sql = "select * from prict"
     try:
@@ -68,7 +98,10 @@ def find_mysql():
         print(len(results))
         for row in results:
             print("begin find :"+row[0])
-            downimg(row[0])
+            # 保存 Img 到数据库
+            saveImgUrl(row[0])
+            # 下载 Img 本地
+            # downimg(row[0])
     except Exception as e:
         raise e
     finally:
@@ -78,11 +111,10 @@ def find_mysql():
 def to_mysql(data):
     '''建表语句
      create table `prict`(
-     `url` varchar(200) not null primary key,
-     `id` integer
+     `url` varchar(200) not null primary key
      )ENGINE=InnoDB DEFAULT CHARSET=utf8;
     '''
-    db = pymysql.connect(host='127.0.0.1', user='root', password='root', port=3306, db='imgc', charset='gbk')
+    db = pymysql.connect(host='127.0.0.1', user='root', password='root', port=3306, db='imgDb', charset='gbk')
     cursor = db.cursor()
     sql = 'INSERT INTO prict(`url`) VALUES (' + data + ')'
     print(sql)
@@ -97,7 +129,7 @@ def to_mysql(data):
 
 
 if __name__ == '__main__':
-    for i in range(1,44):
-        url_base = 'http://www.zi2345.com/html/part/index22_'+ str(i) + '.html'
-        web(url_base)
+    # for i in range(1,44):
+    #     url_base = 'http://www.zi2345.com/html/part/index22_'+ str(i) + '.html'
+    #     web(url_base)
     find_mysql()
