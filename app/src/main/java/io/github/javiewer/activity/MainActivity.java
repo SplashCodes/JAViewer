@@ -98,6 +98,12 @@ public class MainActivity extends SecureActivity {
 
         ButterKnife.bind(this);
 
+        if (JAViewer.CONFIGURATIONS == null) {
+            startActivity(new Intent(this, StartActivity.class));
+            finish();
+            return;
+        }
+
         JAViewer.recreateService();
 
         this.savedInstanceState = savedInstanceState;
