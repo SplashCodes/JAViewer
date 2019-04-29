@@ -5,8 +5,9 @@
   "data_sources": [
     {
       "name": "AVMOO 日本",
-      "link": "https://avmoo.xyz",
+      "link": "https://javzoo.com",
       "legacies":[
+        "avmoo.xyz",
         "avmoo.net",
         "avmoo.pw",
         "javmoo.com",
@@ -23,8 +24,9 @@
     },
     {
       "name": "AVMOO 日本无码",
-      "link": "https://avsox.net",
+      "link": "https://avme.pw",
       "legacies":[
+        "avsox.net,
         "javkey.com",
         "javfee.com",
         "javpee.com",
