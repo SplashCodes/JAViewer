@@ -65,7 +65,7 @@ dependencies {
     implementation 'cn.jzvd:jiaozivideoplayer:6.2.12'
     implementation 'com.google.android.exoplayer:exoplayer:2.8.2'
     //Firebase
-    implementation 'com.google.firebase:firebase-auth:18.0.0'
+    implementation 'com.google.firebase:firebase-auth:18.1.0'
 
     testImplementation 'junit:junit:4.12'
     implementation 'com.jakewharton:butterknife:9.0.0-rc1'
