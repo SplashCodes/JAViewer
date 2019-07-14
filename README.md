@@ -3,4 +3,4 @@
 ## 官方Telegram交流群
 点击加入 [JAViewer 官方步行街](https://t.me/joinchat/Bp7eL0ehwp4WI-GxWxitQg) 【禁止车辆通行】
 # 变更内容
-在原版基础上修改了指向地址，版本号和其他BUG修复
+在原版基础上修改了指向地址和版本号，并修复了其他BUG
