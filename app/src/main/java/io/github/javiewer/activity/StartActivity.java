@@ -47,7 +47,7 @@ public class StartActivity extends AppCompatActivity {
 
     public void readProperties() {
         Request request = new Request.Builder()
-                .url("https://raw.githubusercontent.com/SplashCodes/JAViewer/master/properties.json?t=" + System.currentTimeMillis() / 1000)
+                .url("https://raw.githubusercontent.com/zcong18/JAViewer/master/properties.json?t=" + System.currentTimeMillis() / 1000)
                 .build();
         JAViewer.HTTP_CLIENT.newCall(request).enqueue(new Callback() {
             @Override
@@ -85,41 +85,43 @@ public class StartActivity extends AppCompatActivity {
             }
         }
 
-        int currentVersion;
-        try {
-            currentVersion = this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            throw new RuntimeException("Hacked???");
-        }
+        start()
 
-        if (properties.getLatestVersionCode() > 0 && currentVersion < properties.getLatestVersionCode()) {
+        // int currentVersion;
+        // try {
+        //     currentVersion = this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionCode;
+        // } catch (PackageManager.NameNotFoundException e) {
+        //     throw new RuntimeException("Hacked???");
+        // }
 
-            String message = "新版本：" + properties.getLatestVersion();
-            if (properties.getChangelog() != null) {
-                message += "\n\n更新日志：\n\n" + properties.getChangelog() + "\n";
-            }
+        // if (properties.getLatestVersionCode() > 0 && currentVersion < properties.getLatestVersionCode()) {
 
-            final AlertDialog dialog = new AlertDialog.Builder(this)
-                    .setTitle("发现更新")
-                    .setMessage(message)
-                    .setNegativeButton("忽略更新", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            start();
-                        }
-                    })
-                    .setPositiveButton("更新", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            start();
-                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/SplashCodes/JAViewer/releases")));
-                        }
-                    })
-                    .create();
-            dialog.show();
-        } else {
-            start();
-        }
+        //     String message = "新版本：" + properties.getLatestVersion();
+        //     if (properties.getChangelog() != null) {
+        //         message += "\n\n更新日志：\n\n" + properties.getChangelog() + "\n";
+        //     }
+
+        //     final AlertDialog dialog = new AlertDialog.Builder(this)
+        //             .setTitle("发现更新")
+        //             .setMessage(message)
+        //             .setNegativeButton("忽略更新", new DialogInterface.OnClickListener() {
+        //                 @Override
+        //                 public void onClick(DialogInterface dialogInterface, int i) {
+        //                     start();
+        //                 }
+        //             })
+        //             .setPositiveButton("更新", new DialogInterface.OnClickListener() {
+        //                 @Override
+        //                 public void onClick(DialogInterface dialog, int which) {
+        //                     start();
+        //                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/SplashCodes/JAViewer/releases")));
+        //                 }
+        //             })
+        //             .create();
+        //     dialog.show();
+        // } else {
+        //     start();
+        // }
 
     }
 
