@@ -30,7 +30,7 @@ jobs:
       - store_artifacts:
           path: app/build/outputs
           destination: outputs
-      - install-ghr:
+      - install_ghr:
           name: install ghr
           command: |
             curl -sLO https://github.com/tcnksm/ghr/releases/download/v0.12.2/ghr_v0.12.2_linux_amd64.tar.gz
