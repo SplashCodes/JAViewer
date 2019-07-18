@@ -30,12 +30,12 @@ jobs:
       - store_artifacts:
           path: app/build/outputs
           destination: outputs
-      - install_ghr:
+      - run:
           name: install ghr
           command: |
             curl -sLO https://github.com/tcnksm/ghr/releases/download/v0.12.2/ghr_v0.12.2_linux_amd64.tar.gz
             tar -zxvf ./ghr_v0.12.2_linux_amd64.tar.gz
-      - publish:
+      - run:
           name: publish to github release
           command: ./ghr_v0.12.2_linux_amd64/ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${CIRCLE_TAG} ./app/build/outputs/apk/debug/
 
