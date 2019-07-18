@@ -8,7 +8,6 @@ jobs:
   build:
     docker:
       - image: circleci/android:api-28-alpha
-    working_directory: /tmp
     environment:
       JAVA_TOOL_OPTIONS: "-Xmx1024m"
       GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2"
@@ -31,36 +30,20 @@ jobs:
       - store_artifacts:
           path: app/build/outputs
           destination: outputs
-      - persist_to_workspace:
-          # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is 
-          # taken to be the root directory of the workspace.
-          root: app/build
-          # Must be relative path from root
-          paths:
-            - outputs
-  publish-github-release:
-      docker:
-        - image: cibuilds/github:0.10
-      working_directory: /tmp
-      steps:
-        - attach_workspace:
-            at: /tmp
-        - run:
-            name: "Publish Release on GitHub"
-            command: |
-              ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${CIRCLE_TAG} /tmp/app/build/outputs/apk/debug/
+      - install-ghr:
+          name: install ghr
+          command: |
+            curl -sLO https://github.com/tcnksm/ghr/releases/download/v0.12.2/ghr_v0.12.2_linux_amd64.tar.gz
+            tar -zxvf ./ghr_v0.12.2_linux_amd64.tar.gz
+      - publish:
+          name: publish to github release
+          command: ./ghr_v0.12.2_linux_amd64/ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${CIRCLE_TAG} ./app/build/outputs/apk/debug/
 
 workflows:
   version: 2
   main:
     jobs:
       - build:
-          filters:
-            tags:
-              only: /^\d+\.\d+\.\d+$/
-      - publish-github-release:
-          requires:
-            - build
           filters:
             branches:
               ignore: /.*/
