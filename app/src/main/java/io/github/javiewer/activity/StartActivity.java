@@ -85,7 +85,7 @@ public class StartActivity extends AppCompatActivity {
             }
         }
 
-        start()
+        start();
 
         // int currentVersion;
         // try {
