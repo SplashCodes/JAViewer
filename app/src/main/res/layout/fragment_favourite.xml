@@ -24,9 +24,9 @@
         android:id="@+id/favourite_view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:layout_below="@+id/view"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

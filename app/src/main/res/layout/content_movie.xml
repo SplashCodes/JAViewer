@@ -12,8 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingBottom="8dp"
-        android:paddingTop="36dp">
+        android:paddingTop="36dp"
+        android:paddingBottom="8dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -44,8 +44,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
                     android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
                     android:text="预览"
                     android:textColor="@color/colorAccent"
                     android:textSize="13sp"
@@ -75,8 +75,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
                     android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
                     android:text="在线播放"
                     android:textColor="@color/colorAccent"
                     android:textSize="13sp"
@@ -88,9 +88,9 @@
         <View xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginBottom="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
             android:background="@color/colorDivider" />
 
         <include

@@ -53,10 +53,10 @@
             android:layout_width="120dp"
             android:layout_height="4dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="16dp"
             android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
             android:max="100" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>
