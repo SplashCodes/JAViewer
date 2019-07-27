@@ -18,7 +18,7 @@
         android:text="JAViewer"
         android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
-    <android.support.v7.widget.AppCompatSpinner xmlns:app="http://schemas.android.com/apk/res-auto"
+    <androidx.appcompat.widget.AppCompatSpinner xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/nav_header_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

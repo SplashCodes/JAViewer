@@ -1,7 +1,9 @@
-package android.support.design.widget;
+package com.google.android.material.appbar;
 
 import android.content.Context;
 import android.util.AttributeSet;
+
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 
 /**
  * Project: JAViewer
@@ -24,7 +26,7 @@ public class CompactCollapsingToolbarLayout extends CollapsingToolbarLayout {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
         final int mode = MeasureSpec.getMode(heightMeasureSpec);
-        final int topInset = mLastInsets != null ? mLastInsets.getSystemWindowInsetTop() : 0;
+        final int topInset = lastInsets != null ? lastInsets.getSystemWindowInsetTop() : 0;
         if (mode == MeasureSpec.UNSPECIFIED && topInset > 0) {
             // fix the bottom empty padding
             heightMeasureSpec = MeasureSpec.makeMeasureSpec(

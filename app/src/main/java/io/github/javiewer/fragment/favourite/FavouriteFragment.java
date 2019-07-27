@@ -1,9 +1,9 @@
 package io.github.javiewer.fragment.favourite;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import io.github.javiewer.adapter.ItemAdapter;
 import io.github.javiewer.adapter.item.Movie;

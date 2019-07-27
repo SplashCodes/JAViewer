@@ -1,6 +1,6 @@
 package io.github.javiewer.fragment.favourite;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import io.github.javiewer.JAViewer;
 import io.github.javiewer.adapter.ActressAdapter;

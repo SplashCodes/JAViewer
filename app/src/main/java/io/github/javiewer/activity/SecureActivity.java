@@ -1,6 +1,6 @@
 package io.github.javiewer.activity;
 
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.WindowManager;
 
 public class SecureActivity extends AppCompatActivity {

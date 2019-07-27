@@ -3,8 +3,8 @@ package io.github.javiewer.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.Toolbar;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.appcompat.widget.Toolbar;
 
 import io.github.javiewer.R;
 import io.github.javiewer.fragment.MovieListFragment;
