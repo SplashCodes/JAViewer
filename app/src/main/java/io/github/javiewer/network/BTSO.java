@@ -14,16 +14,16 @@ import retrofit2.http.Url;
  */
 public interface BTSO {
 
-    String BASE_URL = "https://api.rekonquer.com";
+    String BASE_URL = "https://btspread.com";
     BTSO INSTANCE = new Retrofit.Builder()
             .baseUrl(BTSO.BASE_URL)
             .client(JAViewer.HTTP_CLIENT)
             .build()
             .create(BTSO.class);
 
-    @GET("/btso.php")
+    @GET("/search/{keyword}/page/{page}")
     @Headers("Accept-Language: zh-CN,zh;q=0.8,en;q=0.6")
-    Call<ResponseBody> search(@Query(value = "kw") String keyword, @Query("page") int page);
+    Call<ResponseBody> search(@Path(value = "keyword") String keyword, @Path("page") int page);
 
     @GET
     @Headers("Accept-Language: zh-CN,zh;q=0.8,en;q=0.6")
