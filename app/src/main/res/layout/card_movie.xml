@@ -45,14 +45,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="32dp"
                 android:layout_alignBottom="@+id/movie_date"
-                android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_toLeftOf="@+id/movie_date"
+                android:layout_alignParentLeft="true"
                 android:layout_toStartOf="@+id/movie_date"
+                android:layout_toLeftOf="@+id/movie_date"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:paddingBottom="8dp"
                 android:paddingTop="8dp"
+                android:paddingBottom="8dp"
                 android:text="这里是番号"
                 android:textSize="12sp" />
 
@@ -60,13 +60,13 @@
                 android:id="@+id/movie_date"
                 android:layout_width="wrap_content"
                 android:layout_height="32dp"
-                android:layout_alignParentBottom="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:paddingBottom="8dp"
                 android:paddingTop="8dp"
+                android:paddingBottom="8dp"
                 android:text="这里是时间"
                 android:textSize="12sp" />
 

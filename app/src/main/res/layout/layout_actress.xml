@@ -29,9 +29,9 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
         android:layout_marginLeft="72dp"
         android:background="@color/colorDivider" />
 </RelativeLayout>

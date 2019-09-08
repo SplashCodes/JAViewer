@@ -65,11 +65,11 @@ dependencies {
     implementation 'cn.jzvd:jiaozivideoplayer:6.2.12'
     implementation 'com.google.android.exoplayer:exoplayer:2.8.2'
     //Firebase
-    implementation 'com.google.firebase:firebase-auth:16.0.5'
+    implementation 'com.google.firebase:firebase-auth:18.1.0'
 
     testImplementation 'junit:junit:4.12'
-    implementation 'com.jakewharton:butterknife:9.0.0-rc1'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:9.0.0-rc1'
+    implementation 'com.jakewharton:butterknife:10.1.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
 
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.4@aar') {
         transitive = true;
