@@ -53,12 +53,12 @@ public class DownloadActivity extends SecureActivity {
         fragment.setArguments(bundle);
         adapter.addFragment(fragment, "BTSO");
 
-        fragment = new DownloadFragment();
+/**        fragment = new DownloadFragment();
         bundle = (Bundle) bundle.clone();
         bundle.putString("provider", "torrentkitty");
         fragment.setArguments(bundle);
         adapter.addFragment(fragment, "Torrent Kitty");
-
+ **/
         mViewPager.setAdapter(adapter);
 
         mTabLayout.setupWithViewPager(mViewPager);
