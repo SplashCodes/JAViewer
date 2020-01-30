@@ -5,7 +5,7 @@
 ## 变更内容
 在原版基础上修改了指向地址和版本号，增加欧美区，修复了其他BUG。
 
-下载地址：https://github.com/SeanChengN/JAViewer/releases/tag/2.0.0-Fuck
+下载地址：https://github.com/SeanChengN/JAViewer/releases
 ## 关于旧版收藏夹无法打开的问题
     有小朋友可能发现了，用旧版收藏的影片在新版无法打开，这是因为影片的网址改变了，需要手动替换旧网址。
 ### 解决方法：
