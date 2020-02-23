@@ -5,6 +5,32 @@ references:
     key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
 
 jobs:
+  test:
+    docker:
+      - image: circleci/android:api-28-alpha
+    environment:
+      JAVA_TOOL_OPTIONS: "-Xmx1024m"
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2"
+      TERM: dumb
+    steps:
+      - checkout
+      - restore_cache:
+          <<: *cache_key
+      - run:
+          name: Download Dependencies
+          command: ./gradlew dependencies
+      - save_cache:
+          <<: *cache_key
+          paths:
+            - ~/.gradle/caches
+            - ~/.gradle/wrapper
+      - run:
+          name: Run Build
+          command: ./gradlew assembleDebug
+      - store_artifacts:
+          path: app/build/outputs
+          destination: outputs
+
   build:
     docker:
       - image: circleci/android:api-28-alpha
@@ -43,6 +69,7 @@ workflows:
   version: 2
   main:
     jobs:
+      - test
       - build:
           filters:
             branches:
