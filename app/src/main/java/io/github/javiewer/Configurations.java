@@ -104,7 +104,7 @@ public class Configurations {
         return btsoUrl;
     }
 
-    public String setBtsoUrl(String url) {
+    public void setBtsoUrl(String url) {
         this.btsoUrl = url;
     }
 }
