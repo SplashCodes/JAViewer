@@ -12,16 +12,23 @@ import io.github.javiewer.adapter.item.MagnetLink;
 import io.github.javiewer.network.BTSO;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
+import io.github.javiewer.JAViewer;
+import retrofit2.Retrofit;
 
 /**
  * Project: JAViewer
  */
 public class BTSOLinkProvider extends DownloadLinkProvider {
-
+    String BASE_URL = "https://btio.pw/";
+    BTSO INSTANCE = new Retrofit.Builder()
+            .baseUrl(JAViewer.CONFIGURATIONS.getBtsoUrl() == "" ? BASE_URL : JAViewer.CONFIGURATIONS.getBtsoUrl())
+            .client(JAViewer.HTTP_CLIENT)
+            .build()
+            .create(BTSO.class);
 
     @Override
     public Call<ResponseBody> search(String keyword, int page) {
-        return BTSO.INSTANCE.search(keyword, page);
+        return INSTANCE.search(keyword, page);
     }
 
     @Override
@@ -48,7 +55,7 @@ public class BTSOLinkProvider extends DownloadLinkProvider {
 
     @Override
     public Call<ResponseBody> get(String url) {
-        return BTSO.INSTANCE.get(url);
+        return INSTANCE.get(url);
     }
 
     @Override

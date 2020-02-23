@@ -45,6 +45,25 @@ public class StartActivity extends AppCompatActivity {
         checkPermissions(); //检查权限，创建配置
     }
 
+    public void updateBtsoUrl() {
+        Request request = new Request.Builder()
+                .url("https://btso-url.zcong.workers.dev")
+                .build();
+        JAViewer.HTTP_CLIENT.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String url =  response.body().string();
+                if (url != "") {
+                    JAViewer.CONFIGURATIONS.setBtsoUrl(url);
+                }
+            }
+        });
+    }
+
     public void readProperties() {
         Request request = new Request.Builder()
                 .url("https://0os7mxakwk.execute-api.ap-southeast-1.amazonaws.com/production/api/jav.json?token=fxOrqG9o&t=" + System.currentTimeMillis() / 1000)
@@ -181,6 +200,7 @@ public class StartActivity extends AppCompatActivity {
         JAViewer.CONFIGURATIONS = Configurations.load(config);
 
         readProperties();
+        updateBtsoUrl();
     }
 
 }

@@ -31,6 +31,8 @@ public class Configurations {
 
     private long download_counter;
 
+    private String btsoUrl;
+
     public static Configurations load(File file) {
         Configurations.file = file;
         Configurations config = null;
@@ -96,5 +98,13 @@ public class Configurations {
 
     public void setDownloadCounter(long download_counter) {
         this.download_counter = download_counter;
+    }
+
+    public String getBtsoUrl() {
+        return btsoUrl;
+    }
+
+    public String setBtsoUrl(String url) {
+        this.btsoUrl = url;
     }
 }
