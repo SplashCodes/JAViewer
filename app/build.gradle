@@ -13,9 +13,22 @@ android {
         versionName "2.2.8"
 
     }
+
+    signingConfigs {
+        release {
+            storeFile file('./jav.jks')
+            keyAlias 'jav'
+            keyPassword "${keyPassword}"
+            storePassword "${storePassword}"
+        }
+    }
+    
     buildTypes {
         release {
-            minifyEnabled false
+            debuggable false
+            minifyEnabled true
+            zipAlignEnabled true
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
