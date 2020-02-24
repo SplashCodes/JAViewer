@@ -26,7 +26,7 @@ jobs:
             - ~/.gradle/wrapper
       - run:
           name: Run Build
-          command: ./gradlew assembleRelease -PkeyPassword=${KEY_PASSWORD} -PstorePassword=${KEY_PASSWORD}
+          command: ./gradlew assembleRelease
       - store_artifacts:
           path: app/build/outputs
           destination: outputs

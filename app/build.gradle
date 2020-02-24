@@ -18,8 +18,8 @@ android {
         release {
             storeFile file('./jav.jks')
             keyAlias 'jav'
-            keyPassword "${keyPassword}"
-            storePassword "${storePassword}"
+            keyPassword System.getenv("KEY_PASSWORD")
+            storePassword System.getenv("KEY_PASSWORD")
         }
     }
     
