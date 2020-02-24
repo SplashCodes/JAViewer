@@ -26,7 +26,7 @@ jobs:
             - ~/.gradle/wrapper
       - run:
           name: Run Build
-          command: ./gradlew assembleRelease
+          command: ./gradlew assembleDebug
       - store_artifacts:
           path: app/build/outputs
           destination: outputs
@@ -52,7 +52,7 @@ jobs:
             - ~/.gradle/wrapper
       - run:
           name: Run Build
-          command: ./gradlew assembleDebug
+          command: ./gradlew assembleRelease
       - store_artifacts:
           path: app/build/outputs
           destination: outputs
@@ -63,7 +63,7 @@ jobs:
             tar -zxvf ./ghr_v0.12.2_linux_amd64.tar.gz
       - run:
           name: publish to github release
-          command: ./ghr_v0.12.2_linux_amd64/ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${CIRCLE_TAG} ./app/build/outputs/apk/debug/
+          command: ./ghr_v0.12.2_linux_amd64/ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${CIRCLE_TAG} ./app/build/outputs/apk/release/
 
 workflows:
   version: 2
