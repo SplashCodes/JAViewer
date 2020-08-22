@@ -9,3 +9,4 @@
 /gradle/wrapper
 /.idea
 /JAViewer.iml
+build/
