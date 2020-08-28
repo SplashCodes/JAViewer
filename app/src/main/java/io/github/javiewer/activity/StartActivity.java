@@ -9,8 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
+import android.util.Log;
 
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
@@ -21,21 +20,24 @@ import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import io.github.javiewer.Configurations;
 import io.github.javiewer.JAViewer;
 import io.github.javiewer.Properties;
 import io.github.javiewer.R;
 import io.github.javiewer.adapter.item.DataSource;
+import io.github.javiewer.util.IOUtils;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Request;
 import okhttp3.Response;
 
 public class StartActivity extends AppCompatActivity {
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,11 +49,21 @@ public class StartActivity extends AppCompatActivity {
 
     public void readProperties() {
         Request request = new Request.Builder()
-                .url("https://raw.githubusercontent.com/SplashCodes/JAViewer/master/properties.json?t=" + System.currentTimeMillis() / 1000)
+                // todo: 正式版改成官方仓库的地址
+                .url("https://raw.githubusercontent.com/ipcjs/JAViewer/master/app/src/main/assets/properties.json?t=" + System.currentTimeMillis() / 1000)
                 .build();
         JAViewer.HTTP_CLIENT.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                Log.w("StartActivity", "onFailure: " + e);
+                try (InputStream is = getAssets().open("properties.json")) {
+                    Properties properties = JAViewer.parseJson(Properties.class, IOUtils.readText(is, IOUtils.UTF_8));
+                    if (properties != null) {
+                        runOnUiThread(() -> handleProperties(properties));
+                    }
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
             }
 
             @Override
