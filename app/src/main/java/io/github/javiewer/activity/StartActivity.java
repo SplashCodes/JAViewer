@@ -49,8 +49,7 @@ public class StartActivity extends AppCompatActivity {
 
     public void readProperties() {
         Request request = new Request.Builder()
-                // todo: 正式版改成官方仓库的地址
-                .url("https://raw.githubusercontent.com/ipcjs/JAViewer/master/app/src/main/assets/properties.json?t=" + System.currentTimeMillis() / 1000)
+                .url("https://raw.githubusercontent.com/SplashCodes/JAViewer/master/app/src/main/assets/properties.json?t=" + System.currentTimeMillis() / 1000)
                 .build();
         JAViewer.HTTP_CLIENT.newCall(request).enqueue(new Callback() {
             @Override
