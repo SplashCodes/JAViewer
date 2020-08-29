@@ -1,0 +1,47 @@
+{
+  "latest_version": "2.0.0 Alpha 1",
+  "latest_version_code": "13",
+  "changelog": "**测试版更新**\n2.0.0 alpha 1 \n1. 在线播放功能重磅来袭\n2. 部分界面重置\n3. 全新侧边菜单，Material Design 2.0风格\n4.修复已知问题\n\n该版本为测试版，欢迎大家反馈问题",
+  "data_sources": [
+    {
+      "name": "AVMOO 日本",
+      "link": "https://avmoo.host",
+      "legacies":[
+        "javzoo.com",
+        "avmoo.xyz",
+        "avmoo.net",
+        "avmoo.pw",
+        "javmoo.com",
+        "javlog.com",
+        "javtag.com",
+        "javhip.com",
+        "avos.pw",
+        "avmo.pw",
+        "avmo.club",
+        "avio.pw",
+        "javdog.com",
+        "javmoo.net"
+      ]
+    },
+    {
+      "name": "AVMOO 日本无码",
+      "link": "https://avsox.cyou",
+      "legacies":[
+        "avme.pw",
+        "avsox.net",
+        "javkey.com",
+        "javfee.com",
+        "javpee.com",
+        "avso.pw",
+        "avso.club"
+      ]
+    },
+    {
+      "name": "AVMOO 欧美",
+      "link": "https://avmemo.asia",
+      "legacies":[
+    
+      ]
+    }
+  ]
+}
